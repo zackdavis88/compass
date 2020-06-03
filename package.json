@@ -1,0 +1,53 @@
+{
+  "name": "compass",
+  "version": "0.0.1",
+  "description": "React UI for agile project backlog management",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --env.environment=production --config webpack.config.js",
+    "build-dev": "webpack --env.environment=development --config webpack.config.js",
+    "start": "webpack-dev-server --env.environment=development --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zackdavis88/compass.git"
+  },
+  "author": "Zack Davis",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/zackdavis88/compass/issues"
+  },
+  "homepage": "https://github.com/zackdavis88/compass#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-react": "^7.10.1",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.3.0",
+    "url-loader": "^4.1.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-brands-svg-icons": "^5.13.0",
+    "@fortawesome/free-regular-svg-icons": "^5.13.0",
+    "@fortawesome/free-solid-svg-icons": "^5.13.0",
+    "@fortawesome/react-fontawesome": "^0.1.10",
+    "connected-react-router": "^6.8.0",
+    "core-js": "^3.6.5",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "styled-components": "^5.1.1",
+    "superagent": "^5.2.2"
+  }
+}
