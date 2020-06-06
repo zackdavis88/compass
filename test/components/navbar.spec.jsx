@@ -2,15 +2,18 @@ import React from "react";
 import Navbar from "../../src/containers/navbar/navbar";
 import { render, mockStore } from "../utils";
 import { fireEvent } from "@testing-library/react";
-import { TOGGLE_SIDEBAR } from "../../src/store/actions/sidebar";
+import { TOGGLE_SIDEBAR } from "../../src/store/types/sidebar";
 
 describe("<Navbar />", () => {
-  const store = mockStore({
-    sidebar: {
-      isOpen: false,
-      extra: "data"
-    }
+  let store;
+  beforeEach(() => {
+    store = mockStore({
+      sidebar: {
+        isOpen: false
+      }
+    });
   });
+
   it("should mount the component", () => {
     const component = render(<Navbar />, store);
     expect(component).toBeDefined();
@@ -32,7 +35,7 @@ describe("<Navbar />", () => {
     expect(getByTestId("sidebarBtn")).toBeDefined();
   });
 
-  it("should call the redux action to toggle sidebar on SidebarToggleButton click", () => {
+  it("should dispatch a redux action to toggle sidebar on SidebarToggleButton click", () => {
     const {getByTestId} = render(<Navbar />, store);
     const sidebarBtn = getByTestId("sidebarBtn");
     fireEvent.click(sidebarBtn);

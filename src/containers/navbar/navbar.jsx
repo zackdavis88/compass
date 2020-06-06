@@ -5,7 +5,7 @@ import { faCompass } from "@fortawesome/free-regular-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
-import { toggleSidebar } from "../../store/dispatchers/sidebar";
+import { toggleSidebar } from "../../store/actions/sidebar";
 
 const Navbar = (props) => {
   return (
