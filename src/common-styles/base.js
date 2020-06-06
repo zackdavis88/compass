@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import { black, white } from "./variables";
+import styled, { createGlobalStyle } from "styled-components";
+import { black, white, navbarHeight } from "./variables";
 
 export const GlobalStyle = createGlobalStyle`
   html {
@@ -12,6 +12,14 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     height: 100%;
     width: 100%;
+  }
+
+  main {
+    position: relative;
+    left: 0;
+    top: ${navbarHeight};
+    width: 100%;
+    height: calc(100% - ${navbarHeight});
   }
 
   #root {
@@ -29,4 +37,10 @@ export const GlobalStyle = createGlobalStyle`
   *:focus {
     outline: none;
   }
+`;
+
+export const PageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
 `;
