@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../../src/containers/navbar/navbar";
 import { render, mockStore } from "../utils";
 import { fireEvent } from "@testing-library/react";
-import { TOGGLE_SIDEBAR } from "../../src/store/types/sidebar";
+import { toggleSidebar } from "../../src/store/actions/sidebar";
 
 describe("<Navbar />", () => {
   let store;
@@ -39,8 +39,6 @@ describe("<Navbar />", () => {
     const {getByTestId} = render(<Navbar />, store);
     const sidebarBtn = getByTestId("sidebarBtn");
     fireEvent.click(sidebarBtn);
-    expect(store.dispatch).toHaveBeenCalledWith({
-      type: TOGGLE_SIDEBAR
-    });
+    expect(store.dispatch).toHaveBeenCalledWith(toggleSidebar());
   });
 });

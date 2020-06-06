@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { NavbarWrapper, NavbarBrand, SidebarToggleButton } from "./navbar.styles";
 import { faCompass } from "@fortawesome/free-regular-svg-icons";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { toggleSidebar } from "../../store/actions/sidebar";
@@ -11,7 +11,7 @@ const Navbar = (props) => {
   return (
     <NavbarWrapper>
       <SidebarToggleButton data-testid="sidebarBtn" isActive={props.sidebarIsOpen} onClick={props.toggleSidebar}>
-        <FontAwesomeIcon icon={faBars} fixedWidth />
+        <FontAwesomeIcon icon={props.sidebarIsOpen ? faTimes : faBars} fixedWidth />
       </SidebarToggleButton>
       <NavbarBrand>
         <FontAwesomeIcon data-testid="brandIcon" icon={faCompass} fixedWidth />
