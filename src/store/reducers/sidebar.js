@@ -2,7 +2,7 @@ import {
   OPEN_SIDEBAR,
   CLOSE_SIDEBAR,
   TOGGLE_SIDEBAR
-} from "../../actions/sidebar";
+} from "../actions/sidebar";
 
 const initialState = {
   isOpen: false
