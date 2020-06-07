@@ -1,6 +1,6 @@
 import React from "react";
-import PageHeader from "../../src/components/page-header/page-header";
-import { render } from "../utils";
+import PageHeader from "./page-header";
+import { render } from "../../test-utils";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 describe("<PageHeader />", () => {
@@ -22,7 +22,7 @@ describe("<PageHeader />", () => {
     expect(getByText(props.text)).toBeDefined();
   });
 
-  it("should not render any icon if there is not one provided", () => {
+  it("should not render the header icon if one is not provided", () => {
     props.icon = undefined;
     const { queryByTestId } = render(<PageHeader {...props} />);
     expect(queryByTestId("pageHeaderIcon")).toBeNull();

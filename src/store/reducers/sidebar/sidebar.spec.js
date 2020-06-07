@@ -1,9 +1,9 @@
-import sidebarReducer from "../../src/store/reducers/sidebar";
+import sidebarReducer from "./sidebar";
 import {
   openSidebar,
   closeSidebar,
   toggleSidebar
-} from "../../src/store/actions/sidebar";
+} from "../../actions/sidebar";
 
 describe("Sidebar Reducer", () => {
   it("initial state should set isOpen to false", () => {

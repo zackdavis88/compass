@@ -1,8 +1,8 @@
 import React from "react";
-import Navbar from "../../src/containers/navbar/navbar";
-import { render, mockStore } from "../utils";
+import Navbar from "./navbar";
+import { render, mockStore } from "../../test-utils";
 import { fireEvent } from "@testing-library/react";
-import { toggleSidebar } from "../../src/store/actions/sidebar";
+import { toggleSidebar } from "../../store/actions/sidebar";
 
 describe("<Navbar />", () => {
   let store;

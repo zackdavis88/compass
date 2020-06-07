@@ -8,7 +8,7 @@ import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 const LoginPage = (props) => {
   return (
     <PageWrapper>
-      <PageHeader text="Login Required" icon={faExclamationTriangle} textCenter />
+      <PageHeader dataTestId="loginPageHeader" text="Login Required" icon={faExclamationTriangle} textCenter />
     </PageWrapper>
   );
 };
