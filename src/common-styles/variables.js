@@ -11,3 +11,4 @@ export const primaryBlue = "#154b71";
 
 // Common CSS Variables
 export const navbarHeight = "75px";
+export const pageHeaderHeight = "70px";
