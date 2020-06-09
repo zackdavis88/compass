@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import { black, white, navbarHeight } from "./variables";
 
 export const GlobalStyle = createGlobalStyle`
@@ -37,10 +37,4 @@ export const GlobalStyle = createGlobalStyle`
   *:focus {
     outline: none;
   }
-`;
-
-export const PageWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
 `;

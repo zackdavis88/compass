@@ -23,4 +23,15 @@ describe("<LoginPage />", () => {
     expect(getByTestId("loginPageHeader")).toBeDefined();
     expect(getByTestId("pageHeaderIcon")).toBeDefined();
   });
+
+  it("should render the login form", () => {
+    const { getByPlaceholderText, getByTestId } = render(<LoginPage />, store);
+    expect(getByTestId("loginForm")).toBeDefined();
+    expect(getByTestId("usernameInput")).toBeDefined();
+    expect(getByPlaceholderText("Username")).toBeDefined();
+    expect(getByTestId("passwordInput")).toBeDefined();
+    expect(getByPlaceholderText("Password")).toBeDefined();
+
+    //TODO: Add more checks for the Form actions, once that is added.
+  });
 });

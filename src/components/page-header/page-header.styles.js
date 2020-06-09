@@ -1,12 +1,12 @@
 import styled, { css } from "styled-components";
-import { black, pageHeaderHeight } from "../../common-styles/variables";
+import { lightGrey, pageHeaderHeight } from "../../common-styles/variables";
 
 export const PageHeaderWrapper = styled.div`
   position: relative;
   text-align: left;
   width: 100%;
   height: ${pageHeaderHeight};
-  border-bottom: 1px solid ${black};
+  border-bottom: 1px solid ${lightGrey};
   padding-left: 25px;
   padding-right: 25px;
   padding-top: 11px;
