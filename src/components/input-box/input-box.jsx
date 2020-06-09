@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { InputBoxWrapper } from "./input-box.styles";
-//TODO: Unit Tests.
+
 const InputBox = (props) => {
   const [isFocused, setIsFocused] = useState(false);
 

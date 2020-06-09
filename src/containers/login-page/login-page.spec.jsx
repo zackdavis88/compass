@@ -33,5 +33,7 @@ describe("<LoginPage />", () => {
     expect(getByPlaceholderText("Password")).toBeDefined();
 
     //TODO: Add more checks for the Form actions, once that is added.
+    expect(getByTestId("signInButton")).toBeDefined();
+    expect(getByTestId("signUpButton")).toBeDefined();
   });
 });

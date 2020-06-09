@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { lightGrey } from "./variables";
 import { InputBoxWrapper } from "../components/input-box/input-box.styles";
+import { ButtonWrapper } from "../components/button/button.styles";
 
 const FormWrapper = styled.div`
   position: relative;
@@ -26,7 +27,16 @@ const FormError = styled.div`
   position: relative;
 `;
 
+const FormActions = styled.div`
+  & ${ButtonWrapper} {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+`;
+
 const FormComponent = FormWrapper;
 FormComponent.Section = FormSection;
+FormComponent.Actions = FormActions;
 FormComponent.Error = FormError;
 export const Form = FormComponent;
