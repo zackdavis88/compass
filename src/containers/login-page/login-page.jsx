@@ -7,10 +7,13 @@ import { LoginPageWrapper } from "./login-page.styles";
 import { Form } from "../../common-styles/form";
 import InputBox from "../../components/input-box/input-box";
 import Button from "../../components/button/button";
+import { authenticate } from "../../store/actions/auth";
 
-const LoginPage = (props) => {
+const LoginPage = ({authInProgress, authenticate}) => {
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+
+  const _loginDisabled = () => ((!usernameInput || !passwordInput) || authInProgress);
 
   const usernameInputProps = {
     id: "usernameInput",
@@ -35,11 +38,11 @@ const LoginPage = (props) => {
 
   const primaryButtonProps = {
     primary: true,
-    disabled: false,
+    disabled: _loginDisabled(),
     startIcon: faSignInAlt,
     label: "Sign In",
-    onClick: () => {},
-    dataTestId: "signInButton"
+    onClick: () => authenticate(usernameInput, passwordInput),
+    dataTestId: "loginButton"
   };
 
   const secondaryButtonProps = {
@@ -68,8 +71,12 @@ const LoginPage = (props) => {
   );
 };
 
+LoginPage.propTypes = {
+  authenticate: PropTypes.func.isRequired
+};
+
 export default connect((state) => ({
-  // mapStateToProps
+  authInProgress: state.auth.isLoading
 }), {
-  // mapDispatchToProps
+  authenticate
 })(LoginPage);

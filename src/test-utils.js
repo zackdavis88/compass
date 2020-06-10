@@ -8,7 +8,6 @@ export const mockStore = configureStore([thunk]); //middleware goes here.
 
 export const render = (component, store) => {
   if(store){
-    store.dispatch = jest.fn();
     return testingLibraryRender(
       <Provider store={store}>
         {component}

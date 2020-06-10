@@ -12,6 +12,8 @@ describe("<Navbar />", () => {
         isOpen: false
       }
     });
+
+    store.dispatch = jest.fn();
   });
 
   it("should mount the component", () => {

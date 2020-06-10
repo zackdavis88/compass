@@ -1,15 +1,18 @@
 import React from "react";
 import LoginPage from "./login-page";
 import { render, mockStore } from "../../test-utils";
+import { fireEvent } from "@testing-library/react";
 
 describe("<LoginPage />", () => {
   let store;
   beforeEach(() => {
     store = mockStore({
-      sidebar: {
-        isOpen: false
+      auth: {
+        isLoading: false
       }
     });
+
+    store.dispatch = jest.fn();
   });
 
   it("should mount the component", () => {
@@ -24,16 +27,20 @@ describe("<LoginPage />", () => {
     expect(getByTestId("pageHeaderIcon")).toBeDefined();
   });
 
-  it("should render the login form", () => {
+  it("should render the login form inputs", () => {
     const { getByPlaceholderText, getByTestId } = render(<LoginPage />, store);
     expect(getByTestId("loginForm")).toBeDefined();
     expect(getByTestId("usernameInput")).toBeDefined();
     expect(getByPlaceholderText("Username")).toBeDefined();
     expect(getByTestId("passwordInput")).toBeDefined();
     expect(getByPlaceholderText("Password")).toBeDefined();
+  });
 
-    //TODO: Add more checks for the Form actions, once that is added.
-    expect(getByTestId("signInButton")).toBeDefined();
+  it("should render the login form actions", () => {
+    const { getByTestId, getByText } = render(<LoginPage />, store);
+    expect(getByTestId("loginButton")).toBeDefined();
+    expect(getByText("Sign In")).toBeDefined();
     expect(getByTestId("signUpButton")).toBeDefined();
+    expect(getByText("Sign Up")).toBeDefined();
   });
 });
