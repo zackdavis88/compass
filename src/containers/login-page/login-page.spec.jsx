@@ -36,11 +36,35 @@ describe("<LoginPage />", () => {
     expect(getByPlaceholderText("Password")).toBeDefined();
   });
 
-  it("should render the login form actions", () => {
+  it("should render the login form actions with the login button disabled by default", () => {
     const { getByTestId, getByText } = render(<LoginPage />, store);
     expect(getByTestId("loginButton")).toBeDefined();
     expect(getByText("Sign In")).toBeDefined();
     expect(getByTestId("signUpButton")).toBeDefined();
     expect(getByText("Sign Up")).toBeDefined();
+    expect(getByTestId("loginButton")).toBeDisabled();
+  });
+
+  it("should enable the login button once username and password inputs have value", () => {
+    const { getByTestId } = render(<LoginPage />, store);
+    const button = getByTestId("loginButton");
+    const usernameInput = getByTestId("usernameInput.input");
+    const passwordInput = getByTestId("passwordInput.input");
+    // Update the username input
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    // Button should still be disabled at this point
+    expect(button).toBeDisabled();
+    // Update the password input
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    // Button should be enabled
+    expect(button).toBeEnabled();
   });
 });
