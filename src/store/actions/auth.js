@@ -5,8 +5,6 @@ import {
   TOKEN_FAILURE,
   LOGOUT
 } from "../types/auth";
-const apiRoute = `/api/auth`;
-
 
 // Get Auth Token
 export const authenticate = (username, password) => dispatch => {

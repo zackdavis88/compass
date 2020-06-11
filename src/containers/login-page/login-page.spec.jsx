@@ -1,7 +1,7 @@
 import React from "react";
 import LoginPage from "./login-page";
 import { render, mockStore } from "../../test-utils";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
 
 describe("<LoginPage />", () => {
   let store;
@@ -12,7 +12,7 @@ describe("<LoginPage />", () => {
       }
     });
 
-    store.dispatch = jest.fn();
+    // store.dispatch = jest.fn();
   });
 
   it("should mount the component", () => {
@@ -66,5 +66,30 @@ describe("<LoginPage />", () => {
     });
     // Button should be enabled
     expect(button).toBeEnabled();
+  });
+
+  it("should dispatch a redux API call to authenticate user credentials", async () => {
+    const { getByTestId } = render(<LoginPage />, store);
+    const button = getByTestId("loginButton");
+    const usernameInput = getByTestId("usernameInput.input");
+    const passwordInput = getByTestId("passwordInput.input");
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.click(button);
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    // First action should be the REQUEST
+    expect(store.getActions()[0].type).toBe("TOKEN_REQUEST");
+
+    // Second action is expected to be SUCCESS or FAILURE
+    const expectedTypes = ["TOKEN_SUCCESS", "TOKEN_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
   });
 });

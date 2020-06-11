@@ -16,10 +16,10 @@ const LoginPage = ({authInProgress, authenticate}) => {
   const _loginDisabled = () => ((!usernameInput || !passwordInput) || authInProgress);
 
   const _handleLogin = async () => {
-    console.log('here');
+    // console.log('here');
     const response = await authenticate(usernameInput, passwordInput);
-    console.log(response);
-    console.log('end');
+    // console.log(response);
+    // console.log('end');
   };
 
   const usernameInputProps = {

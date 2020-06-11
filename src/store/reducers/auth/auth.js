@@ -29,7 +29,7 @@ export default function authReducer(state=initialState, action) {
         isLoading: false,
         message: action.response.body.message,
         user: action.response.body.user,
-        token: action.response.headers["x-compass-token"],
+        token: action.response.headers["x-needle-token"],
         error: undefined
       };
     case TOKEN_FAILURE:

@@ -1,5 +1,5 @@
-import { combineReducers } from 'redux'
-import { connectRouter } from 'connected-react-router'
+import { combineReducers } from "redux";
+import { connectRouter } from "connected-react-router";
 import sidebar from "./sidebar/sidebar";
 import auth from "./auth/auth";
 
