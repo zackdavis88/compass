@@ -1,26 +1,25 @@
-import store from "./store";
-
 export const parseError = (errorResponse) => errorResponse.response.body.error;
 
-export const apiRequest = ({dispatch, types, request, payload}) => {
-  return new Promise(resolve => {
-    const [REQUEST, SUCCESS, FAILURE] = types;
-    const apiToken = store.getState().auth.token;
-    if(apiToken)
-      request = request.set("x-compass-token", apiToken);
-    
-    if(payload)
-      request = request.send(payload);
+export const apiMiddleware = store => next => action => {
+  if(!action.types || !Array.isArray(action.types) || action.types.length !== 3)
+    return next(action); // bail out of this middleware function if we dont have action.types with 3 types.
+
+  const {types, request, payload} = action;
+  const [REQUEST_TYPE, SUCCESS_TYPE, FAILURE_TYPE] = types;
+  const authToken = store.getState().auth.token;
+  if(authToken)
+    request = request.set("x-needle-token", authToken);
   
-    dispatch({type: REQUEST});
-    request
-    .then(response => {
-      dispatch({type: SUCCESS, response});
-      resolve(response.body);
-    })
-    .catch(err => {
-      dispatch({type: FAILURE, err});
-      resolve(err.response.body);
-    });
+  if(payload)
+    request = request.send(payload);
+  
+  store.dispatch({type: REQUEST_TYPE});
+  return request.then(response => {
+    store.dispatch({type: SUCCESS_TYPE, response});
+    return response.body.message;
+  })
+  .catch(error => {
+    store.dispatch({type: FAILURE_TYPE, error});
+    return;
   });
 };

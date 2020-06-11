@@ -15,6 +15,13 @@ const LoginPage = ({authInProgress, authenticate}) => {
 
   const _loginDisabled = () => ((!usernameInput || !passwordInput) || authInProgress);
 
+  const _handleLogin = async () => {
+    console.log('here');
+    const response = await authenticate(usernameInput, passwordInput);
+    console.log(response);
+    console.log('end');
+  };
+
   const usernameInputProps = {
     id: "usernameInput",
     dataTestId: "usernameInput",
@@ -41,7 +48,7 @@ const LoginPage = ({authInProgress, authenticate}) => {
     disabled: _loginDisabled(),
     startIcon: faSignInAlt,
     label: "Sign In",
-    onClick: () => authenticate(usernameInput, passwordInput),
+    onClick: _handleLogin,
     dataTestId: "loginButton"
   };
 

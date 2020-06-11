@@ -17,7 +17,6 @@ const initialState = {
 export default function authReducer(state=initialState, action) {
   switch(action.type){
     case TOKEN_REQUEST:
-      console.log('request');
       return {
         isLoading: true,
         message: undefined,
@@ -26,7 +25,6 @@ export default function authReducer(state=initialState, action) {
         error: undefined,
       };
     case TOKEN_SUCCESS:
-      console.log('success');
       return {
         isLoading: false,
         message: action.response.body.message,
@@ -35,7 +33,6 @@ export default function authReducer(state=initialState, action) {
         error: undefined
       };
     case TOKEN_FAILURE:
-      console.log('failure');
       return {
         isLoading: false,
         message: undefined,
