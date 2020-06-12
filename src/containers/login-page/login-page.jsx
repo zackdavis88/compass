@@ -1,25 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import PageHeader from "../../components/page-header/page-header";
-import { faExclamationTriangle, faSignInAlt, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationTriangle, faSignInAlt, faUserPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginPageWrapper } from "./login-page.styles";
-import { Form } from "../../common-styles/form";
+import { Form, CloseButton } from "../../common-styles/form";
 import InputBox from "../../components/input-box/input-box";
 import Button from "../../components/button/button";
 import { authenticate } from "../../store/actions/auth";
 
-const LoginPage = ({authInProgress, authenticate}) => {
+const LoginPage = ({authInProgress, authenticate, authError}) => {
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+  const [formError, setFormError] = useState("");
+
+  useEffect(() => {
+    if(formError !== authError)
+      setFormError(authError);
+  }, [authError]);
 
   const _loginDisabled = () => ((!usernameInput || !passwordInput) || authInProgress);
 
   const _handleLogin = async () => {
-    // console.log('here');
+    setFormError("");
     const response = await authenticate(usernameInput, passwordInput);
-    // console.log(response);
-    // console.log('end');
+    if(!response)
+      return;
+    
+    console.log(response);
   };
 
   const usernameInputProps = {
@@ -65,6 +74,12 @@ const LoginPage = ({authInProgress, authenticate}) => {
     <LoginPageWrapper>
       <PageHeader dataTestId="loginPageHeader" text="Login Required" icon={faExclamationTriangle} textCenter/>
       <Form data-testid="loginForm">
+        <Form.Error hasError={!!formError}>
+          <CloseButton onClick={() => setFormError("")}>
+            <FontAwesomeIcon icon={faTimes} size="xs" fixedWidth/>
+          </CloseButton>
+          {formError}
+        </Form.Error>
         <Form.Section>
           <InputBox {...usernameInputProps} />
           <InputBox {...passwordInputProps} />
@@ -83,7 +98,8 @@ LoginPage.propTypes = {
 };
 
 export default connect((state) => ({
-  authInProgress: state.auth.isLoading
+  authInProgress: state.auth.isLoading,
+  authError: state.auth.error
 }), {
   authenticate
 })(LoginPage);

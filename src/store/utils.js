@@ -16,7 +16,7 @@ export const apiMiddleware = store => next => action => {
   store.dispatch({type: REQUEST_TYPE});
   return request.then(response => {
     store.dispatch({type: SUCCESS_TYPE, response});
-    return response.body.message;
+    return response.body;
   })
   .catch(error => {
     store.dispatch({type: FAILURE_TYPE, error});
