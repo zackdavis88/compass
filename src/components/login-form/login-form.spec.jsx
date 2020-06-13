@@ -1,10 +1,11 @@
 import React from "react";
 import LoginForm from "./login-form";
 import { render, mockStore } from "../../test-utils";
-import { fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 
 describe("<LoginForm />", () => {
   let props;
+  let store;
   beforeEach(() => {
     props = {
       dataTestId: "unitTestForm",
@@ -13,6 +14,16 @@ describe("<LoginForm />", () => {
       showSignUpForm: jest.fn(),
       authenticate: jest.fn()
     };
+    
+    store = mockStore({
+      auth: {
+        isLoading: false,
+        message: undefined,
+        token: undefined,
+        user: undefined,
+        error: undefined
+      }
+    });
   });
 
   it("should mount the component", () => {
@@ -77,7 +88,7 @@ describe("<LoginForm />", () => {
       }
     });
     fireEvent.click(button);
-    expect(props.authenticate).toHaveBeenCalled();
+    expect(props.authenticate).toHaveBeenCalledWith("testUser", "Password1");
   });
 
   it("should call the showSignUpForm method when the sign-up button is clicked", () => {
@@ -86,30 +97,4 @@ describe("<LoginForm />", () => {
     fireEvent.click(button);
     expect(props.showSignUpForm).toHaveBeenCalled();
   });
-
-  // LEGACY: Preserved for future reference.
-  // it("should dispatch a redux API call to authenticate user credentials", async () => {
-  //   const { getByTestId } = render(<LoginPage />, store);
-  //   const button = getByTestId("loginButton");
-  //   const usernameInput = getByTestId("loginUsernameInput.input");
-  //   const passwordInput = getByTestId("loginPasswordInput.input");
-  //   fireEvent.change(usernameInput, {
-  //     target: {
-  //       value: "testUser"
-  //     }
-  //   });
-  //   fireEvent.change(passwordInput, {
-  //     target: {
-  //       value: "Password1"
-  //     }
-  //   });
-  //   fireEvent.click(button);
-  //   await waitFor(() => expect(store.getActions()).toHaveLength(2));
-  //   // First action should be the REQUEST
-  //   expect(store.getActions()[0].type).toBe("TOKEN_REQUEST");
-
-  //   // Second action is expected to be SUCCESS or FAILURE
-  //   const expectedTypes = ["TOKEN_SUCCESS", "TOKEN_FAILURE"];
-  //   expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
-  // });
 });

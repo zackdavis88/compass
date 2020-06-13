@@ -1,33 +1,46 @@
 import authReducer from "./auth";
+import {authenticate, logout} from "../../actions/auth";
+import {mockStore} from "../../../test-utils";
+import { waitFor } from "@testing-library/react";
 
-describe("Auth Reducer", () => {
-  const expectedInitialState = {
-    isLoading: false,
-    message: undefined,
-    token: undefined,
-    user: undefined,
-    error: undefined
-  };
-
-  const mockSuccessResponse = {
-    body: {
-      message: "test message success",
-      user: {
-        username: "testuser"
-      }
-    },
-    headers: {
-      "x-needle-token": "testToken"
-    }
-  };
-
-  const mockFailureResponse = {
-    response: {
+describe("Auth Reducer / Actions", () => {
+  let store;
+  let mockSuccessResponse;
+  let mockFailureResponse;
+  let expectedInitialState;
+  beforeEach(() => {
+    expectedInitialState = {
+      isLoading: false,
+      message: undefined,
+      token: undefined,
+      user: undefined,
+      error: undefined
+    };
+    
+    mockSuccessResponse = {
       body: {
-        error: "test message failure"
+        message: "test message success",
+        user: {
+          username: "testuser"
+        }
+      },
+      headers: {
+        "x-needle-token": "testToken"
       }
-    }
-  };
+    };
+
+    mockFailureResponse = {
+      response: {
+        body: {
+          error: "test message failure"
+        }
+      }
+    };
+
+    store = mockStore({
+      auth: expectedInitialState
+    });
+  });
 
   it("should set the initial state to the expected values", () => {
     const result = authReducer(undefined, {});
@@ -70,5 +83,23 @@ describe("Auth Reducer", () => {
   it("should reset back to the initial state for the LOGOUT action type", () => {
     const result = authReducer(undefined, {type: "LOGOUT"});
     expect(result).toEqual(expectedInitialState);
+  });
+
+  it("should dispatch the LOGOUT action type for the logout action", () => {
+    store.dispatch(logout());
+    expect(store.getActions()).toHaveLength(1);
+    const action = store.getActions()[0];
+    expect(action.type).toEqual("LOGOUT");
+  });
+
+  it("should dispatch a redux API call to authenticate user credentials", async () => {
+    store.dispatch(authenticate("testUser", "Password1"));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    // First action should be the REQUEST
+    expect(store.getActions()[0].type).toBe("TOKEN_REQUEST");
+
+    // Second action is expected to be SUCCESS or FAILURE
+    const expectedTypes = ["TOKEN_SUCCESS", "TOKEN_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
   });
 });

@@ -25,7 +25,7 @@ const LoginForm = (props) => {
     if(!response)
       return;
     
-    console.log(response);
+    //TODO: Finish this code.
   };
 
   const usernameInputProps = {
