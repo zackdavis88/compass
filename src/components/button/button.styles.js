@@ -97,4 +97,8 @@ export const ButtonWrapper = styled.div`
     border-color: ${black80};
     background-color: ${black1a};
   }
+
+  & button svg {
+    margin-right: 5px;
+  }
 `;

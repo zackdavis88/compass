@@ -2,99 +2,113 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import PageHeader from "../../components/page-header/page-header";
-import { faExclamationTriangle, faSignInAlt, faUserPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationTriangle, faUserPlus, faTimes, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoginPageWrapper } from "./login-page.styles";
 import { Form, CloseButton } from "../../common-styles/form";
 import InputBox from "../../components/input-box/input-box";
 import Button from "../../components/button/button";
 import { authenticate } from "../../store/actions/auth";
+import LoginForm from "../../components/login-form/login-form";
 
-const LoginPage = ({authInProgress, authenticate, authError}) => {
-  const [usernameInput, setUsernameInput] = useState("");
-  const [passwordInput, setPasswordInput] = useState("");
-  const [formError, setFormError] = useState("");
+const LoginPage = (props) => {
+  const [signUpUsername, setSignUpUsername] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+  const [signUpConfirm, setSignUpConfirm] = useState("");
+  const [signUpError, setSignUpError] = useState("");
 
-  useEffect(() => {
-    if(formError !== authError)
-      setFormError(authError);
-  }, [authError]);
+  const [showSignUpForm, setShowSignUpForm] = useState(false);
 
-  const _loginDisabled = () => ((!usernameInput || !passwordInput) || authInProgress);
+  const _signUpDisabled = () => ((!signUpUsername || !signUpPassword));
 
-  const _handleLogin = async () => {
-    setFormError("");
-    const response = await authenticate(usernameInput, passwordInput);
-    if(!response)
-      return;
-    
-    console.log(response);
-  };
-
-  const usernameInputProps = {
-    id: "usernameInput",
-    dataTestId: "usernameInput",
+  const signUpUsernameInputProps = {
+    id: "signUpUsernameInput",
+    dataTestId: "signUpUsernameInput",
     label: "Username",
     placeholder: "Enter a username",
-    value: usernameInput,
+    value: signUpUsername,
     isRequired: true,
-    onChange: (value) => setUsernameInput(value)
+    onChange: (value) => setSignUpUsername(value)
   };
 
-  const passwordInputProps = {
-    id: "passwordInput",
-    dataTestId: "passwordInput",
+  const signUpPasswordInputProps = {
+    id: "signUpPasswordInput",
+    dataTestId: "signUpPasswordInput",
     type: "password",
     label: "Password",
     placeholder: "Enter a Password",
-    value: passwordInput,
+    value: signUpPassword,
     isRequired: true,
-    onChange: (value) => setPasswordInput(value)
+    onChange: (value) => setSignUpPassword(value)
   };
 
-  const primaryButtonProps = {
+  const signUpConfirmInputProps = {
+    id: "signUpConfirmInput",
+    dataTestId: "signUpConfirmInput",
+    type: "password",
+    label: "Confirm Password",
+    placeholder: "Enter the password again",
+    value: signUpConfirm,
+    isRequired: true,
+    onChange: (value) => setSignUpConfirm(value)
+  };
+
+  const signUpButtonProps = {
     primary: true,
-    disabled: _loginDisabled(),
-    startIcon: faSignInAlt,
-    label: "Sign In",
-    onClick: _handleLogin,
-    dataTestId: "loginButton"
-  };
-
-  const secondaryButtonProps = {
-    secondary: true,
-    disabled: false,
+    disabled: _signUpDisabled(),
     startIcon: faUserPlus,
     label: "Sign Up",
     onClick: () => {},
     dataTestId: "signUpButton"
   };
 
+  const goToLoginButtonProps = {
+    secondary: true,
+    disabled: false,
+    startIcon: faArrowLeft,
+    label: "Back",
+    onClick: () => setShowSignUpForm(false),
+    dataTestId: "goToLoginButton"
+  };
+
   return (
     <LoginPageWrapper>
       <PageHeader dataTestId="loginPageHeader" text="Login Required" icon={faExclamationTriangle} textCenter/>
-      <Form data-testid="loginForm">
-        <Form.Error hasError={!!formError}>
-          <CloseButton onClick={() => setFormError("")}>
-            <FontAwesomeIcon icon={faTimes} size="xs" fixedWidth/>
-          </CloseButton>
-          {formError}
-        </Form.Error>
-        <Form.Section>
-          <InputBox {...usernameInputProps} />
-          <InputBox {...passwordInputProps} />
-        </Form.Section>
-        <Form.Actions>
-          <Button {...primaryButtonProps} />
-          <Button {...secondaryButtonProps} />
-        </Form.Actions>
-      </Form>
+      {!showSignUpForm ? (
+        <LoginForm
+          dataTestId="loginForm"
+          authInProgress={props.authInProgress}
+          authenticate={props.authenticate}
+          authError={props.authError}
+          showSignUpForm={() => setShowSignUpForm(true)}
+        />
+      ) : (
+        <Form data-testid="signUpForm">
+          <Form.Error hasError={!!signUpError}>
+            <CloseButton onClick={() => setSignUpError("")}>
+              <FontAwesomeIcon icon={faTimes} size="xs" fixedWidth/>
+            </CloseButton>
+            {signUpError}
+          </Form.Error>
+          <Form.Section>
+            <InputBox {...signUpUsernameInputProps} />
+            <InputBox {...signUpPasswordInputProps} />
+            <InputBox {...signUpConfirmInputProps}  />
+          </Form.Section>
+          <Form.Actions>
+            <Button {...goToLoginButtonProps} />
+            <Button {...signUpButtonProps} />
+          </Form.Actions>
+        </Form>
+      )}
     </LoginPageWrapper>
   );
 };
 
 LoginPage.propTypes = {
-  authenticate: PropTypes.func.isRequired
+  authenticate: PropTypes.func.isRequired,
+  authInProgress: PropTypes.bool.isRequired,
+  authError: PropTypes.string
 };
 
 export default connect((state) => ({
