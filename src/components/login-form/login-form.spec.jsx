@@ -1,11 +1,10 @@
 import React from "react";
 import LoginForm from "./login-form";
-import { render, mockStore } from "../../test-utils";
+import { render } from "../../test-utils";
 import { fireEvent } from "@testing-library/react";
 
 describe("<LoginForm />", () => {
   let props;
-  let store;
   beforeEach(() => {
     props = {
       dataTestId: "unitTestForm",
@@ -14,16 +13,6 @@ describe("<LoginForm />", () => {
       showSignUpForm: jest.fn(),
       authenticate: jest.fn()
     };
-    
-    store = mockStore({
-      auth: {
-        isLoading: false,
-        message: undefined,
-        token: undefined,
-        user: undefined,
-        error: undefined
-      }
-    });
   });
 
   it("should mount the component", () => {

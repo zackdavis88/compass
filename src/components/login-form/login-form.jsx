@@ -90,6 +90,7 @@ const LoginForm = (props) => {
 LoginForm.propTypes = {
   authInProgress: PropTypes.bool.isRequired,
   authenticate: PropTypes.func.isRequired,
+  showSignUpForm: PropTypes.func.isRequired,
   authError: PropTypes.string,
   dataTestId: PropTypes.string
 };
