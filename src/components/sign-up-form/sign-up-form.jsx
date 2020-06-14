@@ -17,19 +17,25 @@ const SignUpForm = (props) => {
   const [signUpError, setSignUpError] = useState("");
 
   useEffect(() => {
-    // Handle errors here. Assign it to either:
-    // 1. Form error
-    // 2. Individual form input
-    // Depending on the type of error and/or contents of the message.
+    if(userError && userError.includes("username"))
+      setUsernameInputError(userError);
+    else if(userError && userError.includes("password"))
+      setPasswordInputError(userError);
+    else if(userError)
+      setSignUpError(userError);
   }, [userError]);
 
   const _signUpDisabled = () => ((!usernameInput || !passwordInput || !confirmInput) || signUpInProgress);
 
-  const _handleSignUp = () => {
+  const _handleSignUp = async () => {
     if(confirmInput !== passwordInput)
       return setConfirmInputError("confirm and password input must be matching");
     
-    signUp();
+    const result = await signUp(usernameInput, passwordInput);
+    if(!result)
+      return; // bail out if we did not receive a successful response
+    
+    
   };
 
   const _handleChange = (inputName, value) => {
