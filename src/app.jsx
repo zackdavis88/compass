@@ -4,6 +4,8 @@ import Navbar from "./containers/navbar/navbar";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import store, { history } from "./store/store";
+import { Switch, Route } from "react-router-dom";
+import allRoutes from "./routes";
 
 const CompassApp = () => {
   return (
@@ -11,6 +13,13 @@ const CompassApp = () => {
       <ConnectedRouter history={history}>
         <GlobalStyle />
         <Navbar />
+        <main>
+          <Switch>
+            {allRoutes.map((routeProps, index) => (
+              <Route key={index} {...routeProps} />
+            ))}
+          </Switch>
+        </main>
       </ConnectedRouter>
     </Provider>
   );

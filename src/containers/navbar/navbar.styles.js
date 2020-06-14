@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import {
-  primaryBlue,
+  brandBlue,
   black,
   white,
   white20,
@@ -16,7 +16,7 @@ export const NavbarWrapper = styled.nav`
   z-index: 5000;
   width: 100%;
   height: ${navbarHeight};
-  background-color: ${primaryBlue};
+  background-color: ${brandBlue};
   border-bottom: 1px solid ${black};
   color: ${white};
 `;

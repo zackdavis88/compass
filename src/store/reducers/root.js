@@ -1,10 +1,14 @@
-import { combineReducers } from 'redux'
-import { connectRouter } from 'connected-react-router'
-import sidebar from "./sidebar";
+import { combineReducers } from "redux";
+import { connectRouter } from "connected-react-router";
+import sidebar from "./sidebar/sidebar";
+import auth from "./auth/auth";
+import user from "./user/user";
 
 const createRootReducer = (history) => combineReducers({
   router: connectRouter(history),
-  sidebar
+  sidebar,
+  auth,
+  user
 });
 
 export default createRootReducer;
