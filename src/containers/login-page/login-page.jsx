@@ -5,6 +5,7 @@ import PageHeader from "../../components/page-header/page-header";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { LoginPageWrapper } from "./login-page.styles";
 import { authenticate } from "../../store/actions/auth";
+import { createUser } from "../../store/actions/user";
 import LoginForm from "../../components/login-form/login-form";
 import SignUpForm from "../../components/sign-up-form/sign-up-form";
 
@@ -25,8 +26,8 @@ const LoginPage = (props) => {
       ) : (
         <SignUpForm
           dataTestId="signUpForm"
-          signUpInProgress={false}
-          signUp={() => {}}
+          signUpInProgress={props.signUpInProgress}
+          signUp={props.signUp}
           userError={props.userError}
           showLoginForm={() => setShowSignUpForm(false)}
         />
@@ -36,14 +37,20 @@ const LoginPage = (props) => {
 };
 
 LoginPage.propTypes = {
-  authenticate: PropTypes.func.isRequired,
   authInProgress: PropTypes.bool.isRequired,
-  authError: PropTypes.string
+  signUpInProgress: PropTypes.bool.isRequired,
+  authenticate: PropTypes.func.isRequired,
+  signUp: PropTypes.func.isRequired,
+  authError: PropTypes.string,
+  userError: PropTypes.string
 };
 
 export default connect((state) => ({
   authInProgress: state.auth.isLoading,
-  authError: state.auth.error
+  signUpInProgress: state.user.isLoading,
+  authError: state.auth.error,
+  userError: state.user.error
 }), {
-  authenticate
+  authenticate,
+  signUp: createUser
 })(LoginPage);

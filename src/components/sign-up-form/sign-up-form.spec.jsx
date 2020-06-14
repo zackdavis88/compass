@@ -92,6 +92,31 @@ describe("<SignUpForm />", () => {
     expect(props.signUp).toHaveBeenCalled();
   });
 
+  it("should render and error message if confirm and password input do not match", () => {
+    const {getByTestId, getByText} = render(<SignUpForm {...props} />);
+    const button = getByTestId(`${props.dataTestId}.signUpButton`);
+    const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
+    const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
+    const confirmInput = getByTestId(`${props.dataTestId}.confirmInput.input`);
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.change(confirmInput, {
+      target: {
+        value: "password1"
+      }
+    });
+    fireEvent.click(button);
+    expect(getByText("confirm and password input must be matching")).toBeDefined();
+  });
+
   it("should call the showLoginForm method when the back button is clicked", () => {
     const { getByTestId } = render(<SignUpForm {...props}/>);
     const button = getByTestId(`${props.dataTestId}.goToLoginButton`);

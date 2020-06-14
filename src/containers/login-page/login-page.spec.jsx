@@ -9,6 +9,9 @@ describe("<LoginPage />", () => {
     store = mockStore({
       auth: {
         isLoading: false
+      },
+      user: {
+        isLoading: false
       }
     });
   });

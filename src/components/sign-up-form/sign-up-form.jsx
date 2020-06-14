@@ -6,15 +6,14 @@ import { Form, CloseButton } from "../../common-styles/form";
 import InputBox from "../../components/input-box/input-box";
 import Button from "../../components/button/button";
 
-//TODO:
-// 1. Needs validation to ensure password/confirm match.
-// 2. Needs signUp functionality implemented in full.
-// 3. Needs redux reducer implemented in full.
 const SignUpForm = (props) => {
   const {signUpInProgress, userError, dataTestId, showLoginForm, signUp} = props;
   const [usernameInput, setUsernameInput] = useState("");
+  const [usernameInputError, setUsernameInputError] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+  const [passwordInputError, setPasswordInputError] = useState("");
   const [confirmInput, setConfirmInput] = useState("");
+  const [confirmInputError, setConfirmInputError] = useState("");
   const [signUpError, setSignUpError] = useState("");
 
   useEffect(() => {
@@ -26,6 +25,27 @@ const SignUpForm = (props) => {
 
   const _signUpDisabled = () => ((!usernameInput || !passwordInput || !confirmInput) || signUpInProgress);
 
+  const _handleSignUp = () => {
+    if(confirmInput !== passwordInput)
+      return setConfirmInputError("confirm and password input must be matching");
+    
+    signUp();
+  };
+
+  const _handleChange = (inputName, value) => {
+    switch(inputName){
+      case "username":
+        setUsernameInputError("");
+        return setUsernameInput(value);
+      case "password":
+        setPasswordInputError("");
+        return setPasswordInput(value);
+      case "confirm":
+        setConfirmInputError("");
+        return setConfirmInput(value);
+    }
+  };
+
   const usernameInputProps = {
     id: "usernameInput",
     dataTestId: `${dataTestId}.usernameInput`,
@@ -33,7 +53,8 @@ const SignUpForm = (props) => {
     placeholder: "Enter a username",
     value: usernameInput,
     isRequired: true,
-    onChange: (value) => setUsernameInput(value)
+    onChange: (value) => _handleChange("username", value),
+    errorText: usernameInputError
   };
 
   const passwordInputProps = {
@@ -44,7 +65,8 @@ const SignUpForm = (props) => {
     placeholder: "Enter a Password",
     value: passwordInput,
     isRequired: true,
-    onChange: (value) => setPasswordInput(value)
+    onChange: (value) => _handleChange("password", value),
+    errorText: passwordInputError
   };
 
   const confirmInputProps = {
@@ -55,7 +77,8 @@ const SignUpForm = (props) => {
     placeholder: "Enter the password again",
     value: confirmInput,
     isRequired: true,
-    onChange: (value) => setConfirmInput(value)
+    onChange: (value) => _handleChange("confirm", value),
+    errorText: confirmInputError
   };
 
   const signUpButtonProps = {
@@ -63,7 +86,7 @@ const SignUpForm = (props) => {
     disabled: _signUpDisabled(),
     startIcon: faUserPlus,
     label: "Sign Up",
-    onClick: () => signUp(),
+    onClick: _handleSignUp,
     dataTestId: `${dataTestId}.signUpButton`
   };
 

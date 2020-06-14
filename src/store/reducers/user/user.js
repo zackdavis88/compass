@@ -1,48 +1,39 @@
 import {
-  TOKEN_REQUEST,
-  TOKEN_SUCCESS,
-  TOKEN_FAILURE,
-  LOGOUT
-} from "../../types/auth";
+  USER_REQUEST_START,
+  USER_REQUEST_SUCCESS,
+  USER_REQUEST_FAILURE
+} from "../../types/user";
 import { parseError } from "../../utils";
 
 const initialState = {
   isLoading: false,
   message: undefined,
-  token: undefined,
   user: undefined,
   error: undefined
 };
 
-export default function authReducer(state=initialState, action) {
+export default function userReducer(state=initialState, action) {
   switch(action.type){
-    case TOKEN_REQUEST:
+    case USER_REQUEST_START:
       return {
         isLoading: true,
         message: undefined,
-        token: undefined,
         user: undefined,
         error: undefined
       };
-    case TOKEN_SUCCESS:
+    case USER_REQUEST_SUCCESS:
       return {
         isLoading: false,
         message: action.response.body.message,
         user: action.response.body.user,
-        token: action.response.headers["x-needle-token"],
         error: undefined
       };
-    case TOKEN_FAILURE:
+    case USER_REQUEST_FAILURE:
       return {
         isLoading: false,
         message: undefined,
         user: undefined,
-        token: undefined,
         error: parseError(action.error)
-      };
-    case LOGOUT:
-      return {
-        ...initialState
       };
     default:
       return state;
