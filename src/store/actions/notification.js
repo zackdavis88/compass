@@ -3,9 +3,9 @@ import {
   HIDE_NOTIFICATION
 } from "../types/notification";
 
-export const showNotification = (message) => ({
+export const showNotification = (message, type) => ({
   type: SHOW_NOTIFICATION,
-  message
+  notification: {message, type}
 });
 
 export const hideNotification = () => ({

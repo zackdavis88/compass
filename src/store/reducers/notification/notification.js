@@ -4,14 +4,16 @@ import {
 } from "../../types/notification";
 
 const initialState = {
-  message: ""
+  message: "",
+  type: ""
 };
 
 export default function notificationReducer(state=initialState, action) {
   switch(action.type){
     case SHOW_NOTIFICATION:
       return {
-        message: action.message
+        message: action.notification.message,
+        type: action.notification.type || "info"
       };
     case HIDE_NOTIFICATION:
       return initialState;
