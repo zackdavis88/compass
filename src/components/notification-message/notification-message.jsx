@@ -37,8 +37,8 @@ const NotificationMessage = ({message, type, autoHide, hideNotification}) => {
   
   return (
     <NotificationMessageWrapper {...wrapperProps}>
-      <div id="notification-message">{message}</div>
-      <CloseButton onClick={_handleClose}>
+      <span>{message}</span>
+      <CloseButton data-testid="notificationCloseButton" onClick={_handleClose}>
         <FontAwesomeIcon icon={faTimes} fixedWidth />
       </CloseButton>
     </NotificationMessageWrapper>

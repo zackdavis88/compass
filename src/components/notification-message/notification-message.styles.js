@@ -25,10 +25,10 @@ export const NotificationMessageWrapper = styled.div`
   ${({type}) => type === "danger" && css`
     background-color: ${tertiaryRed};
   `}
-  & #notification-message {
+  & span {
+    display: block;
     margin-top: 23px;
     margin-bottom: 23px;
-    box-sizing: border-box;
     padding-left: 15px;
     padding-right: 45px;
   }
