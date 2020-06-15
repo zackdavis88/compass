@@ -32,7 +32,8 @@ const NotificationMessage = ({message, type, autoHide, hideNotification}) => {
   const wrapperProps = {
     type,
     showCloseAnimation,
-    onAnimationEnd: _handleAnimationEnd
+    onAnimationEnd: _handleAnimationEnd,
+    "data-testid": "notificationMessage"
   };
   
   return (
