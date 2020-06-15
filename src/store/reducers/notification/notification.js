@@ -5,7 +5,8 @@ import {
 
 const initialState = {
   message: "",
-  type: ""
+  type: "",
+  autoHide: false
 };
 
 export default function notificationReducer(state=initialState, action) {
@@ -13,7 +14,8 @@ export default function notificationReducer(state=initialState, action) {
     case SHOW_NOTIFICATION:
       return {
         message: action.notification.message,
-        type: action.notification.type || "info"
+        type: action.notification.type || "info",
+        autoHide: typeof action.notification.autoHide === "boolean" ? action.notification.autoHide : true
       };
     case HIDE_NOTIFICATION:
       return initialState;

@@ -7,45 +7,49 @@ import {mockStore} from "../../../test-utils";
 
 describe("Notification Reducer / Actions", () => {
   let store;
+  let expectedInitialState = {
+    message: "",
+    type: "",
+    autoHide: false
+  };
   beforeEach(() => {
     store = mockStore({
-      notification: {
-        message: "",
-        type: ""
-      }
+      notification: expectedInitialState
     });
   });
 
-  it("initial state should set message to an empty-string", () => {
+  it("should initialize with the expected initial state", () => {
     const result = notificationReducer(undefined, {});
-    expect(result).toEqual({message: "", type: ""});
+    expect(result).toEqual(expectedInitialState);
   });
 
-  it("should set message and type to the value passed to the reducer for the SHOW_NOTIFICATION action", () => {
+  it("should set message, type, and autoHide to the value passed to the reducer for the SHOW_NOTIFICATION action", () => {
     const result = notificationReducer(undefined, {
       type: "SHOW_NOTIFICATION",
       notification: {
         message: "test message",
-        type: "info"
+        type: "info",
+        autoHide: false
       }
     });
-    expect(result).toEqual({message: "test message", type: "info"});
+    expect(result).toEqual({message: "test message", type: "info", autoHide: false});
   });
 
-  it("should set message and type to an empty-string for the HIDE_NOTIFICATION action", () => {
+  it("should set store back to initial state for the HIDE_NOTIFICATION action", () => {
     const result = notificationReducer(undefined, {type: "HIDE_NOTIFICATION"});
-    expect(result).toEqual({message: "", type: ""});
+    expect(result).toEqual(expectedInitialState);
   });
 
   it("should dispatch the SHOW_NOTIFICATION action type for the showNotification action", () => {
-    store.dispatch(showNotification("unit testing notification actions", "info"));
+    store.dispatch(showNotification("unit testing notification actions", "info", true));
     expect(store.getActions()).toHaveLength(1);
     const action = store.getActions()[0];
     expect(action).toEqual({
       type: "SHOW_NOTIFICATION",
       notification: {
         message: "unit testing notification actions",
-        type: "info"
+        type: "info",
+        autoHide: true
       }
     });
   });
