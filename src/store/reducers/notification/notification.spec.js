@@ -8,9 +8,9 @@ import {mockStore} from "../../../test-utils";
 describe("Notification Reducer / Actions", () => {
   let store;
   let expectedInitialState = {
-    message: "",
-    type: "",
-    autoHide: false
+    message: undefined,
+    type: undefined,
+    autoHide: undefined
   };
   beforeEach(() => {
     store = mockStore({

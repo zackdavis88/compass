@@ -8,3 +8,27 @@ export const fadeIn = keyframes`
     opacity: 1;
   }
 `;
+
+export const scaleIn = keyframes`
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(0.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+export const scaleOut = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.5);
+  }
+  100% {
+    transform: scale(0);
+  }
+`;

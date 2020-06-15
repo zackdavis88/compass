@@ -4,9 +4,9 @@ import {
 } from "../../types/notification";
 
 const initialState = {
-  message: "",
-  type: "",
-  autoHide: false
+  message: undefined,
+  type: undefined,
+  autoHide: undefined
 };
 
 export default function notificationReducer(state=initialState, action) {

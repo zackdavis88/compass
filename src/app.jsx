@@ -1,6 +1,7 @@
 import React from "react";
 import { GlobalStyle } from "./common-styles/base";
 import Navbar from "./containers/navbar/navbar";
+import Notification from "./containers/notification/notification";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import store, { history } from "./store/store";
@@ -13,6 +14,7 @@ const CompassApp = () => {
       <ConnectedRouter history={history}>
         <GlobalStyle />
         <Navbar />
+        <Notification />
         <main>
           <Switch>
             {allRoutes.map((routeProps, index) => (
