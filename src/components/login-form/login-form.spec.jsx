@@ -11,7 +11,9 @@ describe("<LoginForm />", () => {
       authInProgress: false,
       authError: undefined,
       showSignUpForm: jest.fn(),
-      authenticate: jest.fn()
+      authenticate: jest.fn(),
+      showNotification: jest.fn(),
+      goToDashboard: jest.fn()
     };
   });
 

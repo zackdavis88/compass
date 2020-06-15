@@ -11,7 +11,8 @@ describe("<SignUpForm />", () => {
       signUpInProgress: false,
       userError: undefined,
       showLoginForm: jest.fn(),
-      signUp: jest.fn()
+      signUp: jest.fn(),
+      showNotification: jest.fn()
     };
   });
 
