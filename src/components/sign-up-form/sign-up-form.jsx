@@ -31,11 +31,12 @@ const SignUpForm = (props) => {
     if(confirmInput !== passwordInput)
       return setConfirmInputError("confirm and password input must be matching");
     
-    const result = await signUp(usernameInput, passwordInput);
-    if(!result)
+    const response = await signUp(usernameInput, passwordInput);
+    if(!response)
       return; // bail out if we did not receive a successful response
     
-    
+    props.showNotification(response.message, "info", true);
+    showLoginForm();
   };
 
   const _handleChange = (inputName, value) => {
@@ -130,6 +131,7 @@ SignUpForm.propTypes = {
   signUpInProgress: PropTypes.bool.isRequired,
   showLoginForm: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired,
+  showNotification: PropTypes.func.isRequired,
   userError: PropTypes.string,
   dataTestId: PropTypes.string
 };
