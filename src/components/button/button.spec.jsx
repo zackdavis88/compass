@@ -10,7 +10,8 @@ describe("<Button />", () => {
     buttonProps = {
       label: "Test Label",
       onClick: jest.fn(),
-      dataTestId: "testButton"
+      dataTestId: "testButton",
+      tooltip: "testing tooltip"
     };
   });
 
@@ -41,5 +42,12 @@ describe("<Button />", () => {
     const buttonElement = getByTestId(buttonProps.dataTestId);
     fireEvent.click(buttonElement);
     expect(buttonProps.onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("should render a tooltip on hover if provided", () => {
+    const {getByTestId, getByText} = render(<Button {...buttonProps}/>);
+    const buttonElement = getByTestId(buttonProps.dataTestId);
+    fireEvent.mouseOver(buttonElement);
+    expect(getByText(buttonProps.tooltip)).toBeDefined();
   });
 });

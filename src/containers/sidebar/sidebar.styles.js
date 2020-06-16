@@ -16,7 +16,7 @@ export const SidebarWrapper = styled.aside`
   height: calc(100% - ${navbarHeight});
   min-height: 500px;
   display: block;
-  z-index: 2009;
+  z-index: 4000;
   margin-top: ${navbarHeight};
   transition: width ${sidebarExpandDuration} linear;
   color: ${white};
