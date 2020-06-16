@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ButtonWrapper } from "./button.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "../tooltip/tooltip";
 
 const Button = (props) => {
   const wrapperProps = {
@@ -27,6 +28,7 @@ const Button = (props) => {
         {props.label}
         {props.endIcon && <FontAwesomeIcon data-testid={`${props.dataTestId}.endIcon`} icon={props.endIcon} fixedWidth />}
       </button>
+      {props.tooltip && <Tooltip text={props.tooltip} />}
     </ButtonWrapper>
   );
 };
@@ -41,7 +43,8 @@ Button.propTypes = {
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
   danger: PropTypes.bool,
-  dataTestId: PropTypes.string
+  dataTestId: PropTypes.string,
+  tooltip: PropTypes.string
 };
 
 export default Button;

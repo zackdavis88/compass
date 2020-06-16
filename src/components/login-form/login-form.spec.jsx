@@ -140,4 +140,21 @@ describe("<LoginForm />", () => {
     fireEvent.click(button);
     expect(props.showSignUpForm).toHaveBeenCalled();
   });
+
+  it("should render the tooltip for the submit button when it is disabled", () => {
+    const {getByTestId, getByText} = render(<LoginForm {...props}/>);
+    const loginButton = getByTestId(`${props.dataTestId}.loginButton`);
+    expect(loginButton).toBeDisabled();
+    fireEvent.mouseOver(loginButton);
+    expect(getByText("missing required fields")).toBeDefined();
+  });
+
+  it("should render the tooltip for submit button when it is disabled due to pending API call", () => {
+    props.authInProgress = true;
+    const {getByTestId, getByText} = render(<LoginForm {...props}/>);
+    const loginButton = getByTestId(`${props.dataTestId}.loginButton`);
+    expect(loginButton).toBeDisabled();
+    fireEvent.mouseOver(loginButton);
+    expect(getByText("authentication in progress")).toBeDefined();
+  });
 });

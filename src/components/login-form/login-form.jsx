@@ -19,6 +19,11 @@ const LoginForm = (props) => {
 
   const _loginDisabled = () => ((!usernameInput || !passwordInput) || authInProgress);
   
+  // if we are awaiting the authentication API response, set "auth in progress"
+  // if we are disabled but not awaiting API, set "missing required data"
+  // default to empty-string
+  const _loginTooltip = () => _loginDisabled() ? authInProgress ? "authentication in progress" : "missing required fields" : "";
+  
   const _handleLogin = async () => {
     setLoginError("");
     const response = await authenticate(usernameInput, passwordInput);
@@ -56,7 +61,8 @@ const LoginForm = (props) => {
     startIcon: faSignInAlt,
     label: "Sign In",
     onClick: _handleLogin,
-    dataTestId: `${dataTestId}.loginButton`
+    dataTestId: `${dataTestId}.loginButton`,
+    tooltip: _loginTooltip()
   };
 
   const goToSignUpButtonProps = {

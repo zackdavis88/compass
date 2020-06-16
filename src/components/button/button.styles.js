@@ -18,8 +18,11 @@ import {
   buttonHeight,
   smallButtonHeight
 } from "../../common-styles/variables";
+import { TooltipWrapper } from "../tooltip/tooltip.styles";
 
 export const ButtonWrapper = styled.div`
+  position: relative;
+
   & button {
     user-select: none;
     cursor: pointer;
@@ -100,5 +103,18 @@ export const ButtonWrapper = styled.div`
 
   & button svg {
     margin-right: 5px;
+  }
+
+  & ${TooltipWrapper} {
+    ${({small}) => small ? css`
+      top: calc(${smallButtonHeight} + 3px);
+    ` : css`
+      top: calc(${buttonHeight} + 3px);
+    `}
+  }
+  
+  & button:hover + ${TooltipWrapper} {
+    visibility: visible;
+    opacity: 1;
   }
 `;
