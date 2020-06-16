@@ -1,7 +1,7 @@
 import React from "react";
 import LoginForm from "./login-form";
 import { render } from "../../test-utils";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
 
 describe("<LoginForm />", () => {
   let props;
@@ -11,7 +11,14 @@ describe("<LoginForm />", () => {
       authInProgress: false,
       authError: undefined,
       showSignUpForm: jest.fn(),
-      authenticate: jest.fn()
+      authenticate: jest.fn().mockReturnValue({
+        message: "mock auth success",
+        user: {
+          username: "testUser"
+        }
+      }),
+      showNotification: jest.fn(),
+      goToDashboard: jest.fn()
     };
   });
 
@@ -78,6 +85,53 @@ describe("<LoginForm />", () => {
     });
     fireEvent.click(button);
     expect(props.authenticate).toHaveBeenCalledWith("testUser", "Password1");
+  });
+
+  it("should show a success notification and redirect the user to the dashboard", async () => {
+    const { getByTestId } = render(<LoginForm {...props}/>);
+    const button = getByTestId(`${props.dataTestId}.loginButton`);
+    const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
+    const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    expect(button).toBeDisabled();
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.click(button);
+    await waitFor(() => expect(props.showNotification).toHaveBeenCalledWith(
+      "mock auth success",
+      "info",
+      true
+    ));
+    await waitFor(() => expect(props.goToDashboard).toHaveBeenCalled());
+  });
+
+  it("should not show a notification or redirect the user if authentication fails", async () => {
+    props.authenticate.mockReturnValueOnce(undefined);
+    const { getByTestId } = render(<LoginForm {...props}/>);
+    const button = getByTestId(`${props.dataTestId}.loginButton`);
+    const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
+    const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    expect(button).toBeDisabled();
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.click(button);
+    await waitFor(() => expect(props.showNotification).toHaveBeenCalledTimes(0));
+    await waitFor(() => expect(props.goToDashboard).toHaveBeenCalledTimes(0));
   });
 
   it("should call the showSignUpForm method when the sign-up button is clicked", () => {

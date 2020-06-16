@@ -6,8 +6,10 @@ import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { LoginPageWrapper } from "./login-page.styles";
 import { authenticate } from "../../store/actions/auth";
 import { createUser } from "../../store/actions/user";
+import { showNotification } from "../../store/actions/notification";
 import LoginForm from "../../components/login-form/login-form";
 import SignUpForm from "../../components/sign-up-form/sign-up-form";
+import { push } from "connected-react-router";
 
 const LoginPage = (props) => {
   const [showSignUpForm, setShowSignUpForm] = useState(false);
@@ -22,6 +24,8 @@ const LoginPage = (props) => {
           authenticate={props.authenticate}
           authError={props.authError}
           showSignUpForm={() => setShowSignUpForm(true)}
+          showNotification={props.showNotification}
+          goToDashboard={() => props.historyPush("/dashboard")}
         />
       ) : (
         <SignUpForm
@@ -30,6 +34,7 @@ const LoginPage = (props) => {
           signUp={props.signUp}
           userError={props.userError}
           showLoginForm={() => setShowSignUpForm(false)}
+          showNotification={props.showNotification}
         />
       )}
     </LoginPageWrapper>
@@ -41,6 +46,8 @@ LoginPage.propTypes = {
   signUpInProgress: PropTypes.bool.isRequired,
   authenticate: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired,
+  showNotification: PropTypes.func.isRequired,
+  historyPush: PropTypes.func.isRequired,
   authError: PropTypes.string,
   userError: PropTypes.string
 };
@@ -52,5 +59,7 @@ export default connect((state) => ({
   userError: state.user.error
 }), {
   authenticate,
-  signUp: createUser
+  signUp: createUser,
+  showNotification,
+  historyPush: push
 })(LoginPage);

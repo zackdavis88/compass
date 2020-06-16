@@ -25,7 +25,8 @@ const LoginForm = (props) => {
     if(!response)
       return;
     
-    //TODO: Finish this code.
+    props.showNotification(response.message, "info", true);
+    props.goToDashboard();
   };
 
   const usernameInputProps = {
@@ -91,6 +92,8 @@ LoginForm.propTypes = {
   authInProgress: PropTypes.bool.isRequired,
   authenticate: PropTypes.func.isRequired,
   showSignUpForm: PropTypes.func.isRequired,
+  showNotification: PropTypes.func.isRequired,
+  goToDashboard: PropTypes.func.isRequired,
   authError: PropTypes.string,
   dataTestId: PropTypes.string
 };

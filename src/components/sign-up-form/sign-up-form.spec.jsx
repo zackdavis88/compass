@@ -1,7 +1,7 @@
 import React from "react";
 import SignUpForm from "./sign-up-form";
 import { render } from "../../test-utils";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
 
 describe("<SignUpForm />", () => {
   let props;
@@ -11,7 +11,13 @@ describe("<SignUpForm />", () => {
       signUpInProgress: false,
       userError: undefined,
       showLoginForm: jest.fn(),
-      signUp: jest.fn()
+      signUp: jest.fn().mockReturnValue({
+        message: "mock test message",
+        user: {
+          username: "testUser"
+        }
+      }),
+      showNotification: jest.fn()
     };
   });
 
@@ -90,6 +96,63 @@ describe("<SignUpForm />", () => {
     });
     fireEvent.click(button);
     expect(props.signUp).toHaveBeenCalled();
+  });
+
+  it("should call the showNotification and showLoginForm methods when the sign up is successful", async () => {
+    const { getByTestId } = render(<SignUpForm {...props}/>);
+    const button = getByTestId(`${props.dataTestId}.signUpButton`);
+    const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
+    const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
+    const confirmInput = getByTestId(`${props.dataTestId}.confirmInput.input`);
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.change(confirmInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.click(button);
+    await waitFor(() => expect(props.showNotification).toHaveBeenCalledWith(
+      "mock test message",
+      "info",
+      true
+    ));
+    await waitFor(() => expect(props.showLoginForm).toHaveBeenCalled());
+  });
+
+  it("should not call the showNotification or showLoginForm methods if sign up fails", async () => {
+    props.signUp.mockReturnValueOnce(undefined);
+    const { getByTestId } = render(<SignUpForm {...props}/>);
+    const button = getByTestId(`${props.dataTestId}.signUpButton`);
+    const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
+    const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
+    const confirmInput = getByTestId(`${props.dataTestId}.confirmInput.input`);
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.change(confirmInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.click(button);
+    await waitFor(() => expect(props.showNotification).toHaveBeenCalledTimes(0));
+    await waitFor(() => expect(props.showLoginForm).toHaveBeenCalledTimes(0));
   });
 
   it("should render and error message if confirm and password input do not match", () => {
