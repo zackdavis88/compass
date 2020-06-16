@@ -2,8 +2,11 @@
 export const transparent = "#FFFFFF00";
 
 export const white = "#FFFFFF";
+export const white1a = "#FFFFFF1A";
 export const white20 = "#FFFFFF20";
+export const white36 = "#FFFFFF36";
 export const white40 = "#FFFFFF40";
+export const whiteb2 = "#FFFFFFB2";
 
 export const black = "#212121";
 export const black05 = "#21212105";
@@ -35,3 +38,5 @@ export const pageHeaderHeight = "70px";
 export const inputHeight = "45px";
 export const buttonHeight = "45px";
 export const smallButtonHeight = "32px";
+export const sidebarWidth = "250px";
+export const sidebarExpandDuration = "200ms";
