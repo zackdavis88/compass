@@ -128,6 +128,33 @@ describe("<SignUpForm />", () => {
     await waitFor(() => expect(props.showLoginForm).toHaveBeenCalled());
   });
 
+  it("should not call the showNotification or showLoginForm methods if sign up fails", async () => {
+    props.signUp.mockReturnValueOnce(undefined);
+    const { getByTestId } = render(<SignUpForm {...props}/>);
+    const button = getByTestId(`${props.dataTestId}.signUpButton`);
+    const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
+    const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
+    const confirmInput = getByTestId(`${props.dataTestId}.confirmInput.input`);
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.change(confirmInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.click(button);
+    await waitFor(() => expect(props.showNotification).toHaveBeenCalledTimes(0));
+    await waitFor(() => expect(props.showLoginForm).toHaveBeenCalledTimes(0));
+  });
+
   it("should render and error message if confirm and password input do not match", () => {
     const {getByTestId, getByText} = render(<SignUpForm {...props} />);
     const button = getByTestId(`${props.dataTestId}.signUpButton`);
