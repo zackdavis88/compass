@@ -2,7 +2,7 @@ import React from "react";
 import Tooltip from "./tooltip";
 import { render } from "../../test-utils";
 
-describe("<LoginForm />", () => {
+describe("<Tooltip />", () => {
   let props;
   beforeEach(() => {
     props = {
