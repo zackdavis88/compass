@@ -17,7 +17,6 @@ describe("<LoginForm />", () => {
           username: "testUser"
         }
       }),
-      showNotification: jest.fn(),
       goToDashboard: jest.fn()
     };
   });
@@ -87,7 +86,7 @@ describe("<LoginForm />", () => {
     expect(props.authenticate).toHaveBeenCalledWith("testUser", "Password1");
   });
 
-  it("should show a success notification and redirect the user to the dashboard", async () => {
+  it("should redirect the user to the dashboard if authentication succeeds", async () => {
     const { getByTestId } = render(<LoginForm {...props}/>);
     const button = getByTestId(`${props.dataTestId}.loginButton`);
     const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
@@ -104,15 +103,10 @@ describe("<LoginForm />", () => {
       }
     });
     fireEvent.click(button);
-    await waitFor(() => expect(props.showNotification).toHaveBeenCalledWith(
-      "mock auth success",
-      "info",
-      true
-    ));
     await waitFor(() => expect(props.goToDashboard).toHaveBeenCalled());
   });
 
-  it("should not show a notification or redirect the user if authentication fails", async () => {
+  it("should not redirect the user if authentication fails", async () => {
     props.authenticate.mockReturnValueOnce(undefined);
     const { getByTestId } = render(<LoginForm {...props}/>);
     const button = getByTestId(`${props.dataTestId}.loginButton`);
@@ -130,7 +124,6 @@ describe("<LoginForm />", () => {
       }
     });
     fireEvent.click(button);
-    await waitFor(() => expect(props.showNotification).toHaveBeenCalledTimes(0));
     await waitFor(() => expect(props.goToDashboard).toHaveBeenCalledTimes(0));
   });
 
