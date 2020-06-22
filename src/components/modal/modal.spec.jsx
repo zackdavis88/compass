@@ -16,7 +16,8 @@ describe("<Modal />", () => {
         startIcon: faUserPlus,
         endIcon: faUserPlus
       },
-      dataTestId: "testModal"
+      dataTestId: "testModal",
+      submitTooltip: "Unit test tooltip"
     };
   });
 
@@ -80,5 +81,10 @@ describe("<Modal />", () => {
     const cancelButton = getByTestId(`${props.dataTestId}.actions.secondaryButton`);
     fireEvent.click(cancelButton);
     expect(props.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("should render the submit tooltip if present", () => {
+    const {getByText} = render(<Modal {...props}/>);
+    expect(getByText(props.submitTooltip)).toBeDefined();
   });
 });
