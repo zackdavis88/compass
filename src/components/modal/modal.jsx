@@ -53,6 +53,7 @@ const Modal = (props) => {
             disabled={props.submitDisabled}
             label="Submit"
             dataTestId={`${dataTestId}.actions.primaryButton`}
+            tooltip={props.submitTooltip}
           />
           <Button
             secondary
@@ -71,6 +72,7 @@ Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   submitDisabled: PropTypes.bool,
+  submitTooltip: PropTypes.string,
   small: PropTypes.bool,
   header: PropTypes.shape({
     text: PropTypes.string.isRequired,
