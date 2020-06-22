@@ -10,6 +10,12 @@ describe("<Navbar />", () => {
     store = mockStore({
       sidebar: {
         isOpen: false
+      },
+      auth: {
+        user: {
+          username: "testuser",
+          displayName: "testUser"
+        }
       }
     });
 
@@ -42,5 +48,20 @@ describe("<Navbar />", () => {
     const sidebarBtn = getByTestId("sidebarBtn");
     fireEvent.click(sidebarBtn);
     expect(store.dispatch).toHaveBeenCalledWith(toggleSidebar());
+  });
+
+  it("should not render the user menu until a user has signed in", () => {
+    store = mockStore({
+      sidebar: {isOpen: false},
+      auth: {}
+    });
+    const {queryByTestId} = render(<Navbar />, store);
+    expect(queryByTestId("userMenu")).toBeNull();
+  });
+
+  it("should render the user menu when a user is signed in", () => {
+    const {getByTestId, getByText} = render(<Navbar />, store);
+    expect(getByTestId("userMenu")).toBeDefined();
+    expect(getByText("testUser")).toBeDefined();
   });
 });
