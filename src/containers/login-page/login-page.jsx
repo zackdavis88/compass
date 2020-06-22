@@ -24,7 +24,6 @@ const LoginPage = (props) => {
           authenticate={props.authenticate}
           authError={props.authError}
           showSignUpForm={() => setShowSignUpForm(true)}
-          showNotification={props.showNotification}
           goToDashboard={() => props.historyPush("/dashboard")}
         />
       ) : (
