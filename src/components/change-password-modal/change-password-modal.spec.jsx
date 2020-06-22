@@ -115,7 +115,7 @@ describe("<ChangePasswordModal />", () => {
     fireEvent.change(confirmPasswordInput, {target: {value: newPass}});
     fireEvent.click(submitButton);
     await waitFor(() => expect(props.changePassword).toHaveBeenCalledTimes(1));
-    expect(props.changePassword).toHaveBeenLastCalledWith(props.userInfo.username, currentPass, newPass);
+    expect(props.changePassword).toHaveBeenCalledWith(props.userInfo.username, currentPass, newPass);
   });
 
   it("should render an error message if one is returned from the API", async() => {
@@ -152,5 +152,12 @@ describe("<ChangePasswordModal />", () => {
     await waitFor(() => expect(props.changePassword).toHaveBeenCalled());
     expect(props.onClose).toHaveBeenCalledTimes(1);
     expect(props.showNotification).toHaveBeenCalledWith({message: expectedMessage});
+  });
+
+  it("should render the expected inputs", () => {
+    const {getByTestId} = render(<ChangePasswordModal {...props}/>);
+    expect(getByTestId("currentPasswordInput")).toBeDefined();
+    expect(getByTestId("newPasswordInput")).toBeDefined();
+    expect(getByTestId("confirmPasswordInput")).toBeDefined();
   });
 });
