@@ -4,8 +4,6 @@ import { render, mockStore } from "../../test-utils";
 import { fireEvent, waitFor } from "@testing-library/react";
 import { toggleSidebar } from "../../store/actions/sidebar";
 
-//TODO: Test that ShowPasswordModal is rendering.
-
 describe("<Navbar />", () => {
   let store;
   beforeEach(() => {

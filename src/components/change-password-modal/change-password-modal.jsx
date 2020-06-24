@@ -5,8 +5,6 @@ import InputBox from "../input-box/input-box";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 
 const ChangePasswordModal = (props) => {
-  // const {onClose, userInfo, changePassword, showNotification, requestInProgress} = props;
-
   // Declare our state to be used for form input/errors
   const [state, setState] = useState({
     currentPassword: "",
