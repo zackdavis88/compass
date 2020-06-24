@@ -14,7 +14,8 @@ describe("<UserMenu />", () => {
         username: "testuser",
         displayName: "testUser"
       },
-      logout: jest.fn()
+      logout: jest.fn(),
+      showChangePasswordModal: jest.fn()
     };
   });
 
@@ -48,6 +49,15 @@ describe("<UserMenu />", () => {
     fireEvent.click(menu);
     expect(getByText("Change Password")).toBeDefined();
     expect(getByText("Sign Out")).toBeDefined();
+  });
+
+  it("should call showChangePasswordModal when the change password menu-item is clicked", () => {
+    const {getByTestId, getByText} = render(<UserMenu {...props} />);
+    const menu = getByTestId(props.dataTestId);
+    fireEvent.click(menu);
+    const changePasswordMenuItem = getByText("Change Password");
+    fireEvent.click(changePasswordMenuItem);
+    expect(props.showChangePasswordModal).toHaveBeenCalledTimes(1);
   });
 });
 

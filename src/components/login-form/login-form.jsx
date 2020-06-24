@@ -27,7 +27,7 @@ const LoginForm = (props) => {
   const _handleLogin = async () => {
     setLoginError("");
     const response = await authenticate(usernameInput, passwordInput);
-    if(!response)
+    if(response.error)
       return;
     
     props.goToDashboard();

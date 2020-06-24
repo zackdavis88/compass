@@ -1,5 +1,5 @@
 import userReducer from "./user";
-import {createUser, getUser} from "../../actions/user";
+import {createUser, getUser, changePassword} from "../../actions/user";
 import {mockStore} from "../../../test-utils";
 import { waitFor } from "@testing-library/react";
 
@@ -88,6 +88,17 @@ describe("User Reducer / Actions", () => {
   
   it("should dispatch a redux API call get a user", async () => {
     store.dispatch(getUser("testUser"));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    // First action should be the REQUEST
+    expect(store.getActions()[0].type).toBe("USER_REQUEST_START");
+
+    // Second action is expected to be SUCCESS or FAILURE
+    const expectedTypes = ["USER_REQUEST_SUCCESS", "USER_REQUEST_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
+  });
+
+  it("should dispatch a redux API call to change a users password", async () => {
+    store.dispatch(changePassword("testUser", "oldPassword", "newPassword"));
     await waitFor(() => expect(store.getActions()).toHaveLength(2));
     // First action should be the REQUEST
     expect(store.getActions()[0].type).toBe("USER_REQUEST_START");

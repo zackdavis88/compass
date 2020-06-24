@@ -107,7 +107,7 @@ describe("<LoginForm />", () => {
   });
 
   it("should not redirect the user if authentication fails", async () => {
-    props.authenticate.mockReturnValueOnce(undefined);
+    props.authenticate.mockReturnValueOnce({error: "something went wrong"});
     const { getByTestId } = render(<LoginForm {...props}/>);
     const button = getByTestId(`${props.dataTestId}.loginButton`);
     const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);

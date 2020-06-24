@@ -17,5 +17,12 @@ export const getUser = (username) => dispatch => {
   return dispatch({
     types: [USER_REQUEST_START, USER_REQUEST_SUCCESS, USER_REQUEST_FAILURE],
     request: request.get(`${apiRoute}/${username}`)
-  })
+  });
+};
+
+export const changePassword = (username, currentPassword, newPassword) => dispatch => {
+  return dispatch({
+    types: [USER_REQUEST_START, USER_REQUEST_SUCCESS, USER_REQUEST_FAILURE],
+    request: request.post(`${apiRoute}/${username}`).send({currentPassword, password: newPassword})
+  });
 };
