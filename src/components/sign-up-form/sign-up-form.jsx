@@ -32,9 +32,9 @@ const SignUpForm = (props) => {
       return setConfirmInputError("confirm and password input must be matching");
     
     const response = await signUp(usernameInput, passwordInput);
-    if(!response)
+    if(response && response.error)
       return; // bail out if we did not receive a successful response
-    
+
     props.showNotification(response.message, "info", true);
     showLoginForm();
   };

@@ -8,10 +8,10 @@ export const apiMiddleware = store => next => action => {
   const [REQUEST_TYPE, SUCCESS_TYPE, FAILURE_TYPE] = types;
   const authToken = store.getState().auth.token;
   if(authToken)
-    request = request.set("x-needle-token", authToken);
+    request.set("x-needle-token", authToken);
   
   if(payload)
-    request = request.send(payload);
+    request.send(payload);
   
   store.dispatch({type: REQUEST_TYPE});
   return request.then(response => {
@@ -20,6 +20,6 @@ export const apiMiddleware = store => next => action => {
   })
   .catch(error => {
     store.dispatch({type: FAILURE_TYPE, error});
-    return;
+    return error.response && error.response.body;
   });
 };

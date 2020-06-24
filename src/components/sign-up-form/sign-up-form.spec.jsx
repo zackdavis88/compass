@@ -7,7 +7,7 @@ describe("<SignUpForm />", () => {
   let props;
   beforeEach(() => {
     props = {
-      dataTestId: "unitTestForm",
+      dataTestId: "unitTestSignUpForm",
       signUpInProgress: false,
       userError: undefined,
       showLoginForm: jest.fn(),
@@ -129,7 +129,7 @@ describe("<SignUpForm />", () => {
   });
 
   it("should not call the showNotification or showLoginForm methods if sign up fails", async () => {
-    props.signUp.mockReturnValueOnce(undefined);
+    props.signUp.mockReturnValueOnce({error: "something went wrong"});
     const { getByTestId } = render(<SignUpForm {...props}/>);
     const button = getByTestId(`${props.dataTestId}.signUpButton`);
     const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
