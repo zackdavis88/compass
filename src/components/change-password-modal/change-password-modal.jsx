@@ -55,7 +55,7 @@ const ChangePasswordModal = (props) => {
       return setState({...state, newPasswordError: response.error});
     
     props.onClose();
-    props.showNotification({message: response.message});
+    props.showNotification(response.message, "info", true);
   };
 
   const modalProps = {

@@ -1,8 +1,10 @@
 import React from "react";
 import Navbar from "./navbar";
 import { render, mockStore } from "../../test-utils";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
 import { toggleSidebar } from "../../store/actions/sidebar";
+
+//TODO: Test that ShowPasswordModal is rendering.
 
 describe("<Navbar />", () => {
   let store;
@@ -16,6 +18,9 @@ describe("<Navbar />", () => {
           username: "testuser",
           displayName: "testUser"
         }
+      },
+      user: {
+        isLoading: false
       }
     });
 
@@ -53,7 +58,10 @@ describe("<Navbar />", () => {
   it("should not render the user menu until a user has signed in", () => {
     store = mockStore({
       sidebar: {isOpen: false},
-      auth: {}
+      auth: {},
+      user: {
+        isLoading: false
+      }
     });
     const {queryByTestId} = render(<Navbar />, store);
     expect(queryByTestId("userMenu")).toBeNull();
@@ -63,5 +71,14 @@ describe("<Navbar />", () => {
     const {getByTestId, getByText} = render(<Navbar />, store);
     expect(getByTestId("userMenu")).toBeDefined();
     expect(getByText("testUser")).toBeDefined();
+  });
+
+  it("should render the ChangePasswordModal when the Change Password option is clicked", async() => {
+    const {getByTestId, getByText} = render(<Navbar />, store);
+    const menu = getByTestId("userMenu");
+    fireEvent.click(menu);
+    const menuItem = getByText("Change Password");
+    fireEvent.click(menuItem);
+    await waitFor(() => expect(getByTestId("changePasswordModal.wrapper")).toBeDefined());
   });
 });

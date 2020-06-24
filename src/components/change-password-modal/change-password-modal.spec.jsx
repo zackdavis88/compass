@@ -29,6 +29,13 @@ describe("<ChangePasswordModal />", () => {
     expect(submitButton).toBeDisabled();
   });
 
+  it("should render the expected inputs", () => {
+    const {getByTestId} = render(<ChangePasswordModal {...props}/>);
+    expect(getByTestId("currentPasswordInput")).toBeDefined();
+    expect(getByTestId("newPasswordInput")).toBeDefined();
+    expect(getByTestId("confirmPasswordInput")).toBeDefined();
+  });
+
   it("should enable the submit button if all input is present without input errors", () => {
     const {getByTestId} = render(<ChangePasswordModal {...props}/>);
     const currentPasswordInput = getByTestId("currentPasswordInput.input");
@@ -151,13 +158,6 @@ describe("<ChangePasswordModal />", () => {
     fireEvent.click(submitButton);
     await waitFor(() => expect(props.changePassword).toHaveBeenCalled());
     expect(props.onClose).toHaveBeenCalledTimes(1);
-    expect(props.showNotification).toHaveBeenCalledWith({message: expectedMessage});
-  });
-
-  it("should render the expected inputs", () => {
-    const {getByTestId} = render(<ChangePasswordModal {...props}/>);
-    expect(getByTestId("currentPasswordInput")).toBeDefined();
-    expect(getByTestId("newPasswordInput")).toBeDefined();
-    expect(getByTestId("confirmPasswordInput")).toBeDefined();
+    expect(props.showNotification).toHaveBeenCalledWith(expectedMessage, "info", true);
   });
 });

@@ -5,12 +5,12 @@ import { UserMenuWrapper } from "./user-menu.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faKey, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
-const UserMenu = ({userInfo, logout, dataTestId}) => {
+const UserMenu = ({userInfo, logout, dataTestId, showChangePasswordModal}) => {
   const [flyoutIsOpen, setFlyoutIsOpen] = useState(false);
   const flyoutItems = [{
     icon: faKey,
     label: "Change Password",
-    onClick: () => {console.log("show change password modal")}
+    onClick: showChangePasswordModal
   },{
     icon: faSignOutAlt,
     label: "Sign Out",
@@ -30,6 +30,7 @@ const UserMenu = ({userInfo, logout, dataTestId}) => {
 UserMenu.propTypes = {
   userInfo: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
+  showChangePasswordModal: PropTypes.func.isRequired,
   dataTestId: PropTypes.string
 };
 
