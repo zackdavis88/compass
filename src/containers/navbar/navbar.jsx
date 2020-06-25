@@ -33,9 +33,11 @@ const Navbar = (props) => {
   return (
     <Fragment>
       <NavbarWrapper>
-        <SidebarToggleButton data-testid="sidebarBtn" isActive={props.sidebarIsOpen} onClick={props.toggleSidebar}>
-          <FontAwesomeIcon icon={props.sidebarIsOpen ? faTimes : faBars} fixedWidth />
-        </SidebarToggleButton>
+        {props.userInfo && (
+          <SidebarToggleButton data-testid="sidebarBtn" isActive={props.sidebarIsOpen} onClick={props.toggleSidebar}>
+            <FontAwesomeIcon icon={props.sidebarIsOpen ? faTimes : faBars} fixedWidth />
+          </SidebarToggleButton>
+        )}
         <NavbarBrand>
           <FontAwesomeIcon data-testid="brandIcon" icon={faCompass} fixedWidth />
           <span data-testid="brandName">Compass</span>
