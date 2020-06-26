@@ -1,5 +1,5 @@
 import authReducer from "./auth";
-import {authenticate, logout} from "../../actions/auth";
+import {authenticate, logout, validateToken} from "../../actions/auth";
 import {mockStore} from "../../../test-utils";
 import { waitFor } from "@testing-library/react";
 
@@ -100,6 +100,14 @@ describe("Auth Reducer / Actions", () => {
 
     // Second action is expected to be SUCCESS or FAILURE
     const expectedTypes = ["TOKEN_SUCCESS", "TOKEN_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
+  });
+
+  it("should dispatch a redux API call to validate an existing token", async () => {
+    store.dispatch(validateToken("some_token"));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    expect(store.getActions()[0].type).toBe("TOKEN_REQUEST");
+    const expectedTypes = ["TOKEN_SUCCESS", "VALIDATE_TOKEN"];
     expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
   });
 });
