@@ -27,6 +27,8 @@ const SignUpForm = (props) => {
 
   const _signUpDisabled = () => ((!usernameInput || !passwordInput || !confirmInput) || signUpInProgress);
 
+  const _signUpTooltip = () => _signUpDisabled() ? signUpInProgress ? "authentication in progress" : "missing required fields" : "";
+
   const _handleSignUp = async () => {
     if(confirmInput !== passwordInput)
       return setConfirmInputError("confirm and password input must be matching");
@@ -94,7 +96,8 @@ const SignUpForm = (props) => {
     startIcon: faUserPlus,
     label: "Sign Up",
     onClick: _handleSignUp,
-    dataTestId: `${dataTestId}.signUpButton`
+    dataTestId: `${dataTestId}.signUpButton`,
+    tooltip: _signUpTooltip()
   };
 
   const goToLoginButtonProps = {
@@ -120,8 +123,8 @@ const SignUpForm = (props) => {
         <InputBox {...confirmInputProps}  />
       </Form.Section>
       <Form.Actions>
-        <Button {...goToLoginButtonProps} />
         <Button {...signUpButtonProps} />
+        <Button {...goToLoginButtonProps} />
       </Form.Actions>
     </Form>
   );
