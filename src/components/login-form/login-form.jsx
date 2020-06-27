@@ -86,8 +86,8 @@ const LoginForm = (props) => {
         <InputBox {...passwordInputProps} />
       </Form.Section>
       <Form.Actions>
-        <Button {...goToSignUpButtonProps} />
         <Button {...loginButtonProps} />
+        <Button {...goToSignUpButtonProps} />
       </Form.Actions>
     </Form>
   );
