@@ -3,6 +3,7 @@ import { GlobalStyle } from "./common-styles/base";
 import Navbar from "./containers/navbar/navbar";
 import Notification from "./containers/notification/notification";
 import Sidebar from "./containers/sidebar/sidebar";
+import Main from "./containers/main/main";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import store, { history } from "./store/store";
@@ -17,13 +18,13 @@ const CompassApp = () => {
         <Navbar />
         <Sidebar />
         <Notification />
-        <main>
+        <Main>
           <Switch>
             {allRoutes.map((routeProps, index) => (
               <Route key={index} {...routeProps} />
             ))}
           </Switch>
-        </main>
+        </Main>
       </ConnectedRouter>
     </Provider>
   );

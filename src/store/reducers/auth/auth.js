@@ -2,6 +2,7 @@ import {
   TOKEN_REQUEST,
   TOKEN_SUCCESS,
   TOKEN_FAILURE,
+  VALIDATE_FAILURE,
   LOGOUT
 } from "../../types/auth";
 import { parseError } from "../../utils";
@@ -25,6 +26,7 @@ export default function authReducer(state=initialState, action) {
         error: undefined
       };
     case TOKEN_SUCCESS:
+      localStorage.setItem("token", action.response.headers["x-needle-token"]);
       return {
         isLoading: false,
         message: action.response.body.message,
@@ -41,8 +43,14 @@ export default function authReducer(state=initialState, action) {
         error: parseError(action.error)
       };
     case LOGOUT:
+      localStorage.removeItem("token");
       return {
         ...initialState
+      };
+    case VALIDATE_FAILURE: // in the case of validation failure, silently swallow the error...unless a better experience can be found.
+      localStorage.removeItem("token");
+      return {
+        ...state
       };
     default:
       return state;

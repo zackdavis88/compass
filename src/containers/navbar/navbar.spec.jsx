@@ -41,9 +41,23 @@ describe("<Navbar />", () => {
     expect(getByTestId("brandIcon")).toBeDefined();
   });
 
-  it("should render the sidebar toggle button", () => {
+  it("should render the sidebar toggle button if userInfo is present", () => {
     const {getByTestId} = render(<Navbar />, store);
     expect(getByTestId("sidebarBtn")).toBeDefined();
+  });
+
+  it("should not render the sidebar toggle button if userInfo is missing", () => {
+    store = mockStore({
+      sidebar: {
+        isOpen: false
+      },
+      auth: {},
+      user: {
+        isLoading: false
+      }
+    });
+    const {queryByTestId} = render(<Navbar />, store);
+    expect(queryByTestId("sidebarBtn")).toBeNull();
   });
 
   it("should dispatch a redux action to toggle sidebar on SidebarToggleButton click", () => {
