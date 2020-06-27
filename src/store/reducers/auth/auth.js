@@ -48,6 +48,10 @@ export default function authReducer(state=initialState, action) {
         ...initialState
       };
     case VALIDATE_FAILURE: // in the case of validation failure, silently swallow the error...unless a better experience can be found.
+      localStorage.removeItem("token");
+      return {
+        ...state
+      };
     default:
       return state;
   }

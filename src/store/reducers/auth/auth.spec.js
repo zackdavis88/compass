@@ -52,7 +52,7 @@ describe("Auth Reducer / Actions", () => {
     expect(result).toEqual({...expectedInitialState, isLoading: true});
   });
 
-  it("should set message, user, and token data for the TOKEN_SUCCESS action type", () => {
+  it("should set message, user, and token data and create a stored token for the TOKEN_SUCCESS action type", () => {
     const result = authReducer(undefined, {
       type: "TOKEN_SUCCESS",
       response: mockSuccessResponse
@@ -64,6 +64,7 @@ describe("Auth Reducer / Actions", () => {
       token: mockSuccessResponse.headers["x-needle-token"],
       error: undefined
     });
+    expect(localStorage.getItem("token")).toEqual("testToken");
   });
 
   it("should set error data for the TOKEN_FAILURE action type", () => {
@@ -80,9 +81,20 @@ describe("Auth Reducer / Actions", () => {
     });
   });
 
-  it("should reset back to the initial state for the LOGOUT action type", () => {
+  it("should reset state and remove any stored token for the LOGOUT action type", () => {
+    localStorage.setItem("token", "this_token_should_get_wiped");
     const result = authReducer(undefined, {type: "LOGOUT"});
     expect(result).toEqual(expectedInitialState);
+    expect(localStorage.getItem("token")).toBeNull();
+  });
+
+  it("should return the current state and remove any stored token for the VALIDATE_FAILURE action type", () => {
+    localStorage.setItem("token", "this_token_should_get_wiped_part2");
+    const result = authReducer(undefined, {
+      type: "VALIDATE_FAILURE"
+    });
+    expect(result).toEqual(expectedInitialState);
+    expect(localStorage.getItem("token")).toBeNull();
   });
 
   it("should dispatch the LOGOUT action type for the logout action", () => {

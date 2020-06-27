@@ -11,10 +11,8 @@ const Main = (props) => {
 
   const _validateToken = async(token) => {
     const response = await validateToken(token);
-    if(response.error){
-      localStorage.removeItem("token");
+    if(response.error)
       historyPush("/");
-    }
   };
 
   const _redirectAndNotify = () => {
