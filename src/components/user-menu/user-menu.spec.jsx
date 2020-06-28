@@ -1,8 +1,8 @@
 import React from "react";
 import UserMenu from "./user-menu";
 import UserMenuFlyout from "./user-menu-flyout";
-import { render } from "../../test-utils";
-import { fireEvent } from "@testing-library/react";
+import { render, mockStore } from "../../test-utils";
+import { fireEvent, waitFor } from "@testing-library/react";
 import { faKey, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 describe("<UserMenu />", () => {
@@ -58,6 +58,15 @@ describe("<UserMenu />", () => {
     const changePasswordMenuItem = getByText("Change Password");
     fireEvent.click(changePasswordMenuItem);
     expect(props.showChangePasswordModal).toHaveBeenCalledTimes(1);
+  });
+
+  it("should call logout when the logout menu-item is clicked", async() => {
+    const {getByTestId, getByText} = render(<UserMenu {...props} />);
+    const menu = getByTestId(props.dataTestId);
+    fireEvent.click(menu);
+    const signOutMenuItem = getByText("Sign Out");
+    fireEvent.click(signOutMenuItem);
+    expect(props.logout).toHaveBeenCalledTimes(1);
   });
 });
 
