@@ -59,6 +59,15 @@ describe("<UserMenu />", () => {
     fireEvent.click(changePasswordMenuItem);
     expect(props.showChangePasswordModal).toHaveBeenCalledTimes(1);
   });
+
+  it("should call logout when the logout menu-item is clicked", () => {
+    const {getByTestId, getByText} = render(<UserMenu {...props} />);
+    const menu = getByTestId(props.dataTestId);
+    fireEvent.click(menu);
+    const signOutMenuItem = getByText("Sign Out");
+    fireEvent.click(signOutMenuItem);
+    expect(props.logout).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("<UserMenuFlyout />", () => {

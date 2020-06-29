@@ -6,7 +6,7 @@ import { faCompass } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
-import { toggleSidebar } from "../../store/actions/sidebar";
+import { toggleSidebar, closeSidebar } from "../../store/actions/sidebar";
 import { logout } from "../../store/actions/auth";
 import { changePassword } from "../../store/actions/user";
 import { showNotification } from "../../store/actions/notification";
@@ -26,7 +26,10 @@ const Navbar = (props) => {
   const userMenuProps = {
     dataTestId: "userMenu",
     userInfo: props.userInfo,
-    logout: props.logout,
+    logout: () => {
+      props.logout();
+      props.closeSidebar();
+    },
     showChangePasswordModal: () => setShowModal(true)
   };
 
@@ -56,6 +59,7 @@ Navbar.propTypes = {
   changePassword: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
   userRequestInProgress: PropTypes.bool.isRequired,
+  closeSidebar: PropTypes.func.isRequired,
   userInfo: PropTypes.object
 };
 
@@ -67,5 +71,6 @@ export default connect((state) => ({
   toggleSidebar,
   logout,
   changePassword,
-  showNotification
+  showNotification,
+  closeSidebar
 })(Navbar);

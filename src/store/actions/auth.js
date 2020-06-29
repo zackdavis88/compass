@@ -17,9 +17,9 @@ export const authenticate = (username, password) => dispatch => {
   });
 };
 
-export const logout = () => dispatch => {
-  return dispatch({type: LOGOUT});
-};
+export const logout = () => ({
+  type: LOGOUT
+});
 
 export const validateToken = (token) => dispatch => {
   return dispatch({

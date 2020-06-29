@@ -93,4 +93,19 @@ describe("<Navbar />", () => {
     fireEvent.click(menuItem);
     await waitFor(() => expect(getByTestId("changePasswordModal.wrapper")).toBeDefined());
   });
+
+  it("should call logout and closeSidebar redux actions when the Sign Out option is clicked", async() => {
+    const {getByTestId, getByText} = render(<Navbar />, store);
+    const menu = getByTestId("userMenu");
+    fireEvent.click(menu);
+    const menuItem = getByText("Sign Out");
+    fireEvent.click(menuItem);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, {
+      type: "LOGOUT"
+    });
+    expect(store.dispatch).toHaveBeenLastCalledWith({
+      type: "CLOSE_SIDEBAR"
+    });
+  });
 });
