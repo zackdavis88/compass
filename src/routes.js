@@ -1,5 +1,5 @@
 import LoginPage from "./containers/login-page/login-page";
-import NotFoundPage from "./components/not-found-page/not-found-page";
+import NotFoundPage from "./containers/not-found-page/not-found-page";
 
 const routes = [
   {
