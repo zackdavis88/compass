@@ -1,8 +1,8 @@
 import React from "react";
 import UserMenu from "./user-menu";
 import UserMenuFlyout from "./user-menu-flyout";
-import { render, mockStore } from "../../test-utils";
-import { fireEvent, waitFor } from "@testing-library/react";
+import { render } from "../../test-utils";
+import { fireEvent } from "@testing-library/react";
 import { faKey, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 describe("<UserMenu />", () => {
