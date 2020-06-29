@@ -94,7 +94,7 @@ describe("<Navbar />", () => {
     await waitFor(() => expect(getByTestId("changePasswordModal.wrapper")).toBeDefined());
   });
 
-  it("should call logout and closeSidebar methods when the Sign Out option is clicked", async() => {
+  it("should call logout and closeSidebar redux actions when the Sign Out option is clicked", async() => {
     const {getByTestId, getByText} = render(<Navbar />, store);
     const menu = getByTestId("userMenu");
     fireEvent.click(menu);

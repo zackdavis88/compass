@@ -60,7 +60,7 @@ describe("<UserMenu />", () => {
     expect(props.showChangePasswordModal).toHaveBeenCalledTimes(1);
   });
 
-  it("should call logout when the logout menu-item is clicked", async() => {
+  it("should call logout when the logout menu-item is clicked", () => {
     const {getByTestId, getByText} = render(<UserMenu {...props} />);
     const menu = getByTestId(props.dataTestId);
     fireEvent.click(menu);
