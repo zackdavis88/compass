@@ -6,11 +6,13 @@ const routes = [
   {
     path: "/",
     exact: true,
-    component: LoginPage
+    component: LoginPage,
+    name: "Login Page"
   }, {
     path: "/dashboard",
     exact: true,
-    component: Dashboard
+    component: Dashboard,
+    name: "Dashboard"
   }, {
     path: "*",
     exact: false,

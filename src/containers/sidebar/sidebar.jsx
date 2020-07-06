@@ -5,21 +5,36 @@ import {
   SidebarWrapper, 
   SidebarContent, 
   SidebarHeader,
-  SidebarFooter
+  SidebarFooter,
+  NavList,
+  NavItem
 } from "./sidebar.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSitemap } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { push } from "connected-react-router";
+import allRoutes from "../../routes";
+const navLinks = allRoutes.reduce((prev, curr) => curr.name ? prev.concat(curr) : prev, []);
 
-const Sidebar = ({isOpen}) => {
+const Sidebar = ({isOpen, location, historyPush}) => {
+  const _navClick = (linkTo) => {
+    return historyPush(linkTo);
+  };
+
   return (
     <SidebarWrapper isOpen={isOpen}>
       {isOpen && (
         <SidebarContent data-testid="sidebarContent">
           <SidebarHeader data-testid="sidebarHeader">
-            <FontAwesomeIcon icon={faSitemap} size="sm" fixedWidth/> Sidebar Header
+            <FontAwesomeIcon icon={faSitemap} size="sm" fixedWidth/> Navigation
           </SidebarHeader>
-          {/* Content will go here...once I figure out what it is. */}
+          <NavList data-testid="sidebarNavList">
+            {navLinks.map((item, index) => (
+              <NavItem key={index} activeLink={item.path === location.pathname} onClick={() => _navClick(item.path)} data-testid="sidebarNavItem">
+                {item.name}
+              </NavItem>
+            ))}
+          </NavList>
           <SidebarFooter data-testid="sidebarFooter">
             <FontAwesomeIcon icon={faGithub} size="2x" fixedWidth />
             <div>
@@ -34,9 +49,14 @@ const Sidebar = ({isOpen}) => {
 };
 
 Sidebar.propTypes = {
-  isOpen: PropTypes.bool.isRequired
+  isOpen: PropTypes.bool.isRequired,
+  location: PropTypes.object.isRequired,
+  historyPush: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
-  isOpen: state.sidebar.isOpen
-}), {})(Sidebar);
+  isOpen: state.sidebar.isOpen,
+  location: state.router.location
+}), {
+  historyPush: push
+})(Sidebar);
