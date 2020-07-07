@@ -13,8 +13,8 @@ describe("Dashboard Reducer / Actions", () => {
       isLoading: false,
       message: undefined,
       error: undefined,
-      projects: undefined,
-      stories: undefined
+      projects: [],
+      stories: []
     };
     
     mockSuccessResponse = {
@@ -81,8 +81,8 @@ describe("Dashboard Reducer / Actions", () => {
       isLoading: false,
       message: undefined,
       error: mockFailureResponse.response.body.error,
-      projects: undefined,
-      stories: undefined
+      projects: [],
+      stories: []
     });
   });
 

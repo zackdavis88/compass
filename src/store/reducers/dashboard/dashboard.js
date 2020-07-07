@@ -9,19 +9,16 @@ const initialState = {
   isLoading: false,
   message: undefined,
   error: undefined,
-  projects: undefined,
-  stories: undefined
+  projects: [],
+  stories: []
 };
 
 export default function dashboardReducer(state=initialState, action) {
   switch(action.type){
     case DASHBOARD_REQUEST_START:
       return {
-        isLoading: true,
-        message: undefined,
-        error: undefined,
-        projects: undefined,
-        stories: undefined
+        ...state,
+        isLoading: true
       };
     case DASHBOARD_REQUEST_SUCCESS:
       return {
@@ -36,8 +33,8 @@ export default function dashboardReducer(state=initialState, action) {
         isLoading: false,
         message: undefined,
         error: parseError(action.error),
-        projects: undefined,
-        stories: undefined
+        projects: [],
+        stories: []
       };
     default:
       return state;
