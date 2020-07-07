@@ -11,6 +11,10 @@ const Dashboard = (props) => {
             I want to have a dashboard with 2 tabs: My Projects and My Tasks.
             - My Projects will contain all projects that you are a member of.
             - My Tasks will contain all stories that are assigned to you.
+
+          TODO UPDATE:
+            The tab component is implemented below. We now need to fill the Panels with
+            real content from the API...also that API doesnt exist yet. So do that too.
       */}
       <Tabs dataTestId="dashboardTabs">
         <Tabs.TabHeaders>

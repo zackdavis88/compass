@@ -4,13 +4,15 @@ import sidebar from "./sidebar/sidebar";
 import auth from "./auth/auth";
 import user from "./user/user";
 import notification from "./notification/notification";
+import dashboard from "./dashboard/dashboard";
 
 const createRootReducer = (history) => combineReducers({
   router: connectRouter(history),
   sidebar,
   auth,
   user,
-  notification
+  notification,
+  dashboard
 });
 
 export default createRootReducer;
