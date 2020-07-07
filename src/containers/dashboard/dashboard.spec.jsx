@@ -6,7 +6,13 @@ import { fireEvent } from "@testing-library/react";
 describe("<Dashboard />", () => {
   let store;
   beforeEach(() => {
-    store = mockStore({});
+    store = mockStore({
+      dashboard: {
+        isLoading: false,
+        projects: [],
+        stories: []
+      }
+    });
   });
 
   it("should mount the component", () => {

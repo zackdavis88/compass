@@ -3,19 +3,13 @@ import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {DashboardWrapper} from "./dashboard.styles";
 import Tabs from "../../components/tabs/tabs";
+import {getDashboard} from "../../store/actions/dashboard";
 
 const Dashboard = (props) => {
+  // TODO: useEffect for componentDidMount logic. Call the API for dashboard data.
+  // also TODO: create a Loading component to display while awaiting API data.
   return (
     <DashboardWrapper>
-      {/* TODO: IMPLEMENT A GENERIC TAB COMPONENT
-            I want to have a dashboard with 2 tabs: My Projects and My Tasks.
-            - My Projects will contain all projects that you are a member of.
-            - My Tasks will contain all stories that are assigned to you.
-
-          TODO UPDATE:
-            The tab component is implemented below. We now need to fill the Panels with
-            real content from the API...also that API doesnt exist yet. So do that too.
-      */}
       <Tabs dataTestId="dashboardTabs">
         <Tabs.TabHeaders>
           <Tabs.Header>My Projects</Tabs.Header>
@@ -31,11 +25,16 @@ const Dashboard = (props) => {
 };
 
 Dashboard.propTypes = {
-
+  isLoading: PropTypes.bool.isRequired,
+  projects: PropTypes.array.isRequired,
+  stories: PropTypes.array.isRequired,
+  getDashboard: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
-
+  isLoading: state.dashboard.isLoading,
+  projects: state.dashboard.projects,
+  stories: state.dashboard.stories
 }), {
-
+  getDashboard
 })(Dashboard);
