@@ -14,7 +14,7 @@ const Tabs = ({dataTestId, children}) => {
     <TabsWrapper data-testid={dataTestId}>
       {children && Array.isArray(children) && children.reduce((prev, curr, index) => {
         if(curr.type === TabHeaders)
-          return prev.concat(cloneElement(curr, {key: index, dataTestId, setActiveTab}));
+          return prev.concat(cloneElement(curr, {key: index, dataTestId, setActiveTab, activeTab}));
         
         if(curr.type === TabPanels)
           return prev.concat(cloneElement(curr, {key: index, dataTestId, activeTab}));
@@ -25,14 +25,14 @@ const Tabs = ({dataTestId, children}) => {
   );
 };
 
-const TabHeaders = ({dataTestId, setActiveTab, children}) => {
+const TabHeaders = ({dataTestId, setActiveTab, children, activeTab}) => {
   const _renderTabHeaders = () => {
     if(children && !Array.isArray(children))
-      return cloneElement(children, {dataTestId, setActiveTab: () => setActiveTab(0)});
+      return cloneElement(children, {dataTestId, setActiveTab: () => setActiveTab(0), tabIsActive});
 
     if(children && Array.isArray(children))
       return children.reduce((prev, curr, index) => curr.type === TabHeader ? prev.concat(
-        cloneElement(curr, {key: index, dataTestId, setActiveTab: () => setActiveTab(index)})
+        cloneElement(curr, {key: index, dataTestId, setActiveTab: () => setActiveTab(index), tabIsActive: index === activeTab})
       ) : prev, []);
     return children;
   };
@@ -44,9 +44,9 @@ const TabHeaders = ({dataTestId, setActiveTab, children}) => {
   );
 };
 
-const TabHeader = ({dataTestId, setActiveTab, children}) => {
+const TabHeader = ({dataTestId, setActiveTab, children, tabIsActive}) => {
   return (
-    <HeaderWrapper data-testid={`${dataTestId}.tabHeader`} onClick={setActiveTab}>
+    <HeaderWrapper data-testid={`${dataTestId}.tabHeader`} onClick={setActiveTab} isActive={tabIsActive}>
       {children}
     </HeaderWrapper>
   );
@@ -75,6 +75,10 @@ const TabPanel = ({dataTestId, children}) => {
       {children}
     </PanelWrapper>
   );
+};
+
+Tabs.propTypes = {
+  dataTestId: PropTypes.string
 };
 
 Tabs.TabHeaders = TabHeaders;
