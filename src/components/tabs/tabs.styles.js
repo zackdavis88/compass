@@ -11,12 +11,12 @@ export const TabsWrapper = styled.div`
 `;
 
 export const TabHeadersWrapper = styled.div`
-  border-bottom: 2px solid ${black80};
+  border-bottom: 1px solid ${black80};
 `;
 
 export const HeaderWrapper = styled.div`
   display: inline-block;
-  font-size: 18px;
+  font-size: 20px;
   color: ${black};
   margin-left: 10px;
   margin-right: 10px;

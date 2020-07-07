@@ -27,8 +27,8 @@ const Tabs = ({dataTestId, children}) => {
 
 const TabHeaders = ({dataTestId, setActiveTab, children, activeTab}) => {
   const _renderTabHeaders = () => {
-    if(children && !Array.isArray(children))
-      return cloneElement(children, {dataTestId, setActiveTab: () => setActiveTab(0), tabIsActive});
+    if(children && !Array.isArray(children) && children.type === TabHeader)
+      return cloneElement(children, {dataTestId, setActiveTab: () => setActiveTab(0), tabIsActive: activeTab});
 
     if(children && Array.isArray(children))
       return children.reduce((prev, curr, index) => curr.type === TabHeader ? prev.concat(
@@ -54,10 +54,10 @@ const TabHeader = ({dataTestId, setActiveTab, children, tabIsActive}) => {
 
 const TabPanels = ({dataTestId, activeTab, children}) => {
   const _renderTabPanel = () => {
-    if(children && !Array.isArray(children))
+    if(children && !Array.isArray(children) && children.type === TabPanel)
       return cloneElement(children, {dataTestId});
 
-    if(children && Array.isArray(children))
+    if(children && Array.isArray(children) && children[activeTab] && children[activeTab].type === TabPanel)
       return cloneElement(children[activeTab], {dataTestId});
 
     return undefined;
