@@ -13,4 +13,11 @@ describe("<Dashboard />", () => {
     const component = render(<Dashboard />, store);
     expect(component).toBeDefined();
   });
+
+  it("should render the tabs component", () => {
+    const {getByTestId, getByText} = render(<Dashboard />, store);
+    expect(getByTestId("dashboardTabs")).toBeDefined();
+    expect(getByText("My Projects")).toBeDefined();
+    expect(getByText("My Tasks")).toBeDefined();
+  });
 });
