@@ -2,7 +2,6 @@ import styled, {css} from "styled-components";
 import {
   black,
   black80,
-  black99,
   tertiaryBlue26,
   secondaryBlue1a
 } from "../../common-styles/variables";
@@ -29,7 +28,7 @@ export const HeaderWrapper = styled.div`
   cursor: pointer;
   padding-left: 10px;
   padding-right: 10px;
-  transition: border-color 150ms linear;
+  transition: background-color 150ms linear;
 
   &:hover {
     background-color: ${secondaryBlue1a}
