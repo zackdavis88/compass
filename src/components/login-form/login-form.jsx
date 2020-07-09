@@ -28,7 +28,7 @@ const LoginForm = (props) => {
     setLoginError("");
     const response = await authenticate(usernameInput, passwordInput);
     if(response.error)
-      return;
+      return setLoginError(response.error);
     
     props.goToDashboard();
   };
@@ -76,9 +76,6 @@ const LoginForm = (props) => {
   return (
     <Form data-testid={dataTestId}>
       <Form.Error hasError={!!loginError}>
-        <CloseButton onClick={() => setLoginError("")}>
-          <FontAwesomeIcon icon={faTimes} size="xs" fixedWidth/>
-        </CloseButton>
         {loginError}
       </Form.Error>
       <Form.Section>

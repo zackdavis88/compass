@@ -55,8 +55,7 @@ Main.propTypes = {
 
 export default connect((state) => ({
   location: state.router.location,
-  authToken: state.auth.token,
-  debug: state.auth
+  authToken: state.auth.token
 }), {
   historyPush: push,
   showNotification,
