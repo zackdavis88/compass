@@ -19,11 +19,8 @@ export default function authReducer(state=initialState, action) {
   switch(action.type){
     case TOKEN_REQUEST:
       return {
-        isLoading: true,
-        message: undefined,
-        token: undefined,
-        user: undefined,
-        error: undefined
+        ...state,
+        isLoading: true
       };
     case TOKEN_SUCCESS:
       localStorage.setItem("token", action.response.headers["x-needle-token"]);
@@ -36,10 +33,8 @@ export default function authReducer(state=initialState, action) {
       };
     case TOKEN_FAILURE:
       return {
+        ...state,
         isLoading: false,
-        message: undefined,
-        user: undefined,
-        token: undefined,
         error: parseError(action.error)
       };
     case LOGOUT:
@@ -50,7 +45,8 @@ export default function authReducer(state=initialState, action) {
     case VALIDATE_FAILURE: // in the case of validation failure, silently swallow the error...unless a better experience can be found.
       localStorage.removeItem("token");
       return {
-        ...state
+        ...state,
+        isLoading: false
       };
     default:
       return state;

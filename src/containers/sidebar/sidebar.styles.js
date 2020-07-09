@@ -89,7 +89,7 @@ export const SidebarFooter = styled.div`
   }
 `;
 
-export const SidebarNavList = styled.ul`
+export const NavList = styled.ul`
   position: relative;
   margin: 0;
   padding: 0;

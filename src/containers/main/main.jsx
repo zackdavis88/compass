@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { MainWrapper } from "./main.styles";
@@ -7,17 +7,20 @@ import { showNotification } from "../../store/actions/notification";
 import { validateToken } from "../../store/actions/auth";
 
 const Main = (props) => {
+  const [renderContent, setRenderContent] = useState(false);
   const {location, authToken, historyPush, showNotification, validateToken} = props;
 
   const _validateToken = async(token) => {
     const response = await validateToken(token);
     if(response.error)
       historyPush("/");
+    setRenderContent(true);
   };
 
   const _redirectAndNotify = () => {
     historyPush("/");
     showNotification("please login to access the application", "info", true);
+    setRenderContent(true);
   };
 
   useEffect(() => {
@@ -30,12 +33,14 @@ const Main = (props) => {
     // otherwise, if we have no auth token but do have a storedToken, validate it to auto-login the user.
     else if(!authToken && storedToken)
       _validateToken(storedToken);
+    else
+      setRenderContent(true);
       
   }, [location.pathname, authToken]);
 
   return (
     <MainWrapper>
-      {props.children}
+      {renderContent && props.children}
     </MainWrapper>
   );
 };
