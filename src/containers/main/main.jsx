@@ -33,6 +33,8 @@ const Main = (props) => {
     // otherwise, if we have no auth token but do have a storedToken, validate it to auto-login the user.
     else if(!authToken && storedToken)
       _validateToken(storedToken);
+    else
+      setRenderContent(true);
       
   }, [location.pathname, authToken]);
 
@@ -53,7 +55,8 @@ Main.propTypes = {
 
 export default connect((state) => ({
   location: state.router.location,
-  authToken: state.auth.token
+  authToken: state.auth.token,
+  debug: state.auth
 }), {
   historyPush: push,
   showNotification,
