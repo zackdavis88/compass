@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {DashboardWrapper} from "./dashboard.styles";
@@ -7,7 +7,9 @@ import {getDashboard} from "../../store/actions/dashboard";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 
 const Dashboard = (props) => {
-  // TODO: useEffect for componentDidMount logic. Call the API for dashboard data.
+  useEffect(() => {
+    props.getDashboard();
+  }, []);
   const {isLoading, userInfo} = props;
   return (
     <DashboardWrapper>
