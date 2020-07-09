@@ -11,6 +11,11 @@ describe("<Dashboard />", () => {
         isLoading: false,
         projects: [],
         stories: []
+      },
+      auth: {
+        user: {
+          displayName: "unitTestUser"
+        }
       }
     });
   });
@@ -18,6 +23,24 @@ describe("<Dashboard />", () => {
   it("should mount the component", () => {
     const component = render(<Dashboard />, store);
     expect(component).toBeDefined();
+  });
+
+  it("should render the loading spinner when awaiting API data", () => {
+    store = mockStore({
+      dashboard: {
+        isLoading: true,
+        stories: [],
+        projects: []
+      },
+      auth: {
+        user: {
+          displayName: "unitTestUser"
+        }
+      }
+    });
+    const {getByTestId, getByText} = render(<Dashboard />, store);
+    expect(getByTestId("dashboardLoader")).toBeDefined();
+    expect(getByText("Loading Dashboard for unitTestUser")).toBeDefined();
   });
 
   it("should render the tabs component", () => {
