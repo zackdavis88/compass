@@ -11,10 +11,10 @@ import {
 
 export const RadioCircle = styled.span`
   position: absolute;
-  top: 0;
+  top: 3px;
   left: 0;
-  height: 25px;
-  width: 25px;
+  height: 20px;
+  width: 20px;
   background-color: ${black1a};
   border-radius: 50%;
   transition: background-color 100ms linear;
@@ -29,9 +29,9 @@ export const RadioCircle = styled.span`
 export const RadioContainer = styled.label`
   display: block;
   position: relative;
-  padding-left: 35px;
+  padding-left: 25px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
   user-select: none;
 
   & input {
@@ -53,10 +53,10 @@ export const RadioContainer = styled.label`
   }
 
   & ${RadioCircle}:after {
-    top: 9px;
-    left: 9px;
-    width: 8px;
-    height: 8px;
+    top: 7px;
+    left: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background-color: ${white};
   }
