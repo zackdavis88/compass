@@ -1,7 +1,7 @@
 import React from "react";
 import Dashboard from "./dashboard";
 import { render, mockStore } from "../../test-utils";
-import {waitFor} from "@testing-library/react";
+import {waitFor, fireEvent, getByTestId} from "@testing-library/react";
 
 describe("<Dashboard />", () => {
   let store;
@@ -16,6 +16,9 @@ describe("<Dashboard />", () => {
         user: {
           displayName: "unitTestUser"
         }
+      },
+      project: {
+        isLoading: false
       }
     });
   });
@@ -42,6 +45,9 @@ describe("<Dashboard />", () => {
         user: {
           displayName: "unitTestUser"
         }
+      },
+      project: {
+        isLoading: false
       }
     });
     const {getByTestId, getByText} = render(<Dashboard />, store);
@@ -62,5 +68,14 @@ describe("<Dashboard />", () => {
     expect(getByTestId("dashboardTabs")).toBeDefined();
     expect(getByText("My Projects")).toBeDefined();
     expect(getByText("My Stories")).toBeDefined();
+  });
+
+  it("should render the NewProjectModal when the new project button is clicked", () => {
+    const {queryByTestId} = render(<Dashboard />, store);
+    const newProjectButton = queryByTestId("dashboardNewProject");
+    expect(newProjectButton).toBeDefined();
+    expect(queryByTestId("newProjectModal.wrapper")).toBeNull();
+    fireEvent.click(newProjectButton);
+    expect(queryByTestId("newProjectModal.wrapper")).toBeDefined();
   });
 });
