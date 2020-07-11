@@ -10,6 +10,7 @@ describe("<LoginForm />", () => {
       dataTestId: "unitTestForm",
       authInProgress: false,
       authError: undefined,
+      clearError: jest.fn(),
       showSignUpForm: jest.fn(),
       authenticate: jest.fn().mockReturnValue({
         message: "mock auth success",
@@ -104,6 +105,8 @@ describe("<LoginForm />", () => {
     });
     fireEvent.click(button);
     await waitFor(() => expect(props.goToDashboard).toHaveBeenCalled());
+    // props.clearError should be called at the start of each authentication. check that.
+    expect(props.clearError).toHaveBeenCalled();
   });
 
   it("should not redirect the user if authentication fails", async () => {
@@ -149,5 +152,37 @@ describe("<LoginForm />", () => {
     expect(loginButton).toBeDisabled();
     fireEvent.mouseOver(loginButton);
     expect(getByText("authentication in progress")).toBeDefined();
+  });
+
+  it("should call the clearError method if an error is present when updating username input", () => {
+    props.authError = "something went wrong";
+    const {getByTestId} = render(<LoginForm {...props} />);
+    const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    expect(props.clearError).toHaveBeenCalled();
+  });
+
+  it("should call the clearError method if an error is present when updating password input", () => {
+    props.authError = "something went wrong";
+    const {getByTestId} = render(<LoginForm {...props} />);
+    const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "some password"
+      }
+    });
+    expect(props.clearError).toHaveBeenCalled();
+  });
+
+  it("should call the clearError method if an error is present when clicking the sign up button", () => {
+    props.authError = "something went wrong, its horrible! send help!!";
+    const {getByTestId} = render(<LoginForm {...props} />);
+    const goToSignUpButton = getByTestId(`${props.dataTestId}.goToSignUpButton`);
+    fireEvent.click(goToSignUpButton);
+    expect(props.clearError).toHaveBeenCalled();
   });
 });

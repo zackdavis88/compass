@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PageHeader from "../../components/page-header/page-header";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { LoginPageWrapper } from "./login-page.styles";
-import { authenticate } from "../../store/actions/auth";
+import { authenticate, clearError } from "../../store/actions/auth";
 import { createUser } from "../../store/actions/user";
 import { showNotification } from "../../store/actions/notification";
 import LoginForm from "../../components/login-form/login-form";
@@ -23,6 +23,7 @@ const LoginPage = (props) => {
           authInProgress={props.authInProgress}
           authenticate={props.authenticate}
           authError={props.authError}
+          clearError={props.clearError}
           showSignUpForm={() => setShowSignUpForm(true)}
           goToDashboard={() => props.historyPush("/dashboard")}
         />
@@ -47,6 +48,7 @@ LoginPage.propTypes = {
   signUp: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
   historyPush: PropTypes.func.isRequired,
+  clearError: PropTypes.func.isRequired,
   authError: PropTypes.string,
   userError: PropTypes.string
 };
@@ -60,5 +62,6 @@ export default connect((state) => ({
   authenticate,
   signUp: createUser,
   showNotification,
-  historyPush: push
+  historyPush: push,
+  clearError
 })(LoginPage);

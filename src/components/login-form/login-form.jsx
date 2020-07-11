@@ -1,21 +1,14 @@
 import React, {useState, useEffect} from "react";
 import PropTypes from "prop-types";
-import { faSignInAlt, faUserPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Form, CloseButton } from "../../common-styles/form";
+import { faSignInAlt, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { Form } from "../../common-styles/form";
 import InputBox from "../../components/input-box/input-box";
 import Button from "../../components/button/button";
 
 const LoginForm = (props) => {
-  const {dataTestId, authenticate, authInProgress, authError, showSignUpForm} = props;
+  const {dataTestId, authenticate, authInProgress, authError, clearError, showSignUpForm} = props;
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
-  const [loginError, setLoginError] = useState("");
-
-  useEffect(() => {
-    if(loginError !== authError)
-      setLoginError(authError);
-  }, [authError]);
 
   const _loginDisabled = () => ((!usernameInput || !passwordInput) || authInProgress);
   
@@ -25,10 +18,10 @@ const LoginForm = (props) => {
   const _loginTooltip = () => _loginDisabled() ? authInProgress ? "authentication in progress" : "missing required fields" : "";
   
   const _handleLogin = async () => {
-    setLoginError("");
+    clearError();
     const response = await authenticate(usernameInput, passwordInput);
     if(response.error)
-      return setLoginError(response.error);
+      return;
     
     props.goToDashboard();
   };
@@ -40,7 +33,12 @@ const LoginForm = (props) => {
     placeholder: "Enter your username",
     value: usernameInput,
     isRequired: true,
-    onChange: (value) => setUsernameInput(value)
+    onChange: (value) => {
+      if(authError){
+        clearError();
+      }
+      setUsernameInput(value);
+    }
   };
 
   const passwordInputProps = {
@@ -51,7 +49,12 @@ const LoginForm = (props) => {
     placeholder: "Enter your Password",
     value: passwordInput,
     isRequired: true,
-    onChange: (value) => setPasswordInput(value)
+    onChange: (value) => {
+      if(authError){
+        clearError();
+      }
+      setPasswordInput(value);
+    }
   };
 
   const loginButtonProps = {
@@ -69,14 +72,19 @@ const LoginForm = (props) => {
     disabled: false,
     startIcon: faUserPlus,
     label: "Sign Up",
-    onClick: () => showSignUpForm(),
-    dataTestId: `${dataTestId}.goToSignUpButton`
+    dataTestId: `${dataTestId}.goToSignUpButton`,
+    onClick: () => {
+      if(authError){
+        clearError();
+      }
+      showSignUpForm();
+    }
   };
 
   return (
     <Form data-testid={dataTestId}>
-      <Form.Error hasError={!!loginError}>
-        {loginError}
+      <Form.Error hasError={!!authError}>
+        {authError}
       </Form.Error>
       <Form.Section>
         <InputBox {...usernameInputProps} />
@@ -95,6 +103,7 @@ LoginForm.propTypes = {
   authenticate: PropTypes.func.isRequired,
   showSignUpForm: PropTypes.func.isRequired,
   goToDashboard: PropTypes.func.isRequired,
+  clearError: PropTypes.func.isRequired,
   authError: PropTypes.string,
   dataTestId: PropTypes.string
 };
