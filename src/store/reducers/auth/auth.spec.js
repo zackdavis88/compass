@@ -1,5 +1,5 @@
 import authReducer from "./auth";
-import {authenticate, logout, validateToken} from "../../actions/auth";
+import {authenticate, logout, validateToken, clearError} from "../../actions/auth";
 import {mockStore} from "../../../test-utils";
 import { waitFor } from "@testing-library/react";
 
@@ -97,11 +97,25 @@ describe("Auth Reducer / Actions", () => {
     expect(localStorage.getItem("token")).toBeNull();
   });
 
+  it("should return the current state and remove any stored error for the CLEAR_ERROR action type", () => {
+    const result = authReducer({...expectedInitialState, error: "something went wrong"}, {
+      type: "CLEAR_ERROR"
+    });
+    expect(result).toEqual(expectedInitialState);
+  });
+
   it("should dispatch the LOGOUT action type for the logout action", () => {
     store.dispatch(logout());
     expect(store.getActions()).toHaveLength(1);
     const action = store.getActions()[0];
     expect(action.type).toEqual("LOGOUT");
+  });
+
+  it("should dispatch the CLEAR_ERROR action type for the clearError action", () => {
+    store.dispatch(clearError());
+    expect(store.getActions()).toHaveLength(1);
+    const action = store.getActions()[0];
+    expect(action.type).toEqual("CLEAR_ERROR");
   });
 
   it("should dispatch a redux API call to authenticate user credentials", async () => {

@@ -3,3 +3,4 @@ export const TOKEN_SUCCESS = "TOKEN_SUCCESS";
 export const TOKEN_FAILURE = "TOKEN_FAILURE";
 export const VALIDATE_FAILURE = "VALIDATE_FAILURE";
 export const LOGOUT = "LOGOUT";
+export const CLEAR_ERROR = "CLEAR_ERROR";

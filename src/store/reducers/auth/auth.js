@@ -3,7 +3,8 @@ import {
   TOKEN_SUCCESS,
   TOKEN_FAILURE,
   VALIDATE_FAILURE,
-  LOGOUT
+  LOGOUT,
+  CLEAR_ERROR
 } from "../../types/auth";
 import { parseError } from "../../utils";
 
@@ -47,6 +48,11 @@ export default function authReducer(state=initialState, action) {
       return {
         ...state,
         isLoading: false
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        error: undefined
       };
     default:
       return state;
