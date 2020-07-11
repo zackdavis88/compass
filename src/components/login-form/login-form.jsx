@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 import { faSignInAlt, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { Form } from "../../common-styles/form";

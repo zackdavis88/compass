@@ -1,7 +1,7 @@
 import React from "react";
 import Dashboard from "./dashboard";
 import { render, mockStore } from "../../test-utils";
-import {waitFor, fireEvent, getByTestId} from "@testing-library/react";
+import {waitFor, fireEvent} from "@testing-library/react";
 
 describe("<Dashboard />", () => {
   let store;
