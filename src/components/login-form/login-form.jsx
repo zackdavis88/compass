@@ -6,9 +6,10 @@ import InputBox from "../../components/input-box/input-box";
 import Button from "../../components/button/button";
 
 const LoginForm = (props) => {
-  const {dataTestId, authenticate, authInProgress, authError, clearError, showSignUpForm} = props;
+  const {dataTestId, authenticate, authInProgress, showSignUpForm} = props;
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+  const [formError, setFormError] = useState("");
 
   const _loginDisabled = () => ((!usernameInput || !passwordInput) || authInProgress);
   
@@ -18,10 +19,10 @@ const LoginForm = (props) => {
   const _loginTooltip = () => _loginDisabled() ? authInProgress ? "authentication in progress" : "missing required fields" : "";
   
   const _handleLogin = async () => {
-    clearError();
+    setFormError("");
     const response = await authenticate(usernameInput, passwordInput);
     if(response.error)
-      return;
+      return setFormError(response.error);
     
     props.goToDashboard();
   };
@@ -34,9 +35,9 @@ const LoginForm = (props) => {
     value: usernameInput,
     isRequired: true,
     onChange: (value) => {
-      if(authError){
-        clearError();
-      }
+      if(formError)
+        setFormError("");
+      
       setUsernameInput(value);
     }
   };
@@ -50,9 +51,9 @@ const LoginForm = (props) => {
     value: passwordInput,
     isRequired: true,
     onChange: (value) => {
-      if(authError){
-        clearError();
-      }
+      if(formError)
+        setFormError("");
+      
       setPasswordInput(value);
     }
   };
@@ -73,18 +74,13 @@ const LoginForm = (props) => {
     startIcon: faUserPlus,
     label: "Sign Up",
     dataTestId: `${dataTestId}.goToSignUpButton`,
-    onClick: () => {
-      if(authError){
-        clearError();
-      }
-      showSignUpForm();
-    }
+    onClick: () => showSignUpForm()
   };
 
   return (
     <Form data-testid={dataTestId}>
-      <Form.Error hasError={!!authError}>
-        {authError}
+      <Form.Error hasError={!!formError}>
+        {formError}
       </Form.Error>
       <Form.Section>
         <InputBox {...usernameInputProps} />
@@ -103,8 +99,6 @@ LoginForm.propTypes = {
   authenticate: PropTypes.func.isRequired,
   showSignUpForm: PropTypes.func.isRequired,
   goToDashboard: PropTypes.func.isRequired,
-  clearError: PropTypes.func.isRequired,
-  authError: PropTypes.string,
   dataTestId: PropTypes.string
 };
 

@@ -30,7 +30,8 @@ const Dashboard = (props) => {
     <DashboardWrapper>
       {isLoading ? (
         <LoadingSpinner alignCenter dataTestId="dashboardLoader" message={`Loading Dashboard for ${userInfo.displayName}`}/>
-      ) : (
+      ) : 
+      (
         <Fragment>
           <DashboardActionButtons>
             <Button
@@ -81,7 +82,8 @@ Dashboard.propTypes = {
   stories: PropTypes.array.isRequired,
   getDashboard: PropTypes.func.isRequired,
   projectCreateInProgress: PropTypes.bool.isRequired,
-  createProject: PropTypes.func.isRequired
+  createProject: PropTypes.func.isRequired,
+  showNotification: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({

@@ -4,8 +4,7 @@ import {
   TOKEN_SUCCESS,
   TOKEN_FAILURE,
   VALIDATE_FAILURE,
-  LOGOUT,
-  CLEAR_ERROR
+  LOGOUT
 } from "../types/auth";
 
 // Get Auth Token
@@ -30,7 +29,3 @@ export const validateToken = (token) => dispatch => {
               .set("x-needle-token", token)
   });
 };
-
-export const clearError = () => ({
-  type: CLEAR_ERROR
-});

@@ -3,17 +3,14 @@ import {
   TOKEN_SUCCESS,
   TOKEN_FAILURE,
   VALIDATE_FAILURE,
-  LOGOUT,
-  CLEAR_ERROR
+  LOGOUT
 } from "../../types/auth";
-import { parseError } from "../../utils";
 
 const initialState = {
   isLoading: false,
   message: undefined,
   token: undefined,
-  user: undefined,
-  error: undefined
+  user: undefined
 };
 
 export default function authReducer(state=initialState, action) {
@@ -29,14 +26,12 @@ export default function authReducer(state=initialState, action) {
         isLoading: false,
         message: action.response.body.message,
         user: action.response.body.user,
-        token: action.response.headers["x-needle-token"],
-        error: undefined
+        token: action.response.headers["x-needle-token"]
       };
     case TOKEN_FAILURE:
       return {
         ...state,
-        isLoading: false,
-        error: parseError(action.error)
+        isLoading: false
       };
     case LOGOUT:
       localStorage.removeItem("token");
@@ -48,11 +43,6 @@ export default function authReducer(state=initialState, action) {
       return {
         ...state,
         isLoading: false
-      };
-    case CLEAR_ERROR:
-      return {
-        ...state,
-        error: undefined
       };
     default:
       return state;

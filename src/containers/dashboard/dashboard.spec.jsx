@@ -29,7 +29,8 @@ describe("<Dashboard />", () => {
   });
 
   it("should call props.getDashboard on component mount", async() => {
-    render(<Dashboard />, store);
+    const props = {getDashboard: jest.fn()};
+    render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.getActions()).toHaveLength(2));
     expect(store.getActions()[0]).toEqual({type: "DASHBOARD_REQUEST_START"});
   });

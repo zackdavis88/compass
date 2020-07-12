@@ -28,7 +28,7 @@ describe("<LoginPage />", () => {
     expect(getByTestId("pageHeaderIcon")).toBeDefined();
   });
 
-  it("should render the login form", () => {
+  it("should render the login form by default", () => {
     const { getByTestId } = render(<LoginPage />, store);
     expect(getByTestId("loginForm")).toBeDefined();
   });

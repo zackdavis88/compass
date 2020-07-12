@@ -1,5 +1,5 @@
 import authReducer from "./auth";
-import {authenticate, logout, validateToken, clearError} from "../../actions/auth";
+import {authenticate, logout, validateToken} from "../../actions/auth";
 import {mockStore} from "../../../test-utils";
 import { waitFor } from "@testing-library/react";
 
@@ -13,8 +13,7 @@ describe("Auth Reducer / Actions", () => {
       isLoading: false,
       message: undefined,
       token: undefined,
-      user: undefined,
-      error: undefined
+      user: undefined
     };
     
     mockSuccessResponse = {
@@ -61,23 +60,19 @@ describe("Auth Reducer / Actions", () => {
       isLoading: false,
       message: mockSuccessResponse.body.message,
       user: mockSuccessResponse.body.user,
-      token: mockSuccessResponse.headers["x-needle-token"],
-      error: undefined
+      token: mockSuccessResponse.headers["x-needle-token"]
     });
     expect(localStorage.getItem("token")).toEqual("testToken");
   });
 
-  it("should set error data for the TOKEN_FAILURE action type", () => {
+  it("should set isLoading to false for the TOKEN_FAILURE action type", () => {
     const result = authReducer(undefined, {
       type: "TOKEN_FAILURE",
       error: mockFailureResponse
     });
     expect(result).toEqual({
-      isLoading: false,
-      message: undefined,
-      user: undefined,
-      token: undefined,
-      error: mockFailureResponse.response.body.error
+      ...expectedInitialState,
+      isLoading: false
     });
   });
 
@@ -97,25 +92,11 @@ describe("Auth Reducer / Actions", () => {
     expect(localStorage.getItem("token")).toBeNull();
   });
 
-  it("should return the current state and remove any stored error for the CLEAR_ERROR action type", () => {
-    const result = authReducer({...expectedInitialState, error: "something went wrong"}, {
-      type: "CLEAR_ERROR"
-    });
-    expect(result).toEqual(expectedInitialState);
-  });
-
   it("should dispatch the LOGOUT action type for the logout action", () => {
     store.dispatch(logout());
     expect(store.getActions()).toHaveLength(1);
     const action = store.getActions()[0];
     expect(action.type).toEqual("LOGOUT");
-  });
-
-  it("should dispatch the CLEAR_ERROR action type for the clearError action", () => {
-    store.dispatch(clearError());
-    expect(store.getActions()).toHaveLength(1);
-    const action = store.getActions()[0];
-    expect(action.type).toEqual("CLEAR_ERROR");
   });
 
   it("should dispatch a redux API call to authenticate user credentials", async () => {

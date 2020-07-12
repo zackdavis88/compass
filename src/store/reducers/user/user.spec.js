@@ -12,8 +12,7 @@ describe("User Reducer / Actions", () => {
     expectedInitialState = {
       isLoading: false,
       message: undefined,
-      user: undefined,
-      error: undefined
+      user: undefined
     };
     
     mockSuccessResponse = {
@@ -57,8 +56,7 @@ describe("User Reducer / Actions", () => {
     expect(result).toEqual({
       isLoading: false,
       message: mockSuccessResponse.body.message,
-      user: mockSuccessResponse.body.user,
-      error: undefined
+      user: mockSuccessResponse.body.user
     });
   });
 
@@ -68,10 +66,8 @@ describe("User Reducer / Actions", () => {
       error: mockFailureResponse
     });
     expect(result).toEqual({
-      isLoading: false,
-      message: undefined,
-      user: undefined,
-      error: mockFailureResponse.response.body.error
+      ...expectedInitialState,
+      isLoading: false
     });
   });
 
