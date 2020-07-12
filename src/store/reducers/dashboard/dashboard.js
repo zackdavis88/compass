@@ -3,12 +3,10 @@ import {
   DASHBOARD_REQUEST_SUCCESS,
   DASHBOARD_REQUEST_FAILURE
 } from "../../types/dashboard";
-import { parseError } from "../../utils";
 
 const initialState = {
   isLoading: false,
   message: undefined,
-  error: undefined,
   projects: [],
   stories: []
 };
@@ -24,17 +22,13 @@ export default function dashboardReducer(state=initialState, action) {
       return {
         isLoading: false,
         message: action.response.body.message,
-        error: undefined,
         projects: action.response.body.projects,
         stories: action.response.body.stories
       };
     case DASHBOARD_REQUEST_FAILURE:
       return {
-        isLoading: false,
-        message: undefined,
-        error: parseError(action.error),
-        projects: [],
-        stories: []
+        ...state,
+        isLoading: false
       };
     default:
       return state;

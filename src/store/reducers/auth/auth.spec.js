@@ -13,8 +13,7 @@ describe("Auth Reducer / Actions", () => {
       isLoading: false,
       message: undefined,
       token: undefined,
-      user: undefined,
-      error: undefined
+      user: undefined
     };
     
     mockSuccessResponse = {
@@ -61,23 +60,19 @@ describe("Auth Reducer / Actions", () => {
       isLoading: false,
       message: mockSuccessResponse.body.message,
       user: mockSuccessResponse.body.user,
-      token: mockSuccessResponse.headers["x-needle-token"],
-      error: undefined
+      token: mockSuccessResponse.headers["x-needle-token"]
     });
     expect(localStorage.getItem("token")).toEqual("testToken");
   });
 
-  it("should set error data for the TOKEN_FAILURE action type", () => {
+  it("should set isLoading to false for the TOKEN_FAILURE action type", () => {
     const result = authReducer(undefined, {
       type: "TOKEN_FAILURE",
       error: mockFailureResponse
     });
     expect(result).toEqual({
-      isLoading: false,
-      message: undefined,
-      user: undefined,
-      token: undefined,
-      error: mockFailureResponse.response.body.error
+      ...expectedInitialState,
+      isLoading: false
     });
   });
 

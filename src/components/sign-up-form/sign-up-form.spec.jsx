@@ -9,7 +9,6 @@ describe("<SignUpForm />", () => {
     props = {
       dataTestId: "unitTestSignUpForm",
       signUpInProgress: false,
-      userError: undefined,
       showLoginForm: jest.fn(),
       signUp: jest.fn().mockReturnValue({
         message: "mock test message",
@@ -202,5 +201,32 @@ describe("<SignUpForm />", () => {
     expect(signUpButton).toBeDisabled();
     fireEvent.mouseOver(signUpButton);
     expect(getByText("authentication in progress")).toBeDefined();
+  });
+
+  it("should render an error if the API returns an error", async() => {
+    const errMsg = "some error happened, there were no survivors.";
+    props.signUp.mockReturnValueOnce({error: errMsg});
+    const {getByTestId, getByText} = render(<SignUpForm {...props} />);
+    const button = getByTestId(`${props.dataTestId}.signUpButton`);
+    const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
+    const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
+    const confirmInput = getByTestId(`${props.dataTestId}.confirmInput.input`);
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "testUser"
+      }
+    });
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.change(confirmInput, {
+      target: {
+        value: "Password1"
+      }
+    });
+    fireEvent.click(button);
+    await waitFor(() => expect(getByText(errMsg)).toBeDefined());
   });
 });

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 import { faArrowLeft, faUserPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,7 +7,7 @@ import InputBox from "../../components/input-box/input-box";
 import Button from "../../components/button/button";
 
 const SignUpForm = (props) => {
-  const {signUpInProgress, userError, dataTestId, showLoginForm, signUp} = props;
+  const {signUpInProgress, dataTestId, showLoginForm, signUp} = props;
   const [usernameInput, setUsernameInput] = useState("");
   const [usernameInputError, setUsernameInputError] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -16,18 +16,18 @@ const SignUpForm = (props) => {
   const [confirmInputError, setConfirmInputError] = useState("");
   const [signUpError, setSignUpError] = useState("");
 
-  useEffect(() => {
-    if(userError && userError.includes("username"))
-      setUsernameInputError(userError);
-    else if(userError && userError.includes("password"))
-      setPasswordInputError(userError);
-    else if(userError)
-      setSignUpError(userError);
-  }, [userError]);
-
   const _signUpDisabled = () => ((!usernameInput || !passwordInput || !confirmInput) || signUpInProgress);
 
   const _signUpTooltip = () => _signUpDisabled() ? signUpInProgress ? "authentication in progress" : "missing required fields" : "";
+
+  const _handleError = (errorMessage) => {
+    if(errorMessage.includes("username"))
+      setUsernameInputError(errorMessage);
+    else if(errorMessage.includes("password"))
+      setPasswordInputError(errorMessage);
+    else
+      setSignUpError(errorMessage);
+  };
 
   const _handleSignUp = async () => {
     if(confirmInput !== passwordInput)
@@ -35,7 +35,7 @@ const SignUpForm = (props) => {
     
     const response = await signUp(usernameInput, passwordInput);
     if(response && response.error)
-      return; // bail out if we did not receive a successful response
+      return _handleError(response.error); // bail out if we did not receive a successful response
 
     props.showNotification(response.message, "info", true);
     showLoginForm();
@@ -135,7 +135,6 @@ SignUpForm.propTypes = {
   showLoginForm: PropTypes.func.isRequired,
   signUp: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
-  userError: PropTypes.string,
   dataTestId: PropTypes.string
 };
 

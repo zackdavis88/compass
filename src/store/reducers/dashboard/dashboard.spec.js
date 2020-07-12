@@ -12,7 +12,6 @@ describe("Dashboard Reducer / Actions", () => {
     expectedInitialState = {
       isLoading: false,
       message: undefined,
-      error: undefined,
       projects: [],
       stories: []
     };
@@ -66,23 +65,19 @@ describe("Dashboard Reducer / Actions", () => {
     expect(result).toEqual({
       isLoading: false,
       message: mockSuccessResponse.body.message,
-      error: undefined,
       projects: mockSuccessResponse.body.projects,
       stories: mockSuccessResponse.body.stories
     });
   });
 
-  it("should set error data for the DASHBOARD_REQUEST_FAILURE action type", () => {
+  it("should isLoading to false for the DASHBOARD_REQUEST_FAILURE action type", () => {
     const result = dashboardReducer(undefined, {
       type: "DASHBOARD_REQUEST_FAILURE",
       error: mockFailureResponse
     });
     expect(result).toEqual({
-      isLoading: false,
-      message: undefined,
-      error: mockFailureResponse.response.body.error,
-      projects: [],
-      stories: []
+      ...expectedInitialState,
+      isLoading: false
     });
   });
 

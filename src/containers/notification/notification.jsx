@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { NotificationWrapper } from "./notification.styles";
@@ -7,16 +7,18 @@ import NotificationMessage from "../../components/notification-message/notificat
 
 const NotificationContainer = ({message, type, autoHide, hideNotification}) => {
   return (
-    <NotificationWrapper>
+    <Fragment>
       {message && (
-        <NotificationMessage
-          message={message}
-          type={type}
-          autoHide={autoHide}
-          hideNotification={hideNotification}
-        />
+        <NotificationWrapper>
+          <NotificationMessage
+            message={message}
+            type={type}
+            autoHide={autoHide}
+            hideNotification={hideNotification}
+          />
+        </NotificationWrapper>
       )}
-    </NotificationWrapper>
+    </Fragment>
   );
 };
 

@@ -9,7 +9,6 @@ describe("<LoginForm />", () => {
     props = {
       dataTestId: "unitTestForm",
       authInProgress: false,
-      authError: undefined,
       showSignUpForm: jest.fn(),
       authenticate: jest.fn().mockReturnValue({
         message: "mock auth success",
@@ -106,9 +105,9 @@ describe("<LoginForm />", () => {
     await waitFor(() => expect(props.goToDashboard).toHaveBeenCalled());
   });
 
-  it("should not redirect the user if authentication fails", async () => {
+  it("should not redirect the user if authentication fails and it should render the error message", async () => {
     props.authenticate.mockReturnValueOnce({error: "something went wrong"});
-    const { getByTestId } = render(<LoginForm {...props}/>);
+    const { getByTestId, queryByText } = render(<LoginForm {...props}/>);
     const button = getByTestId(`${props.dataTestId}.loginButton`);
     const usernameInput = getByTestId(`${props.dataTestId}.usernameInput.input`);
     const passwordInput = getByTestId(`${props.dataTestId}.passwordInput.input`);
@@ -123,7 +122,9 @@ describe("<LoginForm />", () => {
         value: "Password1"
       }
     });
+    expect(queryByText("something went wrong")).toBeNull();
     fireEvent.click(button);
+    await waitFor(() => expect(queryByText("something went wrong")).toBeDefined());
     await waitFor(() => expect(props.goToDashboard).toHaveBeenCalledTimes(0));
   });
 
