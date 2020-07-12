@@ -30,8 +30,7 @@ const Dashboard = (props) => {
     <DashboardWrapper>
       {isLoading ? (
         <LoadingSpinner alignCenter dataTestId="dashboardLoader" message={`Loading Dashboard for ${userInfo.displayName}`}/>
-      ) : 
-      (
+      ) : (
         <Fragment>
           <DashboardActionButtons>
             <Button
