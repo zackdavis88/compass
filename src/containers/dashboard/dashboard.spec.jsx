@@ -9,7 +9,16 @@ describe("<Dashboard />", () => {
     store = mockStore({
       dashboard: {
         isLoading: false,
-        projects: [],
+        projects: [{
+          id: "some-id",
+          name: "Test Project",
+          description: "",
+          isPrivate: true,
+          roles: {
+            isAdmin: true
+          },
+          createdOn: new Date().toISOString()
+        }],
         stories: []
       },
       auth: {
@@ -70,34 +79,21 @@ describe("<Dashboard />", () => {
     expect(getByText("My Stories")).toBeDefined();
   });
 
-  it("should render the NewProjectModal when the new project button is clicked", () => {
+  it("should render the ProjectModal when the new project button is clicked", () => {
     const {queryByTestId} = render(<Dashboard />, store);
     const newProjectButton = queryByTestId("dashboardNewProject");
     expect(newProjectButton).toBeDefined();
-    expect(queryByTestId("newProjectModal.wrapper")).toBeNull();
+    expect(queryByTestId("projectModal.wrapper")).toBeNull();
     fireEvent.click(newProjectButton);
-    expect(queryByTestId("newProjectModal.wrapper")).toBeDefined();
+    expect(queryByTestId("projectModal.wrapper")).toBeDefined();
   });
 
   it("should render a message is there are no projects to display", () => {
-    const {getByText} = render(<Dashboard />, store);
-    expect(getByText("You are not a member of any projects")).toBeDefined();
-  });
-
-  it("should render the projects table if there are projects to display", () => {
     store = mockStore({
       dashboard: {
         isLoading: false,
         stories: [],
-        projects: [{
-          id: "some-id",
-          name: "Test Project",
-          isPrivate: true,
-          roles: {
-            isAdmin: true
-          },
-          createdOn: new Date().toISOString()
-        }]
+        projects: []
       },
       auth: {
         user: {
@@ -108,7 +104,21 @@ describe("<Dashboard />", () => {
         isLoading: false
       }
     });
+    const {getByText} = render(<Dashboard />, store);
+    expect(getByText("You are not a member of any projects")).toBeDefined();
+  });
+
+  it("should render the projects table if there are projects to display", () => {
     const {getByTestId} = render(<Dashboard />, store);
     expect(getByTestId("dashboardProjects")).toBeDefined();
+  });
+
+  it("should render the ProjectModal if the edit modal action is clicked", () => {
+    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
+    const editButton = getByTestId("action.editProject");
+    expect(queryByTestId("projectModal.wrapper")).toBeNull();
+    fireEvent.mouseOver(editButton);
+    fireEvent.click(editButton);
+    expect(queryByTestId("projectModal.wrapper")).toBeDefined();
   });
 });
