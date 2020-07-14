@@ -5,11 +5,11 @@ import {DashboardWrapper, DashboardActionButtons} from "./dashboard.styles";
 import Tabs from "../../components/tabs/tabs";
 import {showNotification} from "../../store/actions/notification";
 import {getDashboard} from "../../store/actions/dashboard";
-import {createProject} from "../../store/actions/project";
+import {createProject, updateProject} from "../../store/actions/project";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Button from "../../components/button/button";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import NewProjectModal from "../../components/new-project-modal/new-project-modal";
+import ProjectModal from "../../components/project-modal/project-modal";
 import ProjectsTable from "../../components/dashboard-projects-table/dashboard-projects-table";
 
 const Dashboard = (props) => {
@@ -18,11 +18,13 @@ const Dashboard = (props) => {
     isLoading,
     userInfo,
     showNotification,
-    projectCreateInProgress,
+    projectRequestInProgress,
     createProject,
+    updateProject,
     projects
   } = props;
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [editProjectData, setEditProject] = useState({});
 
   useEffect(() => {
     getDashboard();
@@ -32,7 +34,7 @@ const Dashboard = (props) => {
     projects,
     actions: {
       deleteProject: (project) => console.log(`Delete: ${project.id}`),
-      editProject: (project) => console.log(`Edit: ${project.id}`),
+      updateProject: (project) => setEditProject(project),
       viewProject: (project) => console.log(`View: ${project.id}`)
     }
   };
@@ -81,12 +83,21 @@ const Dashboard = (props) => {
             </Tabs.TabPanels>
           </Tabs>
           {showNewProjectModal && (
-            <NewProjectModal 
+            <ProjectModal 
               onClose={() => setShowNewProjectModal(false)}
-              createProject={createProject}
+              onSubmit={createProject}
               showNotification={showNotification}
-              requestInProgress={projectCreateInProgress}
+              requestInProgress={projectRequestInProgress}
               refreshDashboard={getDashboard}
+            />
+          )}
+          {editProjectData.id && (
+            <ProjectModal
+              onClose={() => setEditProject({})}
+              onSubmit={updateProject}
+              requestInProgress={projectRequestInProgress}
+              refreshDashboard={getDashboard}
+              project={editProjectData}
             />
           )}
         </Fragment>
@@ -100,8 +111,9 @@ Dashboard.propTypes = {
   projects: PropTypes.array.isRequired,
   stories: PropTypes.array.isRequired,
   getDashboard: PropTypes.func.isRequired,
-  projectCreateInProgress: PropTypes.bool.isRequired,
+  projectRequestInProgress: PropTypes.bool.isRequired,
   createProject: PropTypes.func.isRequired,
+  updateProject: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired
 };
 
@@ -110,9 +122,10 @@ export default connect((state) => ({
   projects: state.dashboard.projects,
   stories: state.dashboard.stories,
   userInfo: state.auth.user,
-  projectCreateInProgress: state.project.isLoading
+  projectRequestInProgress: state.project.isLoading
 }), {
   getDashboard,
   showNotification,
-  createProject
+  createProject,
+  updateProject
 })(Dashboard);
