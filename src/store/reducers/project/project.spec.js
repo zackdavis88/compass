@@ -1,5 +1,5 @@
 import projectReducer from "./project";
-import {createProject} from "../../actions/project";
+import {createProject, updateProject} from "../../actions/project";
 import {mockStore} from "../../../test-utils";
 import { waitFor } from "@testing-library/react";
 
@@ -54,6 +54,15 @@ describe("Project Reducer / Actions", () => {
     expect(store.getActions()[0].type).toBe("PROJECT_REQUEST_START");
 
     // Second action is expected to be SUCCESS or FAILURE
+    const expectedTypes = ["PROJECT_REQUEST_SUCCESS", "PROJECT_REQUEST_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
+  });
+
+  it("should dispatch a redux API call to update a project", async () => {
+    store.dispatch(updateProject("someTestId", "unit test project", "", false));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    expect(store.getActions()[0].type).toBe("PROJECT_REQUEST_START");
+
     const expectedTypes = ["PROJECT_REQUEST_SUCCESS", "PROJECT_REQUEST_FAILURE"];
     expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
   });
