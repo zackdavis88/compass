@@ -1,21 +1,11 @@
-import React, {useState} from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import {TableWrapper, ActionsWrapper, Action} from "./table.styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faArrowRight, faTrash, faEdit} from "@fortawesome/free-solid-svg-icons";
-import Tooltip from "../tooltip/tooltip";
+import {TableWrapper} from "./table.styles";
 
 const Table = (props) => {
-  const {headers, rows} = props;
-  const [hoverMap, setHover] = useState(rows.reduce((prev, curr) => {
-    if(curr.id)
-      return Object.assign(prev, {[curr.id]: false});
-    
-    return prev;
-  }, {}));
-
+  const {headers, rows, rowProps, dataTestId} = props;
   const _renderHeaders = () => (
-    <thead>
+    <thead data-testid={`${dataTestId}.tableHead`}>
       <tr>
         {headers && headers.map((header, index) => (
           <th key={index}>{header.label}</th>
@@ -24,37 +14,9 @@ const Table = (props) => {
     </thead>
   );
 
-  const _renderProjectActions = (row) => {
-    const {isAdmin, isManager, isDeveloper, isViewer} = row.roles;
-    const rowHovered = hoverMap[row.id];
-    const adminAllowed = rowHovered && isAdmin;
-    const managerAllowed = rowHovered && (isAdmin || isManager);
-    const viewerAllowed = rowHovered && (isAdmin || isManager || isDeveloper || isViewer);
-    return (
-      <ActionsWrapper>
-        <Action isAllowed={adminAllowed}>
-          <FontAwesomeIcon icon={faTrash} fixedWidth />
-          {adminAllowed && <Tooltip text={"Delete Project"} />}
-        </Action>
-        <Action isAllowed={managerAllowed}>
-          <FontAwesomeIcon icon={faEdit} fixedWidth />
-          {managerAllowed && <Tooltip text={"Edit Project"} />}
-        </Action>
-        <Action isAllowed={viewerAllowed}>
-          <FontAwesomeIcon icon={faArrowRight} fixedWidth />
-          {viewerAllowed && <Tooltip text={"View Project"} />}
-        </Action>
-      </ActionsWrapper>
-    );
-  };
-
   const _renderCell = (row, header) => {
-    if(header.keyName === "projectActions")
-      return _renderProjectActions(row);
-
-    //TODO: Do this eventually, once we get to Task table development.
-    // if(header.keyName === "taskActions")
-    //   return _renderTaskActions();
+    if(header.renderActions)
+      return header.renderActions(row);
 
     const cellData = row[header.keyName];
     if(typeof cellData === "undefined")
@@ -66,11 +28,18 @@ const Table = (props) => {
     return cellData.toString();
   };
 
+  const _addRowProps = (row) => {
+    if(rowProps && typeof rowProps === "function")
+      return rowProps(row);
+    
+    return {}; // return an empty object if rowProps is not provided...this will add no additional props to the rows.
+  };
+
   const _renderBody = () => (
-    <tbody>
+    <tbody data-testid={`${dataTestId}.tableBody`}>
       {rows && rows.map((row, index) => {
         return (
-          <tr key={index} onMouseOver={() => setHover({...hoverMap, [row.id]: true})} onMouseLeave={() => setHover({...hoverMap, [row.id]: false})}>
+          <tr key={index} {..._addRowProps(row)}>
             {headers && headers.map((header, index) => {
               return (
                 <td key={index}>
@@ -85,8 +54,8 @@ const Table = (props) => {
   );
 
   return (
-    <TableWrapper>
-      <table>
+    <TableWrapper data-testid={dataTestId}>
+      <table data-testid={`${dataTestId}.table`}>
         {_renderHeaders()}
         {_renderBody()}
       </table>
@@ -96,7 +65,9 @@ const Table = (props) => {
 
 Table.propTypes = {
   headers: PropTypes.array.isRequired,
-  rows: PropTypes.array.isRequired
+  rows: PropTypes.array.isRequired,
+  rowProps: PropTypes.func,
+  dataTestId: PropTypes.string
 };
 
 export default Table;
