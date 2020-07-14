@@ -78,4 +78,37 @@ describe("<Dashboard />", () => {
     fireEvent.click(newProjectButton);
     expect(queryByTestId("newProjectModal.wrapper")).toBeDefined();
   });
+
+  it("should render a message is there are no projects to display", () => {
+    const {getByText} = render(<Dashboard />, store);
+    expect(getByText("You are not a member of any projects")).toBeDefined();
+  });
+
+  it("should render the projects table if there are projects to display", () => {
+    store = mockStore({
+      dashboard: {
+        isLoading: false,
+        stories: [],
+        projects: [{
+          id: "some-id",
+          name: "Test Project",
+          isPrivate: true,
+          roles: {
+            isAdmin: true
+          },
+          createdOn: new Date().toISOString()
+        }]
+      },
+      auth: {
+        user: {
+          displayName: "unitTestUser"
+        }
+      },
+      project: {
+        isLoading: false
+      }
+    });
+    const {getByTestId} = render(<Dashboard />, store);
+    expect(getByTestId("dashboardProjects")).toBeDefined();
+  });
 });
