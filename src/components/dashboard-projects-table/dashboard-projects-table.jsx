@@ -16,7 +16,7 @@ const DashboardProjectsTable = ({projects, actions}) => {
   }, {}));
 
   const _renderActions = (row) => {
-    const {deleteProject, editProject, viewProject} = actions;
+    const {deleteProject, updateProject, viewProject} = actions;
     const {isAdmin, isManager, isDeveloper, isViewer} = row.roles;
     const rowHovered = hoverMap[row.id];
     const adminAllowed = rowHovered && isAdmin;
@@ -28,7 +28,7 @@ const DashboardProjectsTable = ({projects, actions}) => {
           <FontAwesomeIcon icon={faTrash} fixedWidth />
           {adminAllowed && <Tooltip text={"Delete Project"} />}
         </Action>
-        <Action data-testid="action.editProject" isAllowed={managerAllowed} onClick={() => managerAllowed && editProject(row)}>
+        <Action data-testid="action.editProject" isAllowed={managerAllowed} onClick={() => managerAllowed && updateProject(row)}>
           <FontAwesomeIcon icon={faEdit} fixedWidth />
           {managerAllowed && <Tooltip text={"Edit Project"} />}
         </Action>
@@ -80,7 +80,7 @@ DashboardProjectsTable.propTypes = {
   projects: PropTypes.array.isRequired,
   actions: PropTypes.shape({
     deleteProject: PropTypes.func.isRequired,
-    editProject: PropTypes.func.isRequired,
+    updateProject: PropTypes.func.isRequired,
     viewProject: PropTypes.func.isRequired
   }).isRequired
 };

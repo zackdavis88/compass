@@ -27,7 +27,7 @@ describe("<DashboardProjectsTable />", () => {
       }],
       actions: {
         deleteProject: jest.fn(),
-        editProject: jest.fn(),
+        updateProject: jest.fn(),
         viewProject: jest.fn()
       }
     };
