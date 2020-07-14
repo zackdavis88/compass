@@ -21,6 +21,7 @@ export const Action = styled.div`
   `}
 
   &:hover ${TooltipWrapper} {
+    font-size: 16px;
     visibility: visible;
     opacity: 1;
     left: -50px;
