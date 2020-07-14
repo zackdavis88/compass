@@ -10,6 +10,8 @@ import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Button from "../../components/button/button";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import NewProjectModal from "../../components/new-project-modal/new-project-modal";
+import Table from "../../components/table/table";
+import {formatDate, getPermissionLevel} from "../../utils";
 
 const Dashboard = (props) => {
   const {
@@ -18,13 +20,40 @@ const Dashboard = (props) => {
     userInfo,
     showNotification,
     projectCreateInProgress,
-    createProject
+    createProject,
+    projects
   } = props;
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
 
   useEffect(() => {
     getDashboard();
   }, []);
+
+  const projectsTableProps = {
+    headers: [{
+      label: "Name",
+      keyName: "name"
+    }, {
+      label: "Unique ID",
+      keyName: "id"
+    }, {
+      label: "Visibility",
+      keyName: "isPrivate",
+      format: (isPrivate) => isPrivate ? "Private" : "Public"
+    }, {
+      label: "Permission Level",
+      keyName: "roles",
+      format: (roles) => getPermissionLevel(roles)
+    },{
+      label: "Created On",
+      keyName: "createdOn",
+      format: (timestamp) => formatDate(timestamp)
+    }, {
+      label: "Actions",
+      keyName: "projectActions"
+    }],
+    rows: projects
+  };
 
   return (
     <DashboardWrapper>
@@ -56,8 +85,12 @@ const Dashboard = (props) => {
               <Tabs.Header>My Stories</Tabs.Header>
             </Tabs.TabHeaders>
             <Tabs.TabPanels>
-              <Tabs.Panel>Hello, World!</Tabs.Panel>
-              <Tabs.Panel>This is some srs content.</Tabs.Panel>
+              <Tabs.Panel>
+                <Table {...projectsTableProps} />
+              </Tabs.Panel>
+              <Tabs.Panel>
+                This is some srs content.
+              </Tabs.Panel>
             </Tabs.TabPanels>
           </Tabs>
           {showNewProjectModal && (
