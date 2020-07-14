@@ -14,4 +14,5 @@ export const TooltipWrapper = styled.div`
   visibility: hidden;
   transition: opacity 200ms linear;
   z-index: 3000;
+  line-height: normal;
 `;
