@@ -37,6 +37,8 @@ export const RadioContainer = styled.label`
     position: absolute;
     opacity: 0;
     cursor: pointer;
+    height: 0;
+    width: 0;
   }
 
   &:hover input ~ ${RadioCircle} {

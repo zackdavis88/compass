@@ -51,9 +51,10 @@ const Modal = (props) => {
             small
             onClick={props.onSubmit}
             disabled={props.submitDisabled}
-            label="Submit"
+            label={props.danger ? "Delete" : "Submit"}
             dataTestId={`${dataTestId}.actions.primaryButton`}
             tooltip={props.submitTooltip}
+            danger={props.danger}
           />
           <Button
             secondary
@@ -80,7 +81,8 @@ Modal.propTypes = {
     endIcon: PropTypes.object
   }),
   centerHeader: PropTypes.bool,
-  dataTestId: PropTypes.string
+  dataTestId: PropTypes.string,
+  danger: PropTypes.bool
 };
 
 export default Modal;

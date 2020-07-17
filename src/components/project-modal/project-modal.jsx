@@ -5,11 +5,12 @@ import InputBox from "../input-box/input-box";
 import RadioGroup from "../radio-group/radio-group";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 
-const NewProjectModal = (props) => {
+const ProjectModal = (props) => {
+  const isEdit = !!props.project;
   const [state, setState] = useState({
-    name: "",
-    description: "",
-    isPrivate: false,
+    name: isEdit ? props.project.name : "",
+    description: isEdit ? props.project.description : "",
+    isPrivate: isEdit ? props.project.isPrivate : false,
     nameError: undefined,
     descriptionError: undefined
   });
@@ -25,17 +26,25 @@ const NewProjectModal = (props) => {
 
   const _onSubmit = async() => {
     const { name, description, isPrivate } = state;
-    const response = await props.createProject(name, description, isPrivate);
+    // const response = await props.onSubmit(name, description, isPrivate);
+    let response;
+    if(isEdit)
+      response = await props.onSubmit(props.project.id, name, description, isPrivate);
+    else
+      response = await props.onSubmit(name, description, isPrivate);
     if(response.error && response.error.includes("name"))
       return setState({...state, nameError: response.error});
     else if(response.error && response.error.includes("description"))
       return setState({...state, descriptionError: response.error});
-    else if(response.error) // Dont think we should ever hit this use-case...unless a token expires mid-session.
+    else if(response.error  && props.showNotification) // Dont think we should ever hit this use-case...unless a token expires mid-session.
       return props.showNotification(response.error, "info", false);
     
     props.onClose();
-    props.refreshDashboard();
-    props.showNotification(response.message, "info", true);
+    if(props.refreshDashboard)
+      props.refreshDashboard();
+    
+    if(props.showNotification)
+      props.showNotification(response.message, "info", true);
   };
 
   const modalProps = {
@@ -45,9 +54,9 @@ const NewProjectModal = (props) => {
     submitTooltip: _submitTooltip(),
     header: {
       startIcon: faFolderPlus,
-      text: "New Project"
+      text: isEdit ? "Edit Project" : "New Project"
     },
-    dataTestId: "newProjectModal"
+    dataTestId: "projectModal"
   };
 
   const inputProps = {
@@ -96,12 +105,18 @@ const NewProjectModal = (props) => {
   );
 };
 
-NewProjectModal.propTypes = {
+ProjectModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  createProject: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  showNotification: PropTypes.func,
   requestInProgress: PropTypes.bool.isRequired,
-  refreshDashboard: PropTypes.func.isRequired
+  refreshDashboard: PropTypes.func,
+  project: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    isPrivate: PropTypes.bool.isRequired
+  })
 };
 
-export default NewProjectModal;
+export default ProjectModal;

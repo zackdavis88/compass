@@ -87,4 +87,10 @@ describe("<Modal />", () => {
     const {getByText} = render(<Modal {...props}/>);
     expect(getByText(props.submitTooltip)).toBeDefined();
   });
+
+  it("should render a delete button if the modal has the danger property", () => {
+    props.danger = true;
+    const {getByText} = render(<Modal {...props} />);
+    expect(getByText("Delete")).toBeDefined();
+  });
 });

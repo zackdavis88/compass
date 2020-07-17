@@ -9,7 +9,16 @@ describe("<Dashboard />", () => {
     store = mockStore({
       dashboard: {
         isLoading: false,
-        projects: [],
+        projects: [{
+          id: "some-id",
+          name: "Test Project",
+          description: "",
+          isPrivate: true,
+          roles: {
+            isAdmin: true
+          },
+          createdOn: new Date().toISOString()
+        }],
         stories: []
       },
       auth: {
@@ -70,12 +79,70 @@ describe("<Dashboard />", () => {
     expect(getByText("My Stories")).toBeDefined();
   });
 
-  it("should render the NewProjectModal when the new project button is clicked", () => {
+  it("should render the ProjectModal when the new project button is clicked", () => {
     const {queryByTestId} = render(<Dashboard />, store);
     const newProjectButton = queryByTestId("dashboardNewProject");
     expect(newProjectButton).toBeDefined();
-    expect(queryByTestId("newProjectModal.wrapper")).toBeNull();
+    expect(queryByTestId("projectModal.wrapper")).toBeNull();
     fireEvent.click(newProjectButton);
-    expect(queryByTestId("newProjectModal.wrapper")).toBeDefined();
+    expect(queryByTestId("projectModal.wrapper")).toBeDefined();
+  });
+
+  it("should render a message is there are no projects to display", () => {
+    store = mockStore({
+      dashboard: {
+        isLoading: false,
+        stories: [],
+        projects: []
+      },
+      auth: {
+        user: {
+          displayName: "unitTestUser"
+        }
+      },
+      project: {
+        isLoading: false
+      }
+    });
+    const {getByText} = render(<Dashboard />, store);
+    expect(getByText("You are not a member of any projects")).toBeDefined();
+  });
+
+  it("should render the projects table if there are projects to display", () => {
+    const {getByTestId} = render(<Dashboard />, store);
+    expect(getByTestId("dashboardProjects")).toBeDefined();
+  });
+
+  it("should render the ProjectModal if the edit project action is clicked", () => {
+    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
+    const editButton = getByTestId("action.editProject");
+    expect(queryByTestId("projectModal.wrapper")).toBeNull();
+    fireEvent.mouseOver(editButton);
+    fireEvent.click(editButton);
+    expect(queryByTestId("projectModal.wrapper")).toBeDefined();
+  });
+
+  it("should render the DeleteModal if the delete project action is clicked", () => {
+    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
+    const deleteButton = getByTestId("action.deleteProject");
+    expect(queryByTestId("projectDeleteModal.wrapper")).toBeNull();
+    fireEvent.mouseOver(deleteButton);
+    fireEvent.click(deleteButton);
+    expect(queryByTestId("projectDeleteModal.wrapper")).toBeDefined();
+  });
+
+  it("should call the push redux action when the view project action is clicked", async() => {
+    const {getByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    const viewButton = getByTestId("action.viewProject");
+    fireEvent.mouseOver(viewButton);
+    fireEvent.click(viewButton);
+    expect(store.getActions()[2]).toEqual({
+      type: "@@router/CALL_HISTORY_METHOD",
+      payload: {
+        method: "push",
+        args: [`/projects/${store.getState().dashboard.projects[0].id}`]
+      }
+    });
   });
 });
