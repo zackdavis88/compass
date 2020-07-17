@@ -5,12 +5,14 @@ import {DashboardWrapper, DashboardActionButtons} from "./dashboard.styles";
 import Tabs from "../../components/tabs/tabs";
 import {showNotification} from "../../store/actions/notification";
 import {getDashboard} from "../../store/actions/dashboard";
-import {createProject, updateProject} from "../../store/actions/project";
+import {createProject, updateProject, deleteProject} from "../../store/actions/project";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Button from "../../components/button/button";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
 import ProjectsTable from "../../components/dashboard-projects-table/dashboard-projects-table";
+import DeleteModal from "../../components/delete-modal/delete-modal";
+import {push} from "connected-react-router";
 
 const Dashboard = (props) => {
   const {
@@ -21,10 +23,13 @@ const Dashboard = (props) => {
     projectRequestInProgress,
     createProject,
     updateProject,
-    projects
+    deleteProject,
+    projects,
+    historyPush
   } = props;
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [editProjectData, setEditProject] = useState({});
+  const [deleteProjectData, setDeleteProject] = useState({});
 
   useEffect(() => {
     getDashboard();
@@ -33,9 +38,9 @@ const Dashboard = (props) => {
   const projectsTableProps = {
     projects,
     actions: {
-      deleteProject: (project) => console.log(`Delete: ${project.id}`),
+      deleteProject: (project) => setDeleteProject(project),
       updateProject: (project) => setEditProject(project),
-      viewProject: (project) => console.log(`View: ${project.id}`)
+      viewProject: (project) => historyPush(`/projects/${project.id}`)
     }
   };
 
@@ -82,6 +87,7 @@ const Dashboard = (props) => {
               </Tabs.Panel>
             </Tabs.TabPanels>
           </Tabs>
+          {/* Just modals down here, nothing to see. */}
           {showNewProjectModal && (
             <ProjectModal 
               onClose={() => setShowNewProjectModal(false)}
@@ -100,6 +106,23 @@ const Dashboard = (props) => {
               project={editProjectData}
             />
           )}
+          {deleteProjectData.id && (
+            <DeleteModal
+              onClose={() => setDeleteProject({})}
+              onSubmit={deleteProject}
+              dataTestId="projectDeleteModal"
+              headerText="Delete Project"
+              bodyText={`All memberships and stories belonging to this project will be
+              deleted as well. Please proceed with caution.`}
+              resource={deleteProjectData}
+              expectedInput={deleteProjectData.name}
+              inputProps={{
+                label: "Project Name",
+                placeholder: "Enter the project's name"
+              }}
+              refreshDashboard={getDashboard}
+            />
+          )}
         </Fragment>
       )}
     </DashboardWrapper>
@@ -114,7 +137,9 @@ Dashboard.propTypes = {
   projectRequestInProgress: PropTypes.bool.isRequired,
   createProject: PropTypes.func.isRequired,
   updateProject: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired
+  deleteProject: PropTypes.func.isRequired,
+  showNotification: PropTypes.func.isRequired,
+  historyPush: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
@@ -127,5 +152,7 @@ export default connect((state) => ({
   getDashboard,
   showNotification,
   createProject,
-  updateProject
+  updateProject,
+  deleteProject,
+  historyPush: push
 })(Dashboard);

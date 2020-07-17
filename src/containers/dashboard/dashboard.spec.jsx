@@ -113,12 +113,36 @@ describe("<Dashboard />", () => {
     expect(getByTestId("dashboardProjects")).toBeDefined();
   });
 
-  it("should render the ProjectModal if the edit modal action is clicked", () => {
+  it("should render the ProjectModal if the edit project action is clicked", () => {
     const {getByTestId, queryByTestId} = render(<Dashboard />, store);
     const editButton = getByTestId("action.editProject");
     expect(queryByTestId("projectModal.wrapper")).toBeNull();
     fireEvent.mouseOver(editButton);
     fireEvent.click(editButton);
     expect(queryByTestId("projectModal.wrapper")).toBeDefined();
+  });
+
+  it("should render the DeleteModal if the delete project action is clicked", () => {
+    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
+    const deleteButton = getByTestId("action.deleteProject");
+    expect(queryByTestId("projectDeleteModal.wrapper")).toBeNull();
+    fireEvent.mouseOver(deleteButton);
+    fireEvent.click(deleteButton);
+    expect(queryByTestId("projectDeleteModal.wrapper")).toBeDefined();
+  });
+
+  it("should call the push redux action when the view project action is clicked", async() => {
+    const {getByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    const viewButton = getByTestId("action.viewProject");
+    fireEvent.mouseOver(viewButton);
+    fireEvent.click(viewButton);
+    expect(store.getActions()[2]).toEqual({
+      type: "@@router/CALL_HISTORY_METHOD",
+      payload: {
+        method: "push",
+        args: [`/projects/${store.getState().dashboard.projects[0].id}`]
+      }
+    });
   });
 });
