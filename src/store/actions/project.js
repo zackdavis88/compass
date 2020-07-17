@@ -29,3 +29,13 @@ export const updateProject = (id, name, description, isPrivate) => dispatch => {
     }
   });
 };
+
+export const deleteProject = (id, confirm) => dispatch => {
+  return dispatch({
+    types: [PROJECT_REQUEST_START, PROJECT_REQUEST_SUCCESS, PROJECT_REQUEST_FAILURE],
+    request: request.delete(`${apiRoute}/${id}`),
+    payload: {
+      confirm
+    }
+  });
+};
