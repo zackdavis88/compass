@@ -38,13 +38,6 @@ describe("<DeleteModal />", () => {
     expect(getByTestId("unitTestDeleteModal.actions.primaryButton")).toBeDisabled();
   });
 
-  // it("should render a tooltip if the delete button is disabled", () => {
-  //   const {queryByText} = render(<DeleteModal {...props}/>);
-  //   expect(queryByText("missing required input")).toBeDefined();
-
-  //   //TODO: Check that it does not render once submit is enabled.
-  // });
-
   it("should render a delete button instead of submit", () => {
     const {queryByText} = render(<DeleteModal {...props} />);
     expect(queryByText("Delete")).toBeDefined();
@@ -117,12 +110,14 @@ describe("<DeleteModal />", () => {
 
   it("should enable the delete button if the checkbox is checked", () => {
     props.expectedInput = true;
-    const {getByTestId} = render(<DeleteModal {...props}/>);
+    const {getByTestId, queryByText} = render(<DeleteModal {...props}/>);
     const input = getByTestId("confirmBoolInput.input");
     const button = getByTestId("unitTestDeleteModal.actions.primaryButton");
     expect(button).toBeDisabled();
+    expect(queryByText("missing required input")).toBeDefined();
     fireEvent.click(input);
     expect(button).toBeEnabled();
+    expect(queryByText("missing required input")).toBeNull();
   });
 
   //TODO: API Error handling is weak in this component. Add tests for that once you improve it...right now it just sinks the error.
