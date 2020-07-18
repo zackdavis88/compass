@@ -76,13 +76,6 @@ describe("<DashboardProjectsTable />", () => {
     expect(getAllByTestId("action.viewProject")).toHaveLength(2);
   });
 
-  it("should not call an action method if clicked when the row is not hovered", () => {
-    const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
-    const deleteAction = getAllByTestId("action.deleteProject")[0];
-    fireEvent.click(deleteAction);
-    expect(props.actions.deleteProject).not.toHaveBeenCalled();
-  });
-
   it("should not call an action method if clicked with insufficient permissions", () => {
     const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
     const deleteAction = getAllByTestId("action.deleteProject")[1];

@@ -19,20 +19,20 @@ const DashboardProjectsTable = ({projects, actions}) => {
     const {deleteProject, updateProject, viewProject} = actions;
     const {isAdmin, isManager, isDeveloper, isViewer} = row.roles;
     const rowHovered = hoverMap[row.id];
-    const adminAllowed = rowHovered && isAdmin;
-    const managerAllowed = rowHovered && (isAdmin || isManager);
-    const viewerAllowed = rowHovered && (isAdmin || isManager || isDeveloper || isViewer);
+    const adminAllowed = isAdmin;
+    const managerAllowed = (isAdmin || isManager);
+    const viewerAllowed = (isAdmin || isManager || isDeveloper || isViewer);
     return (
       <ActionsWrapper>
-        <Action data-testid="action.deleteProject" isAllowed={adminAllowed} onClick={() => adminAllowed && deleteProject(row)}>
+        <Action data-testid="action.deleteProject" isAllowed={rowHovered && adminAllowed} onClick={() => adminAllowed && deleteProject(row)}>
           <FontAwesomeIcon icon={faTrash} fixedWidth />
           {adminAllowed && <Tooltip text={"Delete Project"} />}
         </Action>
-        <Action data-testid="action.editProject" isAllowed={managerAllowed} onClick={() => managerAllowed && updateProject(row)}>
+        <Action data-testid="action.editProject" isAllowed={rowHovered && managerAllowed} onClick={() => managerAllowed && updateProject(row)}>
           <FontAwesomeIcon icon={faEdit} fixedWidth />
           {managerAllowed && <Tooltip text={"Edit Project"} />}
         </Action>
-        <Action data-testid="action.viewProject" isAllowed={viewerAllowed} onClick={() => viewerAllowed && viewProject(row)}>
+        <Action data-testid="action.viewProject" isAllowed={rowHovered && viewerAllowed} onClick={() => viewerAllowed && viewProject(row)}>
           <FontAwesomeIcon icon={faArrowRight} fixedWidth />
           {viewerAllowed && <Tooltip text={"View Project"} />}
         </Action>
