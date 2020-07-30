@@ -120,7 +120,6 @@ export const FlyoutWrapper = styled.div`
   width: calc(100% - 40px);
   height: auto;
   background-color: ${white};
-  color: ${black};
   padding-top: 12px;
   padding-bottom: 12px;
   padding-left: 5px;
@@ -137,6 +136,7 @@ export const FlyoutItem = styled.li`
   cursor: pointer;
   font-size: 18px;
   padding: 8px;
+  color: ${black};
   border: 1px solid ${white};
   border-radius: 5px;
   transition: background-color 125ms linear;
