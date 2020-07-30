@@ -73,6 +73,7 @@ describe("<DashboardProjectsTable />", () => {
     const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
     expect(getAllByTestId("action.deleteProject")).toHaveLength(2);
     expect(getAllByTestId("action.editProject")).toHaveLength(2);
+    expect(getAllByTestId("action.addMember")).toHaveLength(2);
     expect(getAllByTestId("action.viewProject")).toHaveLength(2);
   });
 
