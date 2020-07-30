@@ -129,6 +129,7 @@ export const FlyoutWrapper = styled.div`
   max-height: 200px;
   overflow-y: scroll;
   overflow-x: hidden;
+  z-index: 7001;
 `;
 
 export const FlyoutItem = styled.li`
@@ -154,7 +155,4 @@ export const FlyoutItemList = styled.ul`
   padding: 0;
   list-style: none;
   text-align: left;
-  & ${FlyoutItem} {
-    margin-bottom: 2px;
-  }
 `;

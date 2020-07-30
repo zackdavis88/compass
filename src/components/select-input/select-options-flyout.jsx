@@ -17,7 +17,7 @@ const Flyout = ({dataTestId, items, onItemClick, close}) => {
   return (
     <FlyoutWrapper data-testid={dataTestId}>
       <FlyoutItemList>
-        {items.length ? items.map((item, index) => (
+        {items && items.length ? items.map((item, index) => (
           <FlyoutItem key={index} onClick={() => onItemClick(item)}>
             {item}
           </FlyoutItem>
