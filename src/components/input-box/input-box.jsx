@@ -10,7 +10,6 @@ const InputBox = (props) => {
   const wrapperProps = {
     hasError: !!props.errorText,
     hasValue,
-    labelVisible: !!(isFocused || props.value),
     helperVisible,
     helperText: props.errorText || props.helperText
   };
