@@ -23,7 +23,7 @@ const SelectInput = (props) => {
     hasError: !!props.errorText,
     hasValue,
     helperVisible,
-    onClick: () => setShowFlyout(true)
+    onClick: () => !props.disabled && setShowFlyout(true)
   };
 
   const inputProps = {
@@ -52,7 +52,7 @@ const SelectInput = (props) => {
 
   return (
     <SelectInputWrapper {...wrapperProps}>
-      {(isFocused || hasValue || showFlyout ) && <label htmlFor={props.id}>{props.label}</label>}
+      {(isFocused || hasValue || showFlyout) && <label htmlFor={props.id}>{props.label}</label>}
       <input {...inputProps}/>
       {helperVisible && <div>{props.errorText}</div>}
       {(props.isRequired && (!isFocused && !hasValue)) && <span>required</span>}
@@ -67,6 +67,7 @@ SelectInput.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  items: PropTypes.array.isRequired,
   isRequired: PropTypes.bool,
   placeholder: PropTypes.string,
   focusedPlaceholder: PropTypes.string,

@@ -125,6 +125,10 @@ export const FlyoutWrapper = styled.div`
   padding-bottom: 12px;
   padding-left: 5px;
   padding-right: 5px;
+  height: auto;
+  max-height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 export const FlyoutItem = styled.li`
@@ -132,8 +136,8 @@ export const FlyoutItem = styled.li`
   cursor: pointer;
   font-size: 18px;
   padding: 8px;
-  border-radius: 32px;
   border: 1px solid ${white};
+  border-radius: 5px;
   transition: background-color 125ms linear;
 
   &:hover {
