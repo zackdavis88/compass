@@ -6,6 +6,7 @@ import user from "./user/user";
 import notification from "./notification/notification";
 import dashboard from "./dashboard/dashboard";
 import project from "./project/project";
+import membership from "./membership/membership";
 
 const createRootReducer = (history) => combineReducers({
   router: connectRouter(history),
@@ -14,7 +15,8 @@ const createRootReducer = (history) => combineReducers({
   user,
   notification,
   dashboard,
-  project
+  project,
+  membership
 });
 
 export default createRootReducer;
