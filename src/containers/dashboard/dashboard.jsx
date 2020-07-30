@@ -31,9 +31,6 @@ const Dashboard = (props) => {
   const [editProjectData, setEditProject] = useState({});
   const [deleteProjectData, setDeleteProject] = useState({});
 
-  //TODO: Delete the codeblock below after testing.
-  const [debugVal, setVal] = useState("");
-
   useEffect(() => {
     getDashboard();
   }, []);
