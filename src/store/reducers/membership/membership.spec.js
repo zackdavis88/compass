@@ -50,10 +50,7 @@ describe("Membership Reducer / Actions", () => {
   it("should dispatch a redux API call to create a membership", async () => {
     store.dispatch(createMembership("testProjectId", "testUsername", {isAdmin: true}));
     await waitFor(() => expect(store.getActions()).toHaveLength(2));
-    // First action should be the REQUEST
     expect(store.getActions()[0].type).toBe("MEMBERSHIP_REQUEST_START");
-
-    // Second action is expected to be SUCCESS or FAILURE
     const expectedTypes = ["MEMBERSHIP_REQUEST_SUCCESS", "MEMBERSHIP_REQUEST_FAILURE"];
     expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
   });
