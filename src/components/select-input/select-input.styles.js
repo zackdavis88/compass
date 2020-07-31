@@ -3,6 +3,8 @@ import {
   primaryRed,
   white,
   black,
+  black1a,
+  black26,
   black33,
   black80,
   black0d,
@@ -11,13 +13,11 @@ import {
 } from "../../common-styles/variables";
 import { fadeIn } from "../../common-styles/animations";
 
-//TODO: Making margin-bottom dynamic based on the amount of characters in helperText.
-//      Each line of text is 24px height. margin-bottom: calc(Math.ceil(helperText.length / CHAR_PER_LINE));
-export const InputBoxWrapper = styled.div`
+export const SelectInputWrapper = styled.div`
   position: relative;
   transition: margin 100ms linear;
   overflow: visible;
-  
+
   ${({helperVisible}) => helperVisible && css`
     margin-bottom: 35px !important;
   `}
@@ -106,4 +106,53 @@ export const InputBoxWrapper = styled.div`
     top: 10px;
     right: 20px;
   }
+`;
+
+export const FlyoutWrapper = styled.div`
+  position: absolute;
+  border-radius: 4px;
+  line-height: 1;
+  border: 1px solid ${black80};
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  top: calc(${inputHeight});
+  left: 0;
+  width: calc(100% - 40px);
+  height: auto;
+  background-color: ${white};
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: auto;
+  max-height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 7001;
+`;
+
+export const FlyoutItem = styled.li`
+  user-select: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 8px;
+  color: ${black};
+  border: 1px solid ${white};
+  border-radius: 5px;
+  transition: background-color 125ms linear;
+
+  &:hover {
+    background-color: ${black1a};
+  }
+
+  &:active {
+    background-color: ${black26};
+  }
+`;
+
+export const FlyoutItemList = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
 `;

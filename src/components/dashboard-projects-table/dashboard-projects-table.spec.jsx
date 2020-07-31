@@ -73,14 +73,8 @@ describe("<DashboardProjectsTable />", () => {
     const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
     expect(getAllByTestId("action.deleteProject")).toHaveLength(2);
     expect(getAllByTestId("action.editProject")).toHaveLength(2);
+    expect(getAllByTestId("action.addMember")).toHaveLength(2);
     expect(getAllByTestId("action.viewProject")).toHaveLength(2);
-  });
-
-  it("should not call an action method if clicked when the row is not hovered", () => {
-    const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
-    const deleteAction = getAllByTestId("action.deleteProject")[0];
-    fireEvent.click(deleteAction);
-    expect(props.actions.deleteProject).not.toHaveBeenCalled();
   });
 
   it("should not call an action method if clicked with insufficient permissions", () => {

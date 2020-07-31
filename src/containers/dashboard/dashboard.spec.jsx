@@ -28,6 +28,9 @@ describe("<Dashboard />", () => {
       },
       project: {
         isLoading: false
+      },
+      membership: {
+        isLoading: false
       }
     });
   });
@@ -56,6 +59,9 @@ describe("<Dashboard />", () => {
         }
       },
       project: {
+        isLoading: false
+      },
+      membership: {
         isLoading: false
       }
     });
@@ -102,6 +108,9 @@ describe("<Dashboard />", () => {
       },
       project: {
         isLoading: false
+      },
+      membership: {
+        isLoading: false
       }
     });
     const {getByText} = render(<Dashboard />, store);
@@ -117,7 +126,6 @@ describe("<Dashboard />", () => {
     const {getByTestId, queryByTestId} = render(<Dashboard />, store);
     const editButton = getByTestId("action.editProject");
     expect(queryByTestId("projectModal.wrapper")).toBeNull();
-    fireEvent.mouseOver(editButton);
     fireEvent.click(editButton);
     expect(queryByTestId("projectModal.wrapper")).toBeDefined();
   });
@@ -126,9 +134,18 @@ describe("<Dashboard />", () => {
     const {getByTestId, queryByTestId} = render(<Dashboard />, store);
     const deleteButton = getByTestId("action.deleteProject");
     expect(queryByTestId("projectDeleteModal.wrapper")).toBeNull();
-    fireEvent.mouseOver(deleteButton);
     fireEvent.click(deleteButton);
     expect(queryByTestId("projectDeleteModal.wrapper")).toBeDefined();
+  });
+
+  it("should render the MembershipModal if the add member action is clicked", async() => {
+    store.dispatch = jest.fn().mockReturnValue({});
+    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
+    const addMemberButton = getByTestId("action.addMember");
+    expect(queryByTestId("membershipModal.wrapper")).toBeNull();
+    fireEvent.click(addMemberButton);
+    expect(queryByTestId("membershipModal.wrapper")).toBeDefined();
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
   });
 
   it("should call the push redux action when the view project action is clicked", async() => {
