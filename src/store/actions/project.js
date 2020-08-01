@@ -39,3 +39,10 @@ export const deleteProject = (id, confirm) => dispatch => {
     }
   });
 };
+
+export const getProject = (id) => dispatch => {
+  return dispatch({
+    types: [PROJECT_REQUEST_START, PROJECT_REQUEST_SUCCESS, PROJECT_REQUEST_FAILURE],
+    request: request.get(`${apiRoute}/${id}`)
+  });
+};
