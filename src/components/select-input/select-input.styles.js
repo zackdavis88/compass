@@ -126,7 +126,7 @@ export const FlyoutWrapper = styled.div`
   padding-right: 5px;
   height: auto;
   max-height: 200px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   z-index: 7001;
 `;

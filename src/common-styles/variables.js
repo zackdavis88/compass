@@ -32,6 +32,9 @@ export const tertiaryRed = "#B82E3C";
 
 export const lightGrey = "#949494";
 
+export const primaryGreen = "#329a1f";
+export const secondaryGreen = "#268216";
+
 // Common CSS Variables
 export const navbarHeight = "75px";
 export const pageHeaderHeight = "70px";
