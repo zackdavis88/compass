@@ -38,5 +38,7 @@ export const PageError = styled.div`
   border: 2px solid ${black33};
   background-color: ${tertiaryRed};
   color: ${white};
-  border-radius: 15px;
+  text-align: center;
+  padding: 15px;
+  border-radius: 0;
 `;
