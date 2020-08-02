@@ -15,7 +15,7 @@ export const Action = styled.div`
   color: ${black33};
   transition: color 100ms linear;
 
-  ${({isAllowed}) => isAllowed && css`
+  ${({highlightAction}) => highlightAction && css`
     color: ${black};
     cursor: pointer;
   `}
