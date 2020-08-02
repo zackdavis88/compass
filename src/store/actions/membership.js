@@ -22,3 +22,10 @@ export const getAvailableUsers = (project) => dispatch => {
     request: request.get(`/api/projects/${project.id}/memberships/available`)
   });
 };
+
+export const getMemberships = (projectId) => dispatch => {
+  return dispatch({
+    types: [MEMBERSHIP_REQUEST_START, MEMBERSHIP_REQUEST_SUCCESS, MEMBERSHIP_REQUEST_FAILURE],
+    request: request.get(`/api/projects/${projectId}/memberships`)
+  });
+};
