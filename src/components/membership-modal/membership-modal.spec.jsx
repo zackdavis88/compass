@@ -20,7 +20,8 @@ describe("<MembershipModal />", () => {
       }),
       requestInProgress: false,
       project: {
-        id: "testProjectId"
+        id: "testProjectId",
+        name: "testProject"
       },
       adminAllowed: false
     };
@@ -74,6 +75,13 @@ describe("<MembershipModal />", () => {
     const {getByText} = render(<MembershipModal {...props}/>);
     await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
     expect(getByText("New Membership")).toBeDefined();
+  });
+
+  it("should render the project label and name", async() => {
+    const {getByText} = render(<MembershipModal {...props}/>);
+    await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
+    expect(getByText("Project:")).toBeDefined();
+    expect(getByText("testProject")).toBeDefined();
   });
 
   it("should render the expected inputs", async() => {
@@ -203,7 +211,7 @@ describe("<MembershipModal />", () => {
     expect(props.getAvailableUsers).not.toHaveBeenCalled();
   });
 
-  it("should render the 'Edit Membership' modal header when updating", () => {
+  it("should render the 'Edit Roles' modal header when updating", () => {
     props.membership = {
       id: "testMembershipId",
       user: {displayName: "testUser"},
@@ -215,25 +223,24 @@ describe("<MembershipModal />", () => {
       }
     };
     const {getByText} = render(<MembershipModal {...props}/>);
-    expect(getByText("Edit Membership")).toBeDefined();
+    expect(getByText("Edit Roles")).toBeDefined();
   });
 
-  // it("should set the username value and disable changes to usernameInput when updating", () => {
-  //   props.membership = {
-  //     id: "testMembershipId",
-  //     user: {displayName: "testUser"},
-  //     roles: {
-  //       isAdmin: false,
-  //       isManager: false,
-  //       isDeveloper: true,
-  //       isViewer: false
-  //     }
-  //   };
-  //   const {getByTestId} = render(<MembershipModal {...props}/>);
-  //   const usernameInput = getByTestId("membershipUsernameInput.input");
-  //   expect(usernameInput).toBeDisabled();
-  //   expect(usernameInput).toHaveValue("testUser");
-  // });
+  it("should render the username label and value", () => {
+    props.membership = {
+      id: "testMembershipId",
+      user: {displayName: "testUser"},
+      roles: {
+        isAdmin: false,
+        isManager: false,
+        isDeveloper: true,
+        isViewer: false
+      }
+    };
+    const {getByText} = render(<MembershipModal {...props}/>);
+    expect(getByText("Username:")).toBeDefined();
+    expect(getByText("testUser")).toBeDefined();
+  });
 
   it("should set role values based on the membership being updated", () => {
     props.membership = {

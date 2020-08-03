@@ -1,11 +1,16 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import Modal from "../modal/modal";
-import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus, faUserEdit } from "@fortawesome/free-solid-svg-icons";
 import LoadingSpinner from "../loading-spinner/loading-spinner";
 import SelectInput from "../select-input/select-input";
 import CheckBox from "../check-box/check-box";
-import {MembershipModalWrapper} from "./membership-modal.styles";
+import {
+  MembershipModalWrapper,
+  ExistingMemberSection,
+  ProjectSection,
+  RolesInputSection
+} from "./membership-modal.styles";
 
 const MembershipModal = (props) => {
   const membership = props.membership;
@@ -71,10 +76,11 @@ const MembershipModal = (props) => {
     submitDisabled: _submitDisabled(),
     submitTooltip: _submitTooltip(),
     header: {
-      startIcon: faUserPlus,
-      text: isEdit ? "Edit Membership" : "New Membership"
+      startIcon: isEdit ? faUserEdit : faUserPlus,
+      text: isEdit ? "Edit Roles" : "New Membership"
     },
-    dataTestId: "membershipModal"
+    dataTestId: "membershipModal",
+    small: true
   };
 
   const inputProps = {
@@ -132,17 +138,24 @@ const MembershipModal = (props) => {
           <LoadingSpinner alignCenter dataTestId="membershipModalLoader" message="Loading available users" />
         ) : (
           <Fragment>
+            <ProjectSection>
+              <span>Project:</span>
+              <div>{props.project.name}</div>
+            </ProjectSection>
             {!isEdit ? (
               <SelectInput {...inputProps.username} />
             ) : (
-            <div id="existingUsername">Username: <span>{state.username}</span></div>
+              <ExistingMemberSection>
+                <span>Username:</span>
+                <div>{state.username}</div>
+              </ExistingMemberSection>
             )}
-            <div id="membershipRolesInput">
-              <CheckBox {...inputProps.isAdmin}/>
-              <CheckBox {...inputProps.isManager}/>
-              <CheckBox {...inputProps.isDeveloper}/>
-              <CheckBox {...inputProps.isViewer}/>
-            </div>
+            <RolesInputSection>    
+              <CheckBox {...inputProps.isAdmin}/>          
+              <CheckBox {...inputProps.isManager}/>          
+              <CheckBox {...inputProps.isDeveloper}/>          
+              <CheckBox {...inputProps.isViewer}/>      
+            </RolesInputSection>
           </Fragment>
         )}
       </Modal>
