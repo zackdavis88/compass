@@ -101,7 +101,10 @@ const DeleteModal = (props) => {
 DeleteModal.propTypes = {
   dataTestId: PropTypes.string,
   headerText: PropTypes.string,
-  bodyText: PropTypes.string,
+  bodyText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
+  ]),
   inputProps: PropTypes.shape({
     label: PropTypes.string.isRequired,
     placeholder: PropTypes.string

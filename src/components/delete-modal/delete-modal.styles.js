@@ -16,6 +16,10 @@ export const MessageSection = styled.div`
   & div {
     margin-bottom: 15px;
   }
+
+  & div span {
+    font-weight: bold;
+  }
 `;
 
 export const InputSection = styled.div`
