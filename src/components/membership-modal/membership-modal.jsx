@@ -68,6 +68,9 @@ const MembershipModal = (props) => {
     props.onClose();
     if(props.showNotification)
       props.showNotification(response.message, "info", true);
+
+    if(props.refresh)
+      props.refresh();
   };
 
   const modalProps = {
@@ -173,7 +176,8 @@ MembershipModal.propTypes = {
     id: PropTypes.string.isRequired,
   }),
   adminAllowed: PropTypes.bool.isRequired,
-  membership: PropTypes.object
+  membership: PropTypes.object,
+  refresh: PropTypes.func
 };
 
 export default MembershipModal;

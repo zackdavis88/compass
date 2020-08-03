@@ -195,6 +195,21 @@ describe("<MembershipModal />", () => {
     await waitFor(() => expect(props.showNotification).toHaveBeenCalledWith("submit successful message", "info", true));
   });
 
+  it("should call the refresh method, if provided, when onSubmit is successful", async() => {
+    props.refresh = jest.fn();
+    const {getByTestId} = render(<MembershipModal {...props}/>);
+    await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
+    const usernameInput = getByTestId("membershipUsernameInput.input");
+    const submitButton = getByTestId("membershipModal.actions.primaryButton");
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "thirdUser"
+      }
+    });
+    fireEvent.click(submitButton);
+    await waitFor(() => expect(props.refresh).toHaveBeenCalled());
+  });
+
   //Testing Membership Update--
   it("should not call getAvailableUsers on mount when updating", () => {
     props.membership = {
