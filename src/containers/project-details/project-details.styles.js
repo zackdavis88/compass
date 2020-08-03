@@ -4,8 +4,6 @@ import {Spinner} from "../../components/loading-spinner/loading-spinner.styles";
 import {
   white,
   black,
-  black33,
-  black66,
   black80,
   primaryBlue,
   secondaryBlue,
@@ -92,14 +90,8 @@ export const ProjectVisibility = styled.div`
   background-color: ${primaryGreen};
   transition: background-color 100ms linear;
 
-  &:hover{
-    background-color: ${secondaryGreen};
-  }
   ${({isPrivate}) => isPrivate && css`
     background-color: ${primaryBlue};
-    &:hover{
-      background-color: ${secondaryBlue};
-    }
   `}
 `;
 
@@ -131,7 +123,7 @@ export const ProjectDescription = styled.div`
 export const Statistic = styled.div`
   position: relative;
   width: 50%;
-  margin-bottom: 41px;
+  margin-bottom: 42px;
 
   & span{
     user-select: none;
