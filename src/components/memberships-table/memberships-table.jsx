@@ -72,10 +72,11 @@ const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
   };
 
   const paginationProps = {
+    dataTestId: "projectMembershipsPagination",
     itemsPerPage: pagination.itemsPerPage,
     page: pagination.page,
     totalPages: pagination.totalPages,
-    onPageClick: (page) => console.log(page)
+    onPageClick: (page) => pagination.getPage(page)
   };
 
   return (

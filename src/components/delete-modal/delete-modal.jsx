@@ -10,6 +10,7 @@ const DeleteModal = (props) => {
   const {
     dataTestId,
     headerText,
+    headerIcon,
     bodyText,
     onClose,
     onSubmit,
@@ -43,7 +44,7 @@ const DeleteModal = (props) => {
     submitTooltip: _submitDisabled() ? "missing required input" : "",
     small: true,
     header: {
-      startIcon: faTrash,
+      startIcon: headerIcon ? headerIcon : faTrash,
       text: headerText || "Confirm Delete"
     },
     dataTestId,
@@ -105,6 +106,7 @@ const DeleteModal = (props) => {
 DeleteModal.propTypes = {
   dataTestId: PropTypes.string,
   headerText: PropTypes.string,
+  headerIcon: PropTypes.object,
   bodyText: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element
