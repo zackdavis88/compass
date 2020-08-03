@@ -16,7 +16,7 @@ const DeleteModal = (props) => {
     resource,
     expectedInput,
     inputProps,
-    refreshDashboard
+    refresh
   } = props;
   const [confirmInput, setConfirmInput] = useState(undefined);
 
@@ -28,8 +28,8 @@ const DeleteModal = (props) => {
       return;
     
     onClose();
-    if(refreshDashboard)
-      refreshDashboard();
+    if(refresh)
+      refresh();
   };
 
   const modalProps = {
@@ -59,7 +59,7 @@ const DeleteModal = (props) => {
   const boolInputProps = {
     id: "confirm-bool-input",
     dataTestId: "confirmBoolInput",
-    label: "Delete this Resource",
+    label: (inputProps && inputProps.label) || "Delete this Resource",
     checked: confirmInput || false,
     onChange: () => setConfirmInput(!confirmInput)
   };
@@ -104,9 +104,9 @@ DeleteModal.propTypes = {
   bodyText: PropTypes.string,
   inputProps: PropTypes.shape({
     label: PropTypes.string.isRequired,
-    placeholder: PropTypes.string.isRequired
+    placeholder: PropTypes.string
   }),
-  refreshDashboard: PropTypes.func,
+  refresh: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   resource: PropTypes.shape({

@@ -132,8 +132,8 @@ describe("<DeleteModal />", () => {
     expect(props.onClose).toHaveBeenCalled();
   });
 
-  it("should call refreshDashboard, if provided, after successful onSubmit", async() => {
-    props.refreshDashboard = jest.fn();
+  it("should call refresh, if provided, after successful onSubmit", async() => {
+    props.refresh = jest.fn();
     const {getByTestId} = render(<DeleteModal {...props}/>);
     const input = getByTestId("confirmStringInput.input");
     const button = getByTestId("unitTestDeleteModal.actions.primaryButton");
@@ -145,6 +145,6 @@ describe("<DeleteModal />", () => {
     fireEvent.click(button);
     await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.resource.id, props.expectedInput));
     expect(props.onClose).toHaveBeenCalled();
-    expect(props.refreshDashboard).toHaveBeenCalled();
+    expect(props.refresh).toHaveBeenCalled();
   });
 });
