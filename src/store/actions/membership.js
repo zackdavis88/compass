@@ -30,10 +30,13 @@ export const getMemberships = (projectId) => dispatch => {
   });
 };
 
-export const deleteMembership = (membershipData) => dispatch => {
+export const deleteMembership = (membershipData, confirm) => dispatch => {
   const projectId = membershipData.project.id;
   return dispatch({
     types: [MEMBERSHIP_REQUEST_START, MEMBERSHIP_REQUEST_SUCCESS, MEMBERSHIP_REQUEST_FAILURE],
-    request: request.delete(`/api/projects/${projectId}/memberships/${membershipData.id}`)
+    request: request.delete(`/api/projects/${projectId}/memberships/${membershipData.id}`),
+    payload: {
+      confirm
+    }
   });
 };
