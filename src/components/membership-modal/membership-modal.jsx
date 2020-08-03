@@ -8,11 +8,17 @@ import CheckBox from "../check-box/check-box";
 import {MembershipModalWrapper} from "./membership-modal.styles";
 
 const MembershipModal = (props) => {
-  const isEdit = !!props.membership;
+  const membership = props.membership;
+  const isEdit = !!membership;
   const [state, setState] = useState({
-    username: isEdit ? props.membership.user.displayName : "",
+    username: isEdit ? membership.user.displayName : "",
     usernameError: "",
-    roles: isEdit ? props.membership.roles : {
+    roles: isEdit ? {
+      isAdmin: membership.roles.isAdmin || undefined,
+      isManager: membership.roles.isManager || undefined,
+      isDeveloper: membership.roles.isDeveloper || undefined,
+      isViewer: membership.roles.isViewer || undefined,
+    } : {
       isAdmin: false,
       isManager: false,
       isDeveloper: false,
@@ -47,7 +53,7 @@ const MembershipModal = (props) => {
     
     let response;
     if(isEdit)
-      response = await props.onSubmit(props.project, props.membership, roles);
+      response = await props.onSubmit(props.project, membership, roles);
     else
       response = await props.onSubmit(props.project, username, roles);
 
@@ -72,19 +78,6 @@ const MembershipModal = (props) => {
   };
 
   const inputProps = {
-    username: {
-      id: "membershipUsernameInput",
-      dataTestId: "membershipUsernameInput",
-      label: "Username",
-      placeholder: "Select a username",
-      focusedPlaceholder: "Start typing to filter options",
-      value: state.username,
-      onChange: (value) => setState({...state, username: value, usernameError: ""}),
-      items: state.availableUsers,
-      isRequired: true,
-      errorText: state.usernameError,
-      disabled: isEdit
-    },
     isAdmin: {
       id: "membershipIsAdminInput",
       dataTestId: "membershipIsAdminInput",
@@ -116,6 +109,22 @@ const MembershipModal = (props) => {
     }
   };
 
+  if(!isEdit) {
+    inputProps.username = {
+      id: "membershipUsernameInput",
+      dataTestId: "membershipUsernameInput",
+      label: "Username",
+      placeholder: "Select a username",
+      focusedPlaceholder: "Start typing to filter options",
+      value: state.username,
+      onChange: (value) => setState({...state, username: value, usernameError: ""}),
+      items: state.availableUsers,
+      isRequired: true,
+      errorText: state.usernameError,
+      disabled: isEdit
+    };
+  }
+
   return (
     <MembershipModalWrapper>
       <Modal {...modalProps}>
@@ -123,7 +132,11 @@ const MembershipModal = (props) => {
           <LoadingSpinner alignCenter dataTestId="membershipModalLoader" message="Loading available users" />
         ) : (
           <Fragment>
-            <SelectInput {...inputProps.username} />
+            {!isEdit ? (
+              <SelectInput {...inputProps.username} />
+            ) : (
+            <div id="existingUsername">Username: <span>{state.username}</span></div>
+            )}
             <div id="membershipRolesInput">
               <CheckBox {...inputProps.isAdmin}/>
               <CheckBox {...inputProps.isManager}/>
@@ -142,7 +155,7 @@ MembershipModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   showNotification: PropTypes.func,
   requestInProgress: PropTypes.bool.isRequired,
-  getAvailableUsers: PropTypes.func.isRequired,
+  getAvailableUsers: PropTypes.func,
   project: PropTypes.shape({
     id: PropTypes.string.isRequired,
   }),
