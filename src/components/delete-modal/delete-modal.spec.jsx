@@ -9,7 +9,7 @@ describe("<DeleteModal />", () => {
     props = {
       dataTestId: "unitTestDeleteModal",
       onClose: jest.fn(),
-      onSubmit: jest.fn().mockReturnValue({}),
+      onSubmit: jest.fn().mockReturnValue({message: "success!"}),
       resource: {
         id: "unitTestId"
       },
@@ -146,5 +146,21 @@ describe("<DeleteModal />", () => {
     await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.resource, props.expectedInput));
     expect(props.onClose).toHaveBeenCalled();
     expect(props.refresh).toHaveBeenCalled();
+  });
+
+  it("should call showNotification, if provided, after successful onSubmit", async() => {
+    props.showNotification = jest.fn();
+    const {getByTestId} = render(<DeleteModal {...props}/>);
+    const input = getByTestId("confirmStringInput.input");
+    const button = getByTestId("unitTestDeleteModal.actions.primaryButton");
+    fireEvent.change(input, {
+      target: {
+        value: props.expectedInput
+      }
+    });
+    fireEvent.click(button);
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.resource, props.expectedInput));
+    expect(props.onClose).toHaveBeenCalled();
+    expect(props.showNotification).toHaveBeenCalledWith("success!", "info", true);
   });
 });

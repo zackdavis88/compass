@@ -16,7 +16,8 @@ const DeleteModal = (props) => {
     resource,
     expectedInput,
     inputProps,
-    refresh
+    refresh,
+    showNotification
   } = props;
   const [confirmInput, setConfirmInput] = useState(undefined);
 
@@ -30,6 +31,9 @@ const DeleteModal = (props) => {
     onClose();
     if(refresh)
       refresh();
+
+    if(showNotification)
+      showNotification(response.message, "info", true);
   };
 
   const modalProps = {
