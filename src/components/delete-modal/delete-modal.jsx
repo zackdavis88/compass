@@ -23,7 +23,7 @@ const DeleteModal = (props) => {
   const _submitDisabled = () => confirmInput !== expectedInput;
 
   const _onSubmit = async() => {
-    const response = await onSubmit(resource.id, confirmInput);
+    const response = await onSubmit(resource, confirmInput);
     if(response.error)
       return;
     

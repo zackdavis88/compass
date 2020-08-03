@@ -128,7 +128,7 @@ describe("<DeleteModal />", () => {
     const button = getByTestId("unitTestDeleteModal.actions.primaryButton");
     fireEvent.click(input);
     fireEvent.click(button);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.resource.id, true));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.resource, true));
     expect(props.onClose).toHaveBeenCalled();
   });
 
@@ -143,7 +143,7 @@ describe("<DeleteModal />", () => {
       }
     });
     fireEvent.click(button);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.resource.id, props.expectedInput));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.resource, props.expectedInput));
     expect(props.onClose).toHaveBeenCalled();
     expect(props.refresh).toHaveBeenCalled();
   });
