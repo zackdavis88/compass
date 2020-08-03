@@ -6,6 +6,9 @@ import {
 } from "../types/membership";
 
 export const createMembership = (project, username, roles) => dispatch => {
+  if(!roles.isAdmin)
+    roles.isAdmin = undefined;
+
   return dispatch({
     types: [MEMBERSHIP_REQUEST_START, MEMBERSHIP_REQUEST_SUCCESS, MEMBERSHIP_REQUEST_FAILURE],
     request: request.post(`/api/projects/${project.id}/memberships`),
