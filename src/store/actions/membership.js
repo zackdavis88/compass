@@ -40,3 +40,15 @@ export const deleteMembership = (membershipData, confirm) => dispatch => {
     }
   });
 };
+
+export const updateMembership = (project, membership, roles) => dispatch => {
+  const projectId = project.id;
+  const membershipId = membership.id;
+  return dispatch({
+    types: [MEMBERSHIP_REQUEST_START, MEMBERSHIP_REQUEST_SUCCESS, MEMBERSHIP_REQUEST_FAILURE],
+    request: request.post(`/api/projects/${projectId}/memberships/${membershipId}`),
+    payload: {
+      roles
+    }
+  });
+};
