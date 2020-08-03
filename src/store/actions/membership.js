@@ -26,10 +26,15 @@ export const getAvailableUsers = (project) => dispatch => {
   });
 };
 
-export const getMemberships = (projectId) => dispatch => {
+export const getMemberships = (projectId, page, itemsPerPage) => dispatch => {
+  const queryString = {};
+  if(page)
+    queryString.page = page;
+  if(itemsPerPage)
+    queryString.itemsPerPage = itemsPerPage;
   return dispatch({
     types: [MEMBERSHIP_REQUEST_START, MEMBERSHIP_REQUEST_SUCCESS, MEMBERSHIP_REQUEST_FAILURE],
-    request: request.get(`/api/projects/${projectId}/memberships`)
+    request: request.get(`/api/projects/${projectId}/memberships`).query(queryString)
   });
 };
 
