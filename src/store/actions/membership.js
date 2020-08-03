@@ -29,3 +29,11 @@ export const getMemberships = (projectId) => dispatch => {
     request: request.get(`/api/projects/${projectId}/memberships`)
   });
 };
+
+export const deleteMembership = (membershipData) => dispatch => {
+  const projectId = membershipData.project.id;
+  return dispatch({
+    types: [MEMBERSHIP_REQUEST_START, MEMBERSHIP_REQUEST_SUCCESS, MEMBERSHIP_REQUEST_FAILURE],
+    request: request.delete(`/api/projects/${projectId}/memberships/${membershipData.id}`)
+  });
+};
