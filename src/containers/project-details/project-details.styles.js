@@ -6,9 +6,7 @@ import {
   black,
   black80,
   primaryBlue,
-  secondaryBlue,
-  primaryGreen,
-  secondaryGreen
+  primaryGreen
 } from "../../common-styles/variables";
 
 export const ProjectDetailsWrapper = styled.div`
@@ -20,6 +18,7 @@ export const ProjectDetailsWrapper = styled.div`
     padding-top: 30px;
     margin-left: 50px;
     margin-right: 50px;
+    height: 100%;
   }
 
   & ${Spinner} {

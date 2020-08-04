@@ -206,4 +206,45 @@ describe("<ProjectDetails />", () => {
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByText("something went wrong")).toBeDefined();
   });
+
+  it("should render a message if there are no members to display", async() => {
+    store.dispatch = jest.fn().mockReturnValueOnce(mockProjectResponse);
+    store.dispatch.mockReturnValueOnce({memberships: []});
+    const {getByText, queryByText} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const membersTab = getByText("Members");
+    expect(queryByText("This project has no members")).toBeNull();
+    fireEvent.click(membersTab);
+    expect(queryByText("This project has no members")).toBeDefined();
+  });
+
+  it("should render a the memberships table is the members tab is clicked", async() => {
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const membersTab = getByText("Members");
+    fireEvent.click(membersTab);
+    expect(getByTestId("projectMemberships")).toBeDefined();
+  });
+
+  it("should show the delete membership modal if the action is clicked with sufficient permission", async() => {
+    const {getByText, getAllByTestId, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const membersTab = getByText("Members");
+    fireEvent.click(membersTab);
+    const deleteAction = getAllByTestId("action.deleteMembership")[1];
+    expect(queryByTestId("membershipDeleteModal.wrapper")).toBeNull();
+    fireEvent.click(deleteAction);
+    expect(queryByTestId("membershipDeleteModal.wrapper")).toBeDefined();
+  });
+
+  it("should show the edit membership modal if the action is clicked with sufficient permission", async() => {
+    const {getByText, getAllByTestId, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const membersTab = getByText("Members");
+    fireEvent.click(membersTab);
+    const editAction = getAllByTestId("action.editMembership")[1];
+    expect(queryByTestId("membershipModal.wrapper")).toBeNull();
+    fireEvent.click(editAction);
+    expect(queryByTestId("membershipModal.wrapper")).toBeDefined();
+  });
 });

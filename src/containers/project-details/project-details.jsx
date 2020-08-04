@@ -13,7 +13,6 @@ import {
 } from "./project-details.styles";
 import {getProject} from "../../store/actions/project";
 import {getMemberships, deleteMembership, updateMembership} from "../../store/actions/membership";
-import {showNotification} from "../../store/actions/notification";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Tabs from "../../components/tabs/tabs";
 import {formatDate} from "../../utils";
@@ -21,6 +20,7 @@ import {PageError} from "../../common-styles/base";
 import MembershipsTable from "../../components/memberships-table/memberships-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import MembershipModal from "../../components/membership-modal/membership-modal";
+import { faUserTimes } from "@fortawesome/free-solid-svg-icons";
 
 const ProjectDetails = (props) => {
   const {
@@ -29,8 +29,7 @@ const ProjectDetails = (props) => {
     getProject,
     getMemberships,
     deleteMembership,
-    updateMembership,
-    showNotification
+    updateMembership
   } = props;
   const [pageError, setPageError] = useState(undefined);
   const [projectData, setProjectData] = useState(undefined);
@@ -72,8 +71,15 @@ const ProjectDetails = (props) => {
     itemsPerPage: membershipsPaginatedData && membershipsPaginatedData.itemsPerPage,
     page: membershipsPaginatedData && membershipsPaginatedData.page,
     totalPages: membershipsPaginatedData && membershipsPaginatedData.totalPages,
-    totalPages: 10,
-    getPage: getMemberships
+    getPage: async(page) => {
+      if(page === membershipsPaginatedData.page)
+        return;
+      const response = await getMemberships(props.match.params.projectId, page, membershipsPaginatedData.itemsPerPage);
+      if(response.error)
+        return setPageError(response.error);
+      
+      setMembershipsData(response);
+    }
   };
   const project = projectData && projectData.project;
   const userRoles = projectData && projectData.userRoles;
@@ -82,7 +88,7 @@ const ProjectDetails = (props) => {
       {pageError ? (
           <PageError>{pageError}</PageError>
         ) : 
-        (projectIsLoading || !projectData) ? (
+        (projectIsLoading || !projectData || !membershipsPaginatedData) ? (
           <LoadingSpinner alignCenter dataTestId="projectDetailsLoader" message={`Loading project details`} />
         ) : 
         (
@@ -129,9 +135,7 @@ const ProjectDetails = (props) => {
                 </DetailsSection>
               </Tabs.Panel>
               <Tabs.Panel>
-                {membershipIsLoading || !membershipsPaginatedData ? (
-                  <LoadingSpinner alignCenter dataTestId="projectMembershipsLoader" message={`Loading project memberships`} />
-                ) : (
+                {membershipsPaginatedData.memberships.length ? (
                   <MembershipsTable
                     memberships={membershipsPaginatedData.memberships}
                     userRoles={userRoles}
@@ -141,6 +145,8 @@ const ProjectDetails = (props) => {
                     }}
                     pagination={membershipsPagination}
                   />
+                ) : (
+                  <div>This project has no members</div>
                 )}
               </Tabs.Panel>
               <Tabs.Panel>
@@ -155,6 +161,7 @@ const ProjectDetails = (props) => {
             onSubmit={deleteMembership}
             dataTestId="membershipDeleteModal"
             headerText="Delete Membership"
+            headerIcon={faUserTimes}
             bodyText={`${deleteMembershipData.user.displayName} will no longer have
             access to this project. Please proceed with caution.`}
             bodyText={(
@@ -168,7 +175,6 @@ const ProjectDetails = (props) => {
             inputProps={{
               label: "Delete this Membership"
             }}
-            showNotification={showNotification}
             refresh={_reloadMemberships}
           />
         )}
@@ -177,7 +183,6 @@ const ProjectDetails = (props) => {
             onClose={() => setEditMembershipData({})}
             onSubmit={updateMembership}
             requestInProgress={membershipIsLoading}
-            showNotification={showNotification}
             project={project}
             adminAllowed={projectData.userRoles && projectData.userRoles.isAdmin}
             membership={editMembershipData}
@@ -194,8 +199,7 @@ ProjectDetails.propTypes = {
   getProject: PropTypes.func.isRequired,
   getMemberships: PropTypes.func.isRequired,
   deleteMembership: PropTypes.func.isRequired,
-  updateMembership: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired
+  updateMembership: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
@@ -205,6 +209,5 @@ export default connect((state) => ({
   getProject,
   getMemberships,
   deleteMembership,
-  updateMembership,
-  showNotification
+  updateMembership
 })(ProjectDetails);
