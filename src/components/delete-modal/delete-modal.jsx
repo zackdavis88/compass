@@ -10,26 +10,31 @@ const DeleteModal = (props) => {
   const {
     dataTestId,
     headerText,
+    headerIcon,
     bodyText,
     onClose,
     onSubmit,
     resource,
     expectedInput,
     inputProps,
-    refreshDashboard
+    refresh,
+    showNotification
   } = props;
   const [confirmInput, setConfirmInput] = useState(undefined);
 
   const _submitDisabled = () => confirmInput !== expectedInput;
 
   const _onSubmit = async() => {
-    const response = await onSubmit(resource.id, confirmInput);
+    const response = await onSubmit(resource, confirmInput);
     if(response.error)
       return;
     
     onClose();
-    if(refreshDashboard)
-      refreshDashboard();
+    if(refresh)
+      refresh();
+
+    if(showNotification)
+      showNotification(response.message, "info", true);
   };
 
   const modalProps = {
@@ -39,7 +44,7 @@ const DeleteModal = (props) => {
     submitTooltip: _submitDisabled() ? "missing required input" : "",
     small: true,
     header: {
-      startIcon: faTrash,
+      startIcon: headerIcon ? headerIcon : faTrash,
       text: headerText || "Confirm Delete"
     },
     dataTestId,
@@ -59,7 +64,7 @@ const DeleteModal = (props) => {
   const boolInputProps = {
     id: "confirm-bool-input",
     dataTestId: "confirmBoolInput",
-    label: "Delete this Resource",
+    label: (inputProps && inputProps.label) || "Delete this Resource",
     checked: confirmInput || false,
     onChange: () => setConfirmInput(!confirmInput)
   };
@@ -101,12 +106,16 @@ const DeleteModal = (props) => {
 DeleteModal.propTypes = {
   dataTestId: PropTypes.string,
   headerText: PropTypes.string,
-  bodyText: PropTypes.string,
+  headerIcon: PropTypes.object,
+  bodyText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
+  ]),
   inputProps: PropTypes.shape({
     label: PropTypes.string.isRequired,
-    placeholder: PropTypes.string.isRequired
+    placeholder: PropTypes.string
   }),
-  refreshDashboard: PropTypes.func,
+  refresh: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   resource: PropTypes.shape({

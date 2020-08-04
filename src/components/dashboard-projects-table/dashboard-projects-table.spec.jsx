@@ -80,7 +80,6 @@ describe("<DashboardProjectsTable />", () => {
   it("should not call an action method if clicked with insufficient permissions", () => {
     const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
     const deleteAction = getAllByTestId("action.deleteProject")[1];
-    fireEvent.mouseOver(deleteAction);
     fireEvent.click(deleteAction);
     expect(props.actions.deleteProject).not.toHaveBeenCalled();
   });
@@ -88,8 +87,15 @@ describe("<DashboardProjectsTable />", () => {
   it("should call an action method if clicked with sufficient permissions", () => {
     const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
     const deleteAction = getAllByTestId("action.deleteProject")[0];
-    fireEvent.mouseOver(deleteAction);
     fireEvent.click(deleteAction);
     expect(props.actions.deleteProject).toHaveBeenCalledWith(props.projects[0]);
+  });
+
+  it("should render the action tooltips if they are allowed", () => {
+    const {getAllByText} = render(<DashboardProjectsTable {...props}/>);
+    expect(getAllByText("Delete Project")).toHaveLength(1);
+    expect(getAllByText("Edit Project")).toHaveLength(1);
+    expect(getAllByText("Add Member")).toHaveLength(1);
+    expect(getAllByText("View Project")).toHaveLength(2);
   });
 });

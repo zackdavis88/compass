@@ -24,19 +24,19 @@ const DashboardProjectsTable = ({projects, actions}) => {
     const viewerAllowed = (isAdmin || isManager || isDeveloper || isViewer);
     return (
       <ActionsWrapper>
-        <Action data-testid="action.deleteProject" isAllowed={rowHovered && adminAllowed} onClick={() => adminAllowed && deleteProject(row)}>
+        <Action data-testid="action.deleteProject" highlightAction={rowHovered && adminAllowed} onClick={() => adminAllowed && deleteProject(row)}>
           <FontAwesomeIcon icon={faTrash} fixedWidth />
           {adminAllowed && <Tooltip text={"Delete Project"} />}
         </Action>
-        <Action data-testid="action.editProject" isAllowed={rowHovered && managerAllowed} onClick={() => managerAllowed && updateProject(row)}>
+        <Action data-testid="action.editProject" highlightAction={rowHovered && managerAllowed} onClick={() => managerAllowed && updateProject(row)}>
           <FontAwesomeIcon icon={faEdit} fixedWidth />
           {managerAllowed && <Tooltip text={"Edit Project"} />}
         </Action>
-        <Action data-testid="action.addMember" isAllowed={rowHovered && managerAllowed} onClick={() => managerAllowed && addMember(row, adminAllowed)}>
+        <Action data-testid="action.addMember" highlightAction={rowHovered && managerAllowed} onClick={() => managerAllowed && addMember(row, adminAllowed)}>
           <FontAwesomeIcon icon={faUserPlus} fixedWidth />
           {managerAllowed && <Tooltip text={"Add Member"} />}
         </Action>
-        <Action data-testid="action.viewProject" isAllowed={rowHovered && viewerAllowed} onClick={() => viewerAllowed && viewProject(row)}>
+        <Action data-testid="action.viewProject" highlightAction={rowHovered && viewerAllowed} onClick={() => viewerAllowed && viewProject(row)}>
           <FontAwesomeIcon icon={faArrowRight} fixedWidth />
           {viewerAllowed && <Tooltip text={"View Project"} />}
         </Action>

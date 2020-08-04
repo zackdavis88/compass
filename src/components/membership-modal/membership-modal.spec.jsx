@@ -20,7 +20,8 @@ describe("<MembershipModal />", () => {
       }),
       requestInProgress: false,
       project: {
-        id: "testProjectId"
+        id: "testProjectId",
+        name: "testProject"
       },
       adminAllowed: false
     };
@@ -74,6 +75,13 @@ describe("<MembershipModal />", () => {
     const {getByText} = render(<MembershipModal {...props}/>);
     await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
     expect(getByText("New Membership")).toBeDefined();
+  });
+
+  it("should render the project label and name", async() => {
+    const {getByText} = render(<MembershipModal {...props}/>);
+    await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
+    expect(getByText("Project:")).toBeDefined();
+    expect(getByText("testProject")).toBeDefined();
   });
 
   it("should render the expected inputs", async() => {
@@ -187,6 +195,21 @@ describe("<MembershipModal />", () => {
     await waitFor(() => expect(props.showNotification).toHaveBeenCalledWith("submit successful message", "info", true));
   });
 
+  it("should call the refresh method, if provided, when onSubmit is successful", async() => {
+    props.refresh = jest.fn();
+    const {getByTestId} = render(<MembershipModal {...props}/>);
+    await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
+    const usernameInput = getByTestId("membershipUsernameInput.input");
+    const submitButton = getByTestId("membershipModal.actions.primaryButton");
+    fireEvent.change(usernameInput, {
+      target: {
+        value: "thirdUser"
+      }
+    });
+    fireEvent.click(submitButton);
+    await waitFor(() => expect(props.refresh).toHaveBeenCalled());
+  });
+
   //Testing Membership Update--
   it("should not call getAvailableUsers on mount when updating", () => {
     props.membership = {
@@ -203,7 +226,7 @@ describe("<MembershipModal />", () => {
     expect(props.getAvailableUsers).not.toHaveBeenCalled();
   });
 
-  it("should render the 'Edit Membership' modal header when updating", () => {
+  it("should render the 'Edit Roles' modal header when updating", () => {
     props.membership = {
       id: "testMembershipId",
       user: {displayName: "testUser"},
@@ -215,10 +238,10 @@ describe("<MembershipModal />", () => {
       }
     };
     const {getByText} = render(<MembershipModal {...props}/>);
-    expect(getByText("Edit Membership")).toBeDefined();
+    expect(getByText("Edit Roles")).toBeDefined();
   });
 
-  it("should set the username value and disable changes to usernameInput when updating", () => {
+  it("should render the username label and value", () => {
     props.membership = {
       id: "testMembershipId",
       user: {displayName: "testUser"},
@@ -229,10 +252,9 @@ describe("<MembershipModal />", () => {
         isViewer: false
       }
     };
-    const {getByTestId} = render(<MembershipModal {...props}/>);
-    const usernameInput = getByTestId("membershipUsernameInput.input");
-    expect(usernameInput).toBeDisabled();
-    expect(usernameInput).toHaveValue("testUser");
+    const {getByText} = render(<MembershipModal {...props}/>);
+    expect(getByText("Username:")).toBeDefined();
+    expect(getByText("testUser")).toBeDefined();
   });
 
   it("should set role values based on the membership being updated", () => {
@@ -274,10 +296,10 @@ describe("<MembershipModal />", () => {
     fireEvent.click(isManager);
     fireEvent.click(submitButton);
     await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.membership, {
-      isAdmin: false,
+      isAdmin: undefined,
       isManager: true,
       isDeveloper: true,
-      isViewer: false
+      isViewer: undefined
     }));
   });
 

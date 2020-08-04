@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import { black, white } from "./variables";
+import styled, { createGlobalStyle } from "styled-components";
+import { black, black33, tertiaryRed, white } from "./variables";
 
 export const GlobalStyle = createGlobalStyle`
   html {
@@ -29,4 +29,16 @@ export const GlobalStyle = createGlobalStyle`
   *:focus {
     outline: none;
   }
+`;
+
+export const PageError = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+  position: relative;
+  border: 2px solid ${black33};
+  background-color: ${tertiaryRed};
+  color: ${white};
+  text-align: center;
+  padding: 15px;
+  border-radius: 0;
 `;

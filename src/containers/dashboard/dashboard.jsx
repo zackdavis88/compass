@@ -137,7 +137,7 @@ const Dashboard = (props) => {
                 label: "Project Name",
                 placeholder: "Enter the project's name"
               }}
-              refreshDashboard={getDashboard}
+              refresh={getDashboard}
             />
           )}
         </Fragment>

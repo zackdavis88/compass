@@ -149,12 +149,13 @@ describe("<Dashboard />", () => {
   });
 
   it("should call the push redux action when the view project action is clicked", async() => {
+    store.dispatch = jest.fn();
     const {getByTestId} = render(<Dashboard />, store);
-    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
     const viewButton = getByTestId("action.viewProject");
     fireEvent.mouseOver(viewButton);
     fireEvent.click(viewButton);
-    expect(store.getActions()[2]).toEqual({
+    expect(store.dispatch).toHaveBeenLastCalledWith({
       type: "@@router/CALL_HISTORY_METHOD",
       payload: {
         method: "push",

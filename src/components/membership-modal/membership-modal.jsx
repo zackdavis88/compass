@@ -1,18 +1,29 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import Modal from "../modal/modal";
-import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus, faUserEdit } from "@fortawesome/free-solid-svg-icons";
 import LoadingSpinner from "../loading-spinner/loading-spinner";
 import SelectInput from "../select-input/select-input";
 import CheckBox from "../check-box/check-box";
-import {MembershipModalWrapper} from "./membership-modal.styles";
+import {
+  MembershipModalWrapper,
+  ExistingMemberSection,
+  ProjectSection,
+  RolesInputSection
+} from "./membership-modal.styles";
 
 const MembershipModal = (props) => {
-  const isEdit = !!props.membership;
+  const membership = props.membership;
+  const isEdit = !!membership;
   const [state, setState] = useState({
-    username: isEdit ? props.membership.user.displayName : "",
+    username: isEdit ? membership.user.displayName : "",
     usernameError: "",
-    roles: isEdit ? props.membership.roles : {
+    roles: isEdit ? {
+      isAdmin: membership.roles.isAdmin || undefined,
+      isManager: membership.roles.isManager || undefined,
+      isDeveloper: membership.roles.isDeveloper || undefined,
+      isViewer: membership.roles.isViewer || undefined,
+    } : {
       isAdmin: false,
       isManager: false,
       isDeveloper: false,
@@ -47,7 +58,7 @@ const MembershipModal = (props) => {
     
     let response;
     if(isEdit)
-      response = await props.onSubmit(props.project, props.membership, roles);
+      response = await props.onSubmit(props.project, membership, roles);
     else
       response = await props.onSubmit(props.project, username, roles);
 
@@ -57,6 +68,9 @@ const MembershipModal = (props) => {
     props.onClose();
     if(props.showNotification)
       props.showNotification(response.message, "info", true);
+
+    if(props.refresh)
+      props.refresh();
   };
 
   const modalProps = {
@@ -65,26 +79,14 @@ const MembershipModal = (props) => {
     submitDisabled: _submitDisabled(),
     submitTooltip: _submitTooltip(),
     header: {
-      startIcon: faUserPlus,
-      text: isEdit ? "Edit Membership" : "New Membership"
+      startIcon: isEdit ? faUserEdit : faUserPlus,
+      text: isEdit ? "Edit Roles" : "New Membership"
     },
-    dataTestId: "membershipModal"
+    dataTestId: "membershipModal",
+    small: true
   };
 
   const inputProps = {
-    username: {
-      id: "membershipUsernameInput",
-      dataTestId: "membershipUsernameInput",
-      label: "Username",
-      placeholder: "Select a username",
-      focusedPlaceholder: "Start typing to filter options",
-      value: state.username,
-      onChange: (value) => setState({...state, username: value, usernameError: ""}),
-      items: state.availableUsers,
-      isRequired: true,
-      errorText: state.usernameError,
-      disabled: isEdit
-    },
     isAdmin: {
       id: "membershipIsAdminInput",
       dataTestId: "membershipIsAdminInput",
@@ -116,6 +118,22 @@ const MembershipModal = (props) => {
     }
   };
 
+  if(!isEdit) {
+    inputProps.username = {
+      id: "membershipUsernameInput",
+      dataTestId: "membershipUsernameInput",
+      label: "Username",
+      placeholder: "Select a username",
+      focusedPlaceholder: "Start typing to filter options",
+      value: state.username,
+      onChange: (value) => setState({...state, username: value, usernameError: ""}),
+      items: state.availableUsers,
+      isRequired: true,
+      errorText: state.usernameError,
+      disabled: isEdit
+    };
+  }
+
   return (
     <MembershipModalWrapper>
       <Modal {...modalProps}>
@@ -123,13 +141,24 @@ const MembershipModal = (props) => {
           <LoadingSpinner alignCenter dataTestId="membershipModalLoader" message="Loading available users" />
         ) : (
           <Fragment>
-            <SelectInput {...inputProps.username} />
-            <div id="membershipRolesInput">
-              <CheckBox {...inputProps.isAdmin}/>
-              <CheckBox {...inputProps.isManager}/>
-              <CheckBox {...inputProps.isDeveloper}/>
-              <CheckBox {...inputProps.isViewer}/>
-            </div>
+            <ProjectSection>
+              <span>Project:</span>
+              <div>{props.project.name}</div>
+            </ProjectSection>
+            {!isEdit ? (
+              <SelectInput {...inputProps.username} />
+            ) : (
+              <ExistingMemberSection>
+                <span>Username:</span>
+                <div>{state.username}</div>
+              </ExistingMemberSection>
+            )}
+            <RolesInputSection>    
+              <CheckBox {...inputProps.isAdmin}/>          
+              <CheckBox {...inputProps.isManager}/>          
+              <CheckBox {...inputProps.isDeveloper}/>          
+              <CheckBox {...inputProps.isViewer}/>      
+            </RolesInputSection>
           </Fragment>
         )}
       </Modal>
@@ -142,12 +171,13 @@ MembershipModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   showNotification: PropTypes.func,
   requestInProgress: PropTypes.bool.isRequired,
-  getAvailableUsers: PropTypes.func.isRequired,
+  getAvailableUsers: PropTypes.func,
   project: PropTypes.shape({
     id: PropTypes.string.isRequired,
   }),
   adminAllowed: PropTypes.bool.isRequired,
-  membership: PropTypes.object
+  membership: PropTypes.object,
+  refresh: PropTypes.func
 };
 
 export default MembershipModal;
