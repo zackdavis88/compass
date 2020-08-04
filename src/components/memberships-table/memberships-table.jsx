@@ -6,7 +6,7 @@ import {faUserTimes, faUserEdit} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate, getPermissionLevel} from "../../utils";
 import {ActionsWrapper, Action} from "../table/table.styles";
-import {MembershipsTableWrapper} from "./memberships-table.styles";
+import {MembershipsTableWrapper, PaginationSection} from "./memberships-table.styles";
 import Pagination from "../pagination/pagination";
 
 const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
@@ -50,9 +50,6 @@ const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
       keyName: "user",
       format: (user) => user.displayName
     }, {
-      label: "Unique ID",
-      keyName: "id"
-    }, {
       label: "Permission Level",
       keyName: "roles",
       format: (roles) => getPermissionLevel(roles)
@@ -82,16 +79,26 @@ const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
   return (
     <MembershipsTableWrapper>
       <Table {...tableProps} />
-      {pagination && <Pagination {...paginationProps} />}
+      {pagination && (
+        <PaginationSection>
+          <Pagination {...paginationProps} />
+        </PaginationSection>
+      )}
     </MembershipsTableWrapper>
   );
 };
 
 MembershipsTable.propTypes = {
   memberships: PropTypes.array.isRequired,
-  userRoles: PropTypes.object,
+  userRoles: PropTypes.shape({
+    isAdmin: PropTypes.bool,
+    isManager: PropTypes.bool,
+    isDeveloper: PropTypes.bool,
+    isViewer: PropTypes.bool
+  }),
   actions: PropTypes.shape({
-    deleteMembership: PropTypes.func.isRequired
+    deleteMembership: PropTypes.func.isRequired,
+    editMembership: PropTypes.func.isRequired
   }).isRequired,
   pagination: PropTypes.shape({
     page: PropTypes.number.isRequired,

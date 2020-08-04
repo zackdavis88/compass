@@ -88,7 +88,7 @@ const Pagination = ({page, totalPages, onPageClick, dataTestId}) => {
     return pageElements;
   };
 
-  const wrapperProps = dataTestId ? {dataTestId} : {}
+  const wrapperProps = dataTestId ? {["data-testid"]: dataTestId} : {};
   const firstProps = {
     onClick: () => _onClick(1)
   };
