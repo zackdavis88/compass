@@ -34,6 +34,33 @@ const Pagination = ({page, totalPages, onPageClick, dataTestId}) => {
     }
   }, []);
 
+  // If totalPages updates for any reason, we may need to recalculate the range.
+  useEffect(() => {
+    // When the totalPages is updated and it is less than the rangeEnd, we _may_ need to recalculate the range we show.
+    if(totalPages < rangeEnd && totalPages-4 >= 1) {
+      setStart(totalPages-4);
+      return setEnd(totalPages);
+    }
+    if(totalPages < rangeEnd){
+      setStart(1);
+      return setEnd(totalPages);
+    }
+
+    if(totalPages > rangeEnd && totalPages <= 5) {
+      setStart(1);
+      return setEnd(totalPages);
+    }
+    if(totalPages > rangeEnd && page===rangeEnd-1 && page+2 <= totalPages) {
+      setStart(page-2);
+      return setEnd(page+2);
+    }
+    if(totalPages > rangeEnd && page===rangeEnd && page+1 <= totalPages) {
+      setStart(page-3);
+      return setEnd(page+1);
+    }
+
+  }, [totalPages])
+
   const _fetchAndUpdateRange = (page, start, end) => {
     onPageClick(page);
     setStart(start);
