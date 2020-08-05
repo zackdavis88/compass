@@ -28,7 +28,9 @@ export const tertiaryBlue26 = "#114E7926";
 
 export const primaryRed = "#DC3545";
 export const secondaryRed = "#C43240";
+export const secondaryRed1a = "#C432401A";
 export const tertiaryRed = "#B82E3C";
+export const tertiaryRed26 = "#B82E3C26";
 
 export const lightGrey = "#949494";
 
