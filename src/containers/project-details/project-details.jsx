@@ -290,6 +290,7 @@ const ProjectDetails = (props) => {
             getAvailableUsers={getAvailableUsers}
             adminAllowed={!!(userRoles && userRoles.isAdmin)}
             project={project}
+            refresh={_reloadMemberships}
           />
         )}
     </ProjectDetailsWrapper>
