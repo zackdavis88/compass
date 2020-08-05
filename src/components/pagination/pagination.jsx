@@ -13,24 +13,20 @@ const Pagination = ({page, totalPages, onPageClick, dataTestId}) => {
   const [rangeStart, setStart] = useState(1);
   const [rangeEnd, setEnd] = useState(5);
   useEffect(() => {
-    if(totalPages < 5){
-      setStart(1);
-      setEnd(totalPages);
+    if(totalPages < 5) {
+      _setRange(1, totalPages);
     }
     // This logic is called when mounting the component.
     // based on the page / totalPages, we need to determine the page range to render.
-    if(page+2 <= totalPages && page-2 >= 1){
-      setStart(page-2);
-      setEnd(page+2);
+    if(page+2 <= totalPages && page-2 >= 1) {
+      _setRange(page-2, page+2);
     }
     // Edge-case for if we mount the component with a page value of totalPages-1
     else if(page+1 === totalPages) {
-      setStart(totalPages-4);
-      setEnd(totalPages);
+      _setRange(totalPages-4, totalPages);
     }
     else if(page-4 >= 1) {
-      setStart(page-4);
-      setEnd(page);
+      _setRange(page-4, page);
     }
   }, []);
 
@@ -38,33 +34,31 @@ const Pagination = ({page, totalPages, onPageClick, dataTestId}) => {
   useEffect(() => {
     // When the totalPages is updated and it is less than the rangeEnd, we _may_ need to recalculate the range we show.
     if(totalPages < rangeEnd && totalPages-4 >= 1) {
-      setStart(totalPages-4);
-      return setEnd(totalPages);
+      return _setRange(totalPages-4, totalPages);
     }
     if(totalPages < rangeEnd){
-      setStart(1);
-      return setEnd(totalPages);
+      return _setRange(1, totalPages);
     }
 
     if(totalPages > rangeEnd && totalPages <= 5) {
-      setStart(1);
-      return setEnd(totalPages);
+      return _setRange(1, totalPages);
     }
     if(totalPages > rangeEnd && page===rangeEnd-1 && page+2 <= totalPages) {
-      setStart(page-2);
-      return setEnd(page+2);
+      return _setRange(page-2, page+2);
     }
     if(totalPages > rangeEnd && page===rangeEnd && page+1 <= totalPages) {
-      setStart(page-3);
-      return setEnd(page+1);
+      return _setRange(page-3, page+1);
     }
 
   }, [totalPages])
 
-  const _fetchAndUpdateRange = (page, start, end) => {
-    onPageClick(page);
+  const _setRange = (start, end) => {
     setStart(start);
     setEnd(end);
+  };
+  const _fetchAndUpdateRange = (page, start, end) => {
+    onPageClick(page);
+    _setRange(start, end);
   };
 
   const _onClick = (clickedPage) => {
