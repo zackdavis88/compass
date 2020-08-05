@@ -27,7 +27,8 @@ describe("<DashboardProjectsTable />", () => {
       }],
       actions: {
         deleteProject: jest.fn(),
-        updateProject: jest.fn(),
+        addMember: jest.fn(),
+        addStory: jest.fn(),
         viewProject: jest.fn()
       }
     };
@@ -72,7 +73,7 @@ describe("<DashboardProjectsTable />", () => {
   it("should render the action buttons for each row", () => {
     const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
     expect(getAllByTestId("action.deleteProject")).toHaveLength(2);
-    expect(getAllByTestId("action.editProject")).toHaveLength(2);
+    expect(getAllByTestId("action.addStory")).toHaveLength(2);
     expect(getAllByTestId("action.addMember")).toHaveLength(2);
     expect(getAllByTestId("action.viewProject")).toHaveLength(2);
   });
@@ -94,7 +95,7 @@ describe("<DashboardProjectsTable />", () => {
   it("should render the action tooltips if they are allowed", () => {
     const {getAllByText} = render(<DashboardProjectsTable {...props}/>);
     expect(getAllByText("Delete Project")).toHaveLength(1);
-    expect(getAllByText("Edit Project")).toHaveLength(1);
+    expect(getAllByText("Add Story")).toHaveLength(2);
     expect(getAllByText("Add Member")).toHaveLength(1);
     expect(getAllByText("View Project")).toHaveLength(2);
   });
