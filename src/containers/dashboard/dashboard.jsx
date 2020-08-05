@@ -5,7 +5,7 @@ import {DashboardWrapper, DashboardActionButtons} from "./dashboard.styles";
 import Tabs from "../../components/tabs/tabs";
 import {showNotification} from "../../store/actions/notification";
 import {getDashboard} from "../../store/actions/dashboard";
-import {createProject, updateProject, deleteProject} from "../../store/actions/project";
+import {createProject, deleteProject} from "../../store/actions/project";
 import {getAvailableUsers, createMembership} from "../../store/actions/membership";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Button from "../../components/button/button";
@@ -25,7 +25,6 @@ const Dashboard = (props) => {
     projectRequestInProgress,
     membershipRequestInProgress,
     createProject,
-    updateProject,
     deleteProject,
     projects,
     historyPush,
@@ -33,7 +32,6 @@ const Dashboard = (props) => {
     createMembership
   } = props;
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
-  // const [editProjectData, setEditProject] = useState({});
   const [deleteProjectData, setDeleteProject] = useState({});
   const [membershipData, setMembershipData] = useState({});
 
@@ -92,7 +90,7 @@ const Dashboard = (props) => {
               onSubmit={createProject}
               showNotification={showNotification}
               requestInProgress={projectRequestInProgress}
-              refreshDashboard={getDashboard}
+              refresh={getDashboard}
             />
           )}
           {membershipData.project && (
@@ -106,15 +104,6 @@ const Dashboard = (props) => {
               project={membershipData.project}
             />
           )}
-          {/* {editProjectData.id && (
-            <ProjectModal
-              onClose={() => setEditProject({})}
-              onSubmit={updateProject}
-              requestInProgress={projectRequestInProgress}
-              refreshDashboard={getDashboard}
-              project={editProjectData}
-            />
-          )} */}
           {deleteProjectData.id && (
             <DeleteModal
               onClose={() => setDeleteProject({})}
@@ -146,7 +135,6 @@ Dashboard.propTypes = {
   projectRequestInProgress: PropTypes.bool.isRequired,
   membershipRequestInProgress: PropTypes.bool.isRequired,
   createProject: PropTypes.func.isRequired,
-  updateProject: PropTypes.func.isRequired,
   deleteProject: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
   historyPush: PropTypes.func.isRequired,
@@ -165,7 +153,6 @@ export default connect((state) => ({
   getDashboard,
   showNotification,
   createProject,
-  updateProject,
   deleteProject,
   historyPush: push,
   getAvailableUsers,
