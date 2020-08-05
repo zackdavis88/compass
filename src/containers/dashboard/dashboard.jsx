@@ -33,7 +33,7 @@ const Dashboard = (props) => {
     createMembership
   } = props;
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
-  const [editProjectData, setEditProject] = useState({});
+  // const [editProjectData, setEditProject] = useState({});
   const [deleteProjectData, setDeleteProject] = useState({});
   const [membershipData, setMembershipData] = useState({});
 
@@ -45,9 +45,9 @@ const Dashboard = (props) => {
     projects,
     actions: {
       deleteProject: (project) => setDeleteProject(project),
-      updateProject: (project) => setEditProject(project),
       addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
-      viewProject: (project) => historyPush(`/projects/${project.id}`)
+      viewProject: (project) => historyPush(`/projects/${project.id}`),
+      addStory: (project) => {}
     }
   };
 
@@ -65,14 +65,6 @@ const Dashboard = (props) => {
               startIcon={faPlus}
               dataTestId="dashboardNewProject"
               onClick={() => setShowNewProjectModal(true)}
-            />
-            <Button
-              small
-              secondary
-              label="New Story"
-              startIcon={faPlus}
-              dataTestId="dashboardNewStory"
-              onClick={() => {}}
             />
           </DashboardActionButtons>
           <Tabs dataTestId="dashboardTabs">
@@ -114,7 +106,7 @@ const Dashboard = (props) => {
               project={membershipData.project}
             />
           )}
-          {editProjectData.id && (
+          {/* {editProjectData.id && (
             <ProjectModal
               onClose={() => setEditProject({})}
               onSubmit={updateProject}
@@ -122,7 +114,7 @@ const Dashboard = (props) => {
               refreshDashboard={getDashboard}
               project={editProjectData}
             />
-          )}
+          )} */}
           {deleteProjectData.id && (
             <DeleteModal
               onClose={() => setDeleteProject({})}
