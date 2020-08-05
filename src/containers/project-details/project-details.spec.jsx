@@ -102,7 +102,9 @@ describe("<ProjectDetails />", () => {
         isLoading: true
       }
     });
-    store.dispatch = jest.fn().mockReturnValueOnce({}).mockReturnValueOnce({});
+    // Kinda hacky but we dont use projectIsLoading to determine if we show the spinner or not anymore...
+    // instead we just show the spinner if we have undefined data.
+    store.dispatch = jest.fn().mockReturnValueOnce(undefined).mockReturnValueOnce(undefined);
     const {getByTestId, getByText} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("projectDetailsLoader")).toBeDefined();
