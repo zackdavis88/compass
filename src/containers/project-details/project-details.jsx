@@ -123,7 +123,6 @@ const ProjectDetails = (props) => {
         ) : 
         (
           <Fragment>
-            {/* TODO: Test rendering of ProjectActionButtons and the modals they render as well */}
             {userRoles && <ProjectActionButtons>
               {userRoles.isAdmin && (
                 <Button
