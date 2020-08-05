@@ -73,9 +73,7 @@ describe("<Dashboard />", () => {
   it("should render the dashboard action buttons", () => {
     const {getByTestId, getByText} = render(<Dashboard />, store);
     expect(getByTestId("dashboardNewProject")).toBeDefined();
-    expect(getByTestId("dashboardNewStory")).toBeDefined();
     expect(getByText("New Project")).toBeDefined();
-    expect(getByText("New Story")).toBeDefined();
   });
 
   it("should render the tabs component", () => {
@@ -120,14 +118,6 @@ describe("<Dashboard />", () => {
   it("should render the projects table if there are projects to display", () => {
     const {getByTestId} = render(<Dashboard />, store);
     expect(getByTestId("dashboardProjects")).toBeDefined();
-  });
-
-  it("should render the ProjectModal if the edit project action is clicked", () => {
-    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
-    const editButton = getByTestId("action.editProject");
-    expect(queryByTestId("projectModal.wrapper")).toBeNull();
-    fireEvent.click(editButton);
-    expect(queryByTestId("projectModal.wrapper")).toBeDefined();
   });
 
   it("should render the DeleteModal if the delete project action is clicked", () => {

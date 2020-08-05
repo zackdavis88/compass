@@ -124,7 +124,8 @@ DeleteModal.propTypes = {
   expectedInput: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.bool
-  ]).isRequired
+  ]).isRequired,
+  showNotification: PropTypes.func
 };
 
 export default DeleteModal;

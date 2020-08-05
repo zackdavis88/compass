@@ -14,7 +14,9 @@ import {
   tertiaryBlue26,
   primaryRed,
   secondaryRed,
+  secondaryRed1a,
   tertiaryRed,
+  tertiaryRed26,
   buttonHeight,
   smallButtonHeight
 } from "../../common-styles/variables";
@@ -54,10 +56,16 @@ export const ButtonWrapper = styled.div`
       border-color: ${primaryBlue};
     `}
 
-    ${({danger}) => danger && css`
+    ${({primary, danger}) => danger && primary && css`
       color: ${white};
       background-color: ${primaryRed};
     `}
+
+    ${({secondary, danger}) => danger && secondary && css`
+      color: ${primaryRed};
+      background-color: ${white};
+      border-color: ${primaryRed};
+  `}
   }
 
   & button:hover {
@@ -72,8 +80,14 @@ export const ButtonWrapper = styled.div`
       border-color: ${secondaryBlue};
     `}
 
-    ${({danger}) => danger && css`
+    ${({primary, danger}) => danger && primary && css`
       background-color: ${secondaryRed};
+    `}
+
+    ${({secondary, danger}) => danger && secondary && css`
+      color: ${secondaryRed};
+      background-color: ${secondaryRed1a};
+      border-color: ${secondaryRed};
     `}
   }
 
@@ -89,8 +103,14 @@ export const ButtonWrapper = styled.div`
       background-color: ${tertiaryBlue26};
     `}
 
-    ${({danger}) => danger && css`
+    ${({primary, danger}) => danger && primary && css`
       background-color: ${tertiaryRed};
+    `}
+
+    ${({secondary, danger}) => danger && secondary && css`
+      color: ${tertiaryRed};
+      background-color: ${tertiaryRed26};
+      border-color: ${tertiaryRed};
     `}
   }
 

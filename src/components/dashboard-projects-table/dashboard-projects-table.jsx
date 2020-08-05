@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import PropTypes from "prop-types";
 import Table from "../table/table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faArrowRight, faTrash, faEdit, faUserPlus} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faTrash, faBook, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate, getPermissionLevel} from "../../utils";
 import {ActionsWrapper, Action} from "../table/table.styles";
@@ -16,11 +16,12 @@ const DashboardProjectsTable = ({projects, actions}) => {
   }, {}));
 
   const _renderActions = (row) => {
-    const {deleteProject, updateProject, addMember, viewProject} = actions;
+    const {deleteProject, addStory, addMember, viewProject} = actions;
     const {isAdmin, isManager, isDeveloper, isViewer} = row.roles;
     const rowHovered = hoverMap[row.id];
     const adminAllowed = isAdmin;
     const managerAllowed = (isAdmin || isManager);
+    const developerAllowed = (isAdmin || isManager || isDeveloper);
     const viewerAllowed = (isAdmin || isManager || isDeveloper || isViewer);
     return (
       <ActionsWrapper>
@@ -28,13 +29,13 @@ const DashboardProjectsTable = ({projects, actions}) => {
           <FontAwesomeIcon icon={faTrash} fixedWidth />
           {adminAllowed && <Tooltip text={"Delete Project"} />}
         </Action>
-        <Action data-testid="action.editProject" highlightAction={rowHovered && managerAllowed} onClick={() => managerAllowed && updateProject(row)}>
-          <FontAwesomeIcon icon={faEdit} fixedWidth />
-          {managerAllowed && <Tooltip text={"Edit Project"} />}
-        </Action>
         <Action data-testid="action.addMember" highlightAction={rowHovered && managerAllowed} onClick={() => managerAllowed && addMember(row, adminAllowed)}>
           <FontAwesomeIcon icon={faUserPlus} fixedWidth />
           {managerAllowed && <Tooltip text={"Add Member"} />}
+        </Action>
+        <Action data-testid="action.addStory" highlightAction={rowHovered && developerAllowed} onClick={() => developerAllowed && addStory(row)}>
+          <FontAwesomeIcon icon={faBook} fixedWidth />
+          {developerAllowed && <Tooltip text={"Add Story"} />}
         </Action>
         <Action data-testid="action.viewProject" highlightAction={rowHovered && viewerAllowed} onClick={() => viewerAllowed && viewProject(row)}>
           <FontAwesomeIcon icon={faArrowRight} fixedWidth />
@@ -84,7 +85,8 @@ DashboardProjectsTable.propTypes = {
   projects: PropTypes.array.isRequired,
   actions: PropTypes.shape({
     deleteProject: PropTypes.func.isRequired,
-    updateProject: PropTypes.func.isRequired,
+    addMember: PropTypes.func.isRequired,
+    addStory: PropTypes.func.isRequired,
     viewProject: PropTypes.func.isRequired
   }).isRequired
 };
