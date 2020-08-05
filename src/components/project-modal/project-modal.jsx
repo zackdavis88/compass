@@ -40,8 +40,8 @@ const ProjectModal = (props) => {
       return props.showNotification(response.error, "info", false);
     
     props.onClose();
-    if(props.refreshDashboard)
-      props.refreshDashboard();
+    if(props.refresh)
+      props.refresh();
     
     if(props.showNotification)
       props.showNotification(response.message, "info", true);
@@ -110,7 +110,7 @@ ProjectModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   showNotification: PropTypes.func,
   requestInProgress: PropTypes.bool.isRequired,
-  refreshDashboard: PropTypes.func,
+  refresh: PropTypes.func,
   project: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,

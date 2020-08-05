@@ -11,7 +11,7 @@ describe("<ProjectModal />", () => {
       onSubmit: jest.fn(),
       showNotification: jest.fn(),
       requestInProgress: false,
-      refreshDashboard: jest.fn()
+      refresh: jest.fn()
     };
   });
 
@@ -105,7 +105,7 @@ describe("<ProjectModal />", () => {
     expect(props.onSubmit).toHaveBeenCalledWith(name, description, true);
   });
 
-  it("should call onClose, refreshDashboard, and showNotification methods after a successful API call", async() => {
+  it("should call onClose, refresh, and showNotification methods after a successful API call", async() => {
     const expectedMessage = "unit test success message";
     props.onSubmit.mockReturnValueOnce({message: expectedMessage});
     const {getByTestId} = render(<ProjectModal {...props}/>);
@@ -115,7 +115,7 @@ describe("<ProjectModal />", () => {
     fireEvent.click(submitButton);
     await waitFor(() => expect(props.onSubmit).toHaveBeenCalled());
     expect(props.onClose).toHaveBeenCalledTimes(1);
-    expect(props.refreshDashboard).toHaveBeenCalledTimes(1);
+    expect(props.refresh).toHaveBeenCalledTimes(1);
     expect(props.showNotification).toHaveBeenCalledWith(expectedMessage, "info", true);
   });
 
