@@ -15,11 +15,6 @@ export const Action = styled.div`
   color: ${black33};
   transition: color 100ms linear;
 
-  ${({highlightAction}) => highlightAction && css`
-    color: ${black};
-    cursor: pointer;
-  `}
-
   &:hover ${TooltipWrapper} {
     font-size: 16px;
     visibility: visible;
@@ -27,6 +22,13 @@ export const Action = styled.div`
     left: -50px;
     bottom: -33px;
   }
+
+  ${({highlightAction}) => highlightAction && css`
+    table tr:hover & {
+      color: ${black};
+      cursor: pointer;
+    }
+  `}
 `;
 
 export const ActionsWrapper = styled.div`
@@ -72,3 +74,8 @@ export const TableWrapper = styled.div`
     }
   }
 `;
+
+// & tbody tr:hover ${Action} {
+//   ${console.log(Action)}
+//   color: ${black};
+// }
