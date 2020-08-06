@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Table from "../table/table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,36 +8,28 @@ import {formatDate, getPermissionLevel} from "../../utils";
 import {ActionsWrapper, Action} from "../table/table.styles";
 
 const DashboardProjectsTable = ({projects, actions}) => {
-  const [hoverMap, setHover] = useState(projects.reduce((prev, curr) => {
-    if(curr.id)
-      return Object.assign(prev, {[curr.id]: false});
-    
-    return prev;
-  }, {}));
-
   const _renderActions = (row) => {
     const {deleteProject, addStory, addMember, viewProject} = actions;
     const {isAdmin, isManager, isDeveloper, isViewer} = row.roles;
-    const rowHovered = hoverMap[row.id];
     const adminAllowed = isAdmin;
     const managerAllowed = (isAdmin || isManager);
     const developerAllowed = (isAdmin || isManager || isDeveloper);
     const viewerAllowed = (isAdmin || isManager || isDeveloper || isViewer);
     return (
       <ActionsWrapper>
-        <Action data-testid="action.deleteProject" highlightAction={rowHovered && adminAllowed} onClick={() => adminAllowed && deleteProject(row)}>
+        <Action data-testid="action.deleteProject" highlightAction={adminAllowed} onClick={() => adminAllowed && deleteProject(row)}>
           <FontAwesomeIcon icon={faTrash} fixedWidth />
           {adminAllowed && <Tooltip text={"Delete Project"} />}
         </Action>
-        <Action data-testid="action.addMember" highlightAction={rowHovered && managerAllowed} onClick={() => managerAllowed && addMember(row, adminAllowed)}>
+        <Action data-testid="action.addMember" highlightAction={managerAllowed} onClick={() => managerAllowed && addMember(row, adminAllowed)}>
           <FontAwesomeIcon icon={faUserPlus} fixedWidth />
           {managerAllowed && <Tooltip text={"Add Member"} />}
         </Action>
-        <Action data-testid="action.addStory" highlightAction={rowHovered && developerAllowed} onClick={() => developerAllowed && addStory(row)}>
+        <Action data-testid="action.addStory" highlightAction={developerAllowed} onClick={() => developerAllowed && addStory(row)}>
           <FontAwesomeIcon icon={faBook} fixedWidth />
           {developerAllowed && <Tooltip text={"Add Story"} />}
         </Action>
-        <Action data-testid="action.viewProject" highlightAction={rowHovered && viewerAllowed} onClick={() => viewerAllowed && viewProject(row)}>
+        <Action data-testid="action.viewProject" highlightAction={viewerAllowed} onClick={() => viewerAllowed && viewProject(row)}>
           <FontAwesomeIcon icon={faArrowRight} fixedWidth />
           {viewerAllowed && <Tooltip text={"View Project"} />}
         </Action>
@@ -69,11 +61,7 @@ const DashboardProjectsTable = ({projects, actions}) => {
       label: "Actions",
       renderActions: _renderActions
     }],
-    rows: projects,
-    rowProps: (row) => ({
-      onMouseOver: () => setHover({...hoverMap, [row.id]: true}),
-      onMouseLeave: () => setHover({...hoverMap, [row.id]: false})
-    })
+    rows: projects
   };
 
   return (
