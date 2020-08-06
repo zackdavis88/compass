@@ -15,6 +15,7 @@ import DeleteModal from "../../components/delete-modal/delete-modal";
 import {push} from "connected-react-router";
 import MembershipModal from "../../components/membership-modal/membership-modal";
 import ActionsMenu from "../../components/actions-menu/actions-menu";
+import PageHeader from "../../components/page-header/page-header";
 
 const Dashboard = (props) => {
   const {
@@ -64,6 +65,7 @@ const Dashboard = (props) => {
         <LoadingSpinner alignCenter dataTestId="dashboardLoader" message={`Loading Dashboard for ${userInfo.displayName}`}/>
       ) : (
         <Fragment>
+          <PageHeader text="Dashboard" textCenter dataTestId="dashboardHeader" />
           <ActionsMenu {...actionsMenuProps} />
           <Tabs dataTestId="dashboardTabs">
             <Tabs.TabHeaders>

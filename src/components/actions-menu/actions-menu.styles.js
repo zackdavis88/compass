@@ -2,7 +2,7 @@ import styled, {css} from "styled-components";
 import { transparent, black, black80, black1a, black26, white } from "../../common-styles/variables";
 import { fadeIn } from "../../common-styles/animations";
 
-export const ProjectActionsWrapper = styled.div`
+export const ActionsWrapper = styled.div`
   position: absolute;
   right: 50px;
   top: 30px;

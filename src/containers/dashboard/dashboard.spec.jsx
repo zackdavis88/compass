@@ -70,6 +70,12 @@ describe("<Dashboard />", () => {
     expect(getByText("Loading Dashboard for unitTestUser")).toBeDefined();
   });
 
+  it("should render the Dashboard header", () => {
+    const {getByTestId, getByText} = render(<Dashboard />, store);
+    expect(getByTestId("dashboardHeader")).toBeDefined();
+    expect(getByText("Dashboard")).toBeDefined();
+  });
+
   it("should render the dashboard actions menu", () => {
     const {getByTestId, getAllByText} = render(<Dashboard />, store);
     expect(getByTestId("dashboardActionsMenu")).toBeDefined();
