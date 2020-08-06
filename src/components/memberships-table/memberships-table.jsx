@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Table from "../table/table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,15 +8,9 @@ import {formatDate, getPermissionLevel} from "../../utils";
 import {ActionsWrapper, Action} from "../table/table.styles";
 import {MembershipsTableWrapper, PaginationSection} from "./memberships-table.styles";
 import Pagination from "../pagination/pagination";
+import {TableValue} from "../table/table.styles";
 
 const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
-  const [hoverMap, setHover] = useState(memberships.reduce((prev, curr) => {
-    if(curr.id)
-      return Object.assign(prev, {[curr.id]: false});
-    
-    return prev;
-  }, {}));
-
   const _renderActions = (row) => {//row is a membership object in this Table instance.
     const {deleteMembership, editMembership} = actions;
     // determine logged in user's permission levels
@@ -28,14 +22,13 @@ const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
 
     // based on the requesting user's roles and a member's existing roles, we can determine if actions are allowed.
     const actionAllowed = isAdmin ? adminPermissions : (adminPermissions || managerPermissions);
-    const rowHovered = hoverMap[row.id];
     return (
       <ActionsWrapper>
-        <Action data-testid="action.deleteMembership" highlightAction={rowHovered && actionAllowed} onClick={() => actionAllowed && deleteMembership(row)}>
+        <Action data-testid="action.deleteMembership" highlightAction={actionAllowed} onClick={() => actionAllowed && deleteMembership(row)}>
           <FontAwesomeIcon icon={faUserTimes} fixedWidth />
           {actionAllowed && <Tooltip text={"Remove Member"} />}
         </Action>
-        <Action data-testid="action.editMembership" highlightAction={rowHovered && actionAllowed} onClick={() => actionAllowed && editMembership(row)}>
+        <Action data-testid="action.editMembership" highlightAction={actionAllowed} onClick={() => actionAllowed && editMembership(row)}>
           <FontAwesomeIcon icon={faUserEdit} fixedWidth />
           {actionAllowed && <Tooltip text={"Edit Roles"} />}
         </Action>
@@ -48,7 +41,9 @@ const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
     headers: [{
       label: "User",
       keyName: "user",
-      format: (user) => user.displayName
+      format: (user) => (
+        <TableValue truncated maxWidth="255px">{user.displayName}</TableValue>
+      )
     }, {
       label: "Permission Level",
       keyName: "roles",
@@ -61,11 +56,7 @@ const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
       label: "Actions",
       renderActions: _renderActions
     }],
-    rows: memberships,
-    rowProps: (row) => ({
-      onMouseOver: () => setHover({...hoverMap, [row.id]: true}),
-      onMouseLeave: () => setHover({...hoverMap, [row.id]: false})
-    })
+    rows: memberships
   };
 
   const paginationProps = {

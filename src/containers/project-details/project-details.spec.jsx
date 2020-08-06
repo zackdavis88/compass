@@ -111,6 +111,14 @@ describe("<ProjectDetails />", () => {
     expect(getByText("Loading project details")).toBeDefined();
   });
 
+  it("should render the project details page header", async() => {
+    const {getByTestId, getByText} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    expect(getByTestId("projectDetailsHeader")).toBeDefined();
+    expect(getByText(`Project - Unit Test Project`)).toBeDefined();
+
+  });
+
   it("should render the project details, members, and backlog tabs", async() => {
     const {getByTestId, getByText} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
@@ -250,85 +258,93 @@ describe("<ProjectDetails />", () => {
     expect(queryByTestId("membershipModal.wrapper")).toBeDefined();
   });
 
-  it("should render the 'Delete Project' button if the user has admin permissions", async() => {
+  it("should render the actions menu component for admins/managers", async() => {
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(getByTestId("detailsDeleteProject")).toBeDefined();
-    expect(getByText("Delete Project")).toBeDefined();
+    expect(getByTestId("projectDetailsActionsMenu")).toBeDefined();
+    expect(getByText("Actions")).toBeDefined();
   });
 
-  it("should not render the 'Delete Project' button if the user has non-admin permissions", async() => {
+  it("should not render the actions menu component for developers/viewers", async() => {
     store.dispatch = jest.fn();
-    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isManager: true}}));
+    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isDeveloper: true}}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
     const {queryByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(queryByTestId("detailsDeleteProject")).toBeNull();
+    expect(queryByTestId("projectDetailsActionsMenu")).toBeNull();
+    expect(queryByText("Actions")).toBeNull();
+  });
+  
+  it("should render the 'Delete Project' action if the user has admin permissions", async() => {
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
+    expect(getByText("Delete Project")).toBeDefined();
+  });
+
+  it("should not render the 'Delete Project' action if the user has non-admin permissions", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isManager: true}}));
+    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    const {queryByText, getByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
     expect(queryByText("Delete Project")).toBeNull();
   });
 
   it("should render the delete project modal when 'Delete Project' is clicked", async() => {
-    const {getByTestId} = render(<ProjectDetails {...props} />, store);
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    const deleteButton = getByTestId("detailsDeleteProject");
-    fireEvent.click(deleteButton);
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
+    const deleteItem = getByText("Delete Project");
+    fireEvent.click(deleteItem);
     expect(getByTestId("projectDeleteModal.wrapper")).toBeDefined();
   });
 
-  it("should render the 'Edit Project' button if the user has admin/manager permissions", async() => {
+  it("should render the 'Edit Project' action if the user has admin/manager permissions", async() => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isManager: true}}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(getByTestId("detailsEditProject")).toBeDefined();
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
     expect(getByText("Edit Project")).toBeDefined();
   });
 
-  it("should not render the 'Edit Project' button if the user has insufficient permissions", async() => {
-    store.dispatch = jest.fn();
-    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isDeveloper: true}}));
-    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
-    const {queryByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(queryByTestId("detailsEditProject")).toBeNull();
-    expect(queryByText("Edit Project")).toBeNull();
-  });
-
   it("should render the edit project modal when 'Edit Project' is clicked", async() => {
-    const {getByTestId} = render(<ProjectDetails {...props} />, store);
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    const editButton = getByTestId("detailsEditProject");
-    fireEvent.click(editButton);
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
+    const editItem = getByText("Edit Project");
+    fireEvent.click(editItem);
     expect(getByTestId("projectModal.wrapper")).toBeDefined();
   });
 
-  it("should render the 'Add Member' button if the user has admin/manager permissions", async() => {
+
+  it("should render the 'Add Member' action if the user has admin/manager permissions", async() => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isManager: true}}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(getByTestId("detailsNewMember")).toBeDefined();
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
     expect(getByText("Add Member")).toBeDefined();
-  });
-
-  it("should not render the 'Add Member' button if the user has insufficient permissions", async() => {
-    store.dispatch = jest.fn();
-    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isDeveloper: true}}));
-    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
-    const {queryByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(queryByTestId("detailsNewMember")).toBeNull();
-    expect(queryByText("Add Member")).toBeNull();
   });
 
   it("should render the add member modal when 'Add Member' is clicked", async() => {
     store.dispatch.mockReturnValueOnce({users: []});
-    const {getByTestId} = render(<ProjectDetails {...props} />, store);
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    const addMemberButton = getByTestId("detailsNewMember");
-    fireEvent.click(addMemberButton);
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
+    const editItem = getByText("Add Member");
+    fireEvent.click(editItem);
     expect(getByTestId("membershipModal.wrapper")).toBeDefined();
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
   });

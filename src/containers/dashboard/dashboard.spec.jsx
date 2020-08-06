@@ -70,9 +70,22 @@ describe("<Dashboard />", () => {
     expect(getByText("Loading Dashboard for unitTestUser")).toBeDefined();
   });
 
-  it("should render the dashboard action buttons", () => {
+  it("should render the Dashboard header", () => {
     const {getByTestId, getByText} = render(<Dashboard />, store);
-    expect(getByTestId("dashboardNewProject")).toBeDefined();
+    expect(getByTestId("dashboardHeader")).toBeDefined();
+    expect(getByText("Dashboard")).toBeDefined();
+  });
+
+  it("should render the dashboard actions menu", () => {
+    const {getByTestId, getAllByText} = render(<Dashboard />, store);
+    expect(getByTestId("dashboardActionsMenu")).toBeDefined();
+    expect(getAllByText("Actions")).toBeDefined();
+  });
+
+  it("should render the 'New Project' item under the actions menu", () => {
+    const {getByTestId, getByText} = render(<Dashboard />, store);
+    const actionsMenu = getByTestId("dashboardActionsMenu");
+    fireEvent.click(actionsMenu);
     expect(getByText("New Project")).toBeDefined();
   });
 
@@ -84,9 +97,10 @@ describe("<Dashboard />", () => {
   });
 
   it("should render the ProjectModal when the new project button is clicked", () => {
-    const {queryByTestId} = render(<Dashboard />, store);
-    const newProjectButton = queryByTestId("dashboardNewProject");
-    expect(newProjectButton).toBeDefined();
+    const {getByTestId, getByText, queryByTestId} = render(<Dashboard />, store);
+    const actionsMenu = getByTestId("dashboardActionsMenu");
+    fireEvent.click(actionsMenu);
+    const newProjectButton = getByText("New Project");
     expect(queryByTestId("projectModal.wrapper")).toBeNull();
     fireEvent.click(newProjectButton);
     expect(queryByTestId("projectModal.wrapper")).toBeDefined();

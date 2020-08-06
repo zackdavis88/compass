@@ -15,11 +15,6 @@ export const Action = styled.div`
   color: ${black33};
   transition: color 100ms linear;
 
-  ${({highlightAction}) => highlightAction && css`
-    color: ${black};
-    cursor: pointer;
-  `}
-
   &:hover ${TooltipWrapper} {
     font-size: 16px;
     visibility: visible;
@@ -27,6 +22,13 @@ export const Action = styled.div`
     left: -50px;
     bottom: -33px;
   }
+
+  ${({highlightAction}) => highlightAction && css`
+    table tr:hover & {
+      color: ${black};
+      cursor: pointer;
+    }
+  `}
 `;
 
 export const ActionsWrapper = styled.div`
@@ -43,6 +45,19 @@ export const ActionsWrapper = styled.div`
   }
 `;
 
+export const TableValue = styled.div`
+  width: auto;
+  ${({maxWidth}) => maxWidth && css`
+    max-width: ${maxWidth};
+  `}
+
+  ${({truncated}) => truncated && css`
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  `}
+`;
+
 export const TableWrapper = styled.div`
   position: relative;
 
@@ -50,6 +65,7 @@ export const TableWrapper = styled.div`
     width: 100%;
     border-collapse: collapse;
     font-size: 18px;
+    overflow: hidden;
 
     & th {
       width: 10%;

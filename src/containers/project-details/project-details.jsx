@@ -9,8 +9,7 @@ import {
   ProjectID,
   ProjectVisibility,
   ProjectDescription,
-  Statistic,
-  ProjectActionButtons
+  Statistic
 } from "./project-details.styles";
 import {getProject, updateProject, deleteProject} from "../../store/actions/project";
 import {getMemberships, deleteMembership, updateMembership, createMembership, getAvailableUsers} from "../../store/actions/membership";
@@ -22,10 +21,11 @@ import MembershipsTable from "../../components/memberships-table/memberships-tab
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import MembershipModal from "../../components/membership-modal/membership-modal";
 import { faTrash, faEdit, faUserTimes, faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import Button from "../../components/button/button";
 import ProjectModal from "../../components/project-modal/project-modal";
 import {push} from "connected-react-router";
 import {showNotification} from "../../store/actions/notification";
+import ActionsMenu from "../../components/actions-menu/actions-menu";
+import PageHeader from "../../components/page-header/page-header";
 
 const ProjectDetails = (props) => {
   // Extracting our props for use and declaring component states.
@@ -113,6 +113,26 @@ const ProjectDetails = (props) => {
   
   const project = projectData && projectData.project;
   const userRoles = projectData && projectData.userRoles;
+  const actionsMenuProps = {
+    dataTestId: "projectDetailsActionsMenu",
+    menuItems: [{
+      icon: faEdit,
+      label: "Edit Project",
+      onClick: () => setShowProjectEditModal(true)
+    }, {
+      icon: faUserPlus,
+      label: "Add Member",
+      onClick: () => setShowAddMemberModal(true)
+    }]
+  };
+  if(userRoles && userRoles.isAdmin) {
+    actionsMenuProps.menuItems.push({
+      icon: faTrash,
+      label: "Delete Project",
+      onClick: () => setShowProjectDeleteModal(true)
+    });
+  }
+
   return (
     <ProjectDetailsWrapper>
       {pageError ? (
@@ -123,39 +143,10 @@ const ProjectDetails = (props) => {
         ) : 
         (
           <Fragment>
-            {userRoles && <ProjectActionButtons>
-              {userRoles.isAdmin && (
-                <Button
-                  small
-                  secondary
-                  danger
-                  label="Delete Project"
-                  startIcon={faTrash}
-                  dataTestId="detailsDeleteProject"
-                  onClick={() => setShowProjectDeleteModal(true)}
-                />
-              )}
-              {(userRoles.isManager || userRoles.isAdmin) && (
-                <Fragment>
-                  <Button
-                    small
-                    secondary
-                    label="Edit Project"
-                    startIcon={faEdit}
-                    dataTestId="detailsEditProject"
-                    onClick={() => setShowProjectEditModal(true)}
-                  />
-                  <Button
-                    small
-                    secondary
-                    label="Add Member"
-                    startIcon={faUserPlus}
-                    dataTestId="detailsNewMember"
-                    onClick={() => setShowAddMemberModal(true)}
-                  />
-                </Fragment>
-              )}
-            </ProjectActionButtons>}
+            <PageHeader text={`Project - ${project.name}`} dataTestId="projectDetailsHeader" textCenter/>
+            {userRoles && (userRoles.isAdmin || userRoles.isManager) && (
+              <ActionsMenu {...actionsMenuProps} />
+            )}
             <Tabs dataTestId="projectDetailsTabs">
               <Tabs.TabHeaders>
                 <Tabs.Header>Details</Tabs.Header>
