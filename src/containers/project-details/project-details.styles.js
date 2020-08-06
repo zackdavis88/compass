@@ -8,7 +8,6 @@ import {
   primaryBlue,
   primaryGreen
 } from "../../common-styles/variables";
-import {ButtonWrapper} from "../../components/button/button.styles";
 
 export const ProjectDetailsWrapper = styled.div`
   position: relative;
@@ -139,24 +138,5 @@ export const Statistic = styled.div`
   &:hover span {
     color: ${black};
     border-color: ${black};
-  }
-`;
-
-export const ProjectActionButtons = styled.div`
-  position: absolute;
-  right: 50px;
-  top: 30px;
-  z-index: 2999;
-
-  & ${ButtonWrapper} {
-    display: inline-block;
-  }
-
-  & ${ButtonWrapper} {
-    margin-left: 5px;
-  }
-
-  & ${ButtonWrapper}:first-of-type {
-    margin-left: 0;
   }
 `;

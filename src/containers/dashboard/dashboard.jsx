@@ -1,20 +1,20 @@
 import React, {useEffect, useState, Fragment} from "react";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {DashboardWrapper, DashboardActionButtons} from "./dashboard.styles";
+import {DashboardWrapper} from "./dashboard.styles";
 import Tabs from "../../components/tabs/tabs";
 import {showNotification} from "../../store/actions/notification";
 import {getDashboard} from "../../store/actions/dashboard";
 import {createProject, deleteProject} from "../../store/actions/project";
 import {getAvailableUsers, createMembership} from "../../store/actions/membership";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
-import Button from "../../components/button/button";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
 import ProjectsTable from "../../components/dashboard-projects-table/dashboard-projects-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import {push} from "connected-react-router";
 import MembershipModal from "../../components/membership-modal/membership-modal";
+import ActionsMenu from "../../components/actions-menu/actions-menu";
 
 const Dashboard = (props) => {
   const {
@@ -49,22 +49,22 @@ const Dashboard = (props) => {
     }
   };
 
+  const actionsMenuProps = {
+    dataTestId: "dashboardActionsMenu",
+    menuItems: [{
+      icon: faPlus,
+      label: "New Project",
+      onClick: () => setShowNewProjectModal(true)
+    }]
+  };
+
   return (
     <DashboardWrapper>
       {isLoading ? (
         <LoadingSpinner alignCenter dataTestId="dashboardLoader" message={`Loading Dashboard for ${userInfo.displayName}`}/>
       ) : (
         <Fragment>
-          <DashboardActionButtons>
-            <Button
-              small
-              secondary
-              label="New Project"
-              startIcon={faPlus}
-              dataTestId="dashboardNewProject"
-              onClick={() => setShowNewProjectModal(true)}
-            />
-          </DashboardActionButtons>
+          <ActionsMenu {...actionsMenuProps} />
           <Tabs dataTestId="dashboardTabs">
             <Tabs.TabHeaders>
               <Tabs.Header>My Projects</Tabs.Header>
