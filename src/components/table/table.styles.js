@@ -45,6 +45,16 @@ export const ActionsWrapper = styled.div`
   }
 `;
 
+export const TruncatedValue = styled.div`
+  max-width: 300px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  ${({maxWidth}) => maxWidth && css`
+    max-width: ${maxWidth};
+  `}
+`;
+
 export const TableWrapper = styled.div`
   position: relative;
 
@@ -75,7 +85,9 @@ export const TableWrapper = styled.div`
   }
 `;
 
-// & tbody tr:hover ${Action} {
-//   ${console.log(Action)}
-//   color: ${black};
+// & .truncated {
+//   max-width: 300px;
+//   overflow: hidden;
+//   white-space: nowrap;
+//   text-overflow: ellipsis;
 // }
