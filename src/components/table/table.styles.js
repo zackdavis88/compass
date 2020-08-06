@@ -45,13 +45,15 @@ export const ActionsWrapper = styled.div`
   }
 `;
 
-export const TruncatedValue = styled.div`
-  max-width: 300px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+export const TableValue = styled.div`
   ${({maxWidth}) => maxWidth && css`
     max-width: ${maxWidth};
+  `}
+
+  ${({truncated}) => truncated && css`
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   `}
 `;
 
