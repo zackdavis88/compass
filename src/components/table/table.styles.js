@@ -46,6 +46,7 @@ export const ActionsWrapper = styled.div`
 `;
 
 export const TableValue = styled.div`
+  width: auto;
   ${({maxWidth}) => maxWidth && css`
     max-width: ${maxWidth};
   `}
@@ -64,6 +65,7 @@ export const TableWrapper = styled.div`
     width: 100%;
     border-collapse: collapse;
     font-size: 18px;
+    overflow: hidden;
 
     & th {
       width: 10%;
@@ -86,10 +88,3 @@ export const TableWrapper = styled.div`
     }
   }
 `;
-
-// & .truncated {
-//   max-width: 300px;
-//   overflow: hidden;
-//   white-space: nowrap;
-//   text-overflow: ellipsis;
-// }

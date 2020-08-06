@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Table from "../table/table";
+import {TableValue} from "../table/table.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faArrowRight, faTrash, faBook, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
@@ -41,7 +42,10 @@ const DashboardProjectsTable = ({projects, actions}) => {
     dataTestId: "dashboardProjects",
     headers: [{
       label: "Name",
-      keyName: "name"
+      keyName: "name",
+      format: (name) => (
+        <TableValue truncated maxWidth="300px">{name}</TableValue>
+      )
     }, {
       label: "Unique ID",
       keyName: "id"

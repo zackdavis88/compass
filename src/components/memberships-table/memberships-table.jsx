@@ -8,6 +8,7 @@ import {formatDate, getPermissionLevel} from "../../utils";
 import {ActionsWrapper, Action} from "../table/table.styles";
 import {MembershipsTableWrapper, PaginationSection} from "./memberships-table.styles";
 import Pagination from "../pagination/pagination";
+import {TableValue} from "../table/table.styles";
 
 const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
   const _renderActions = (row) => {//row is a membership object in this Table instance.
@@ -40,7 +41,9 @@ const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
     headers: [{
       label: "User",
       keyName: "user",
-      format: (user) => user.displayName
+      format: (user) => (
+        <TableValue truncated maxWidth="255px">{user.displayName}</TableValue>
+      )
     }, {
       label: "Permission Level",
       keyName: "roles",

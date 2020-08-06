@@ -34,5 +34,11 @@ export const ProjectSection = styled.div`
     display: inline-block;
     font-weight: bold;
     font-size: 18px;
+    vertical-align: bottom;
+    overflow: hidden;
+    width: 400px;
+    line-height: 24px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 `;
