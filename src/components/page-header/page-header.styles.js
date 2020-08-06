@@ -10,6 +10,8 @@ export const PageHeaderWrapper = styled.div`
   padding-left: 25px;
   padding-right: 25px;
   padding-top: 11px;
+  word-break: break-all;
+  overflow: hidden;
 
   ${({textCenter}) => textCenter && css`
     text-align: center;
@@ -22,7 +24,7 @@ export const PageHeaderWrapper = styled.div`
 
   & h1 {
     margin: 0;
-    font-size: 40px;
+    font-size: 35px;
     height: 100%;
 
     & svg {
