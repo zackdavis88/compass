@@ -111,6 +111,14 @@ describe("<ProjectDetails />", () => {
     expect(getByText("Loading project details")).toBeDefined();
   });
 
+  it("should render the project details page header", async() => {
+    const {getByTestId, getByText} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    expect(getByTestId("projectDetailsHeader")).toBeDefined();
+    expect(getByText(`Project - Unit Test Project`)).toBeDefined();
+
+  });
+
   it("should render the project details, members, and backlog tabs", async() => {
     const {getByTestId, getByText} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));

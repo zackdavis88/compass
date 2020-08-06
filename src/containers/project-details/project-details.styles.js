@@ -6,12 +6,14 @@ import {
   black,
   black80,
   primaryBlue,
-  primaryGreen
+  primaryGreen,
+  pageHeaderHeight
 } from "../../common-styles/variables";
+import {ActionsWrapper} from "../../components/actions-menu/actions-menu.styles";
 
 export const ProjectDetailsWrapper = styled.div`
   position: relative;
-  height: 100%;
+  height: calc(100% - ${pageHeaderHeight});
   width: 100%;
 
   & ${TabsWrapper} {
@@ -23,6 +25,10 @@ export const ProjectDetailsWrapper = styled.div`
 
   & ${Spinner} {
     padding-top: 35px;
+  }
+
+  & ${ActionsWrapper} {
+    top: 100px;
   }
 `;
 
@@ -76,6 +82,10 @@ export const ProjectID = styled.small`
 
 export const ProjectName = styled.h1`
   margin: 0 0 5px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 655px;
 `;
 
 export const ProjectVisibility = styled.div`

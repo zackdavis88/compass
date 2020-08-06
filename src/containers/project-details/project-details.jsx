@@ -25,6 +25,7 @@ import ProjectModal from "../../components/project-modal/project-modal";
 import {push} from "connected-react-router";
 import {showNotification} from "../../store/actions/notification";
 import ActionsMenu from "../../components/actions-menu/actions-menu";
+import PageHeader from "../../components/page-header/page-header";
 
 const ProjectDetails = (props) => {
   // Extracting our props for use and declaring component states.
@@ -142,6 +143,7 @@ const ProjectDetails = (props) => {
         ) : 
         (
           <Fragment>
+            <PageHeader text={`Project - ${project.name}`} dataTestId="projectDetailsHeader" textCenter/>
             {userRoles && (userRoles.isAdmin || userRoles.isManager) && (
               <ActionsMenu {...actionsMenuProps} />
             )}
