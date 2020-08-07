@@ -106,4 +106,14 @@ export const TextAreaWrapper = styled.div`
       color: ${primaryRed};
     `}
   }
+
+  & span {
+    user-select: none;
+    color: ${black80};
+    font-style: italic;
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    cursor: text;
+  }
 `;

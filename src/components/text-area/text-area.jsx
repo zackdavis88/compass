@@ -4,6 +4,7 @@ import {TextAreaWrapper} from "./text-area.styles";
 
 const TextArea = (props) => {
   const {
+    id,
     disabled,
     label,
     placeholder,
@@ -27,7 +28,7 @@ const TextArea = (props) => {
   };
 
   const inputProps = {
-    id: "debug",
+    id,
     disabled,
     onChange: (event) => onChange(event.target.value),
     value,
@@ -41,16 +42,20 @@ const TextArea = (props) => {
     inputProps["data-testid"] = `${dataTestId}.input`;
   }
 
+  const _focusInput = () => document.getElementById(id).focus();
+
   return (
     <TextAreaWrapper {...wrapperProps}>
-      {isActive && <label>{label}</label>}
+      {isActive && <label htmlFor={id}>{label}</label>}
       <textarea {...inputProps} />
       {helperVisible && <div>{props.errorText || props.helperText}</div>}
+      {(props.isRequired && !isActive) && <span onClick={_focusInput}>required</span>}
     </TextAreaWrapper>
   );
 };
 
 TextArea.propTypes = {
+  id: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   label: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
@@ -58,7 +63,8 @@ TextArea.propTypes = {
   onChange: PropTypes.func.isRequired,
   errorText: PropTypes.string,
   helperText: PropTypes.string,
-  dataTestId: PropTypes.string
+  dataTestId: PropTypes.string,
+  isRequired: PropTypes.bool
 };
 
 export default TextArea;
