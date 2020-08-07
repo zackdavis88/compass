@@ -105,5 +105,6 @@ export const InputBoxWrapper = styled.div`
     position: absolute;
     top: 10px;
     right: 20px;
+    cursor: text;
   }
 `;
