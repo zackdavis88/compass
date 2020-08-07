@@ -65,7 +65,6 @@ export const TableWrapper = styled.div`
     width: 100%;
     border-collapse: collapse;
     font-size: 18px;
-    overflow: hidden;
 
     & th {
       width: 10%;
