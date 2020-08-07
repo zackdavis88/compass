@@ -4,6 +4,7 @@ import Modal from "../modal/modal";
 import InputBox from "../input-box/input-box";
 import RadioGroup from "../radio-group/radio-group";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
+import TextArea from "../text-area/text-area";
 
 const ProjectModal = (props) => {
   const isEdit = !!props.project;
@@ -99,7 +100,7 @@ const ProjectModal = (props) => {
   return (
     <Modal {...modalProps}>
       <InputBox {...inputProps.name} />
-      <InputBox {...inputProps.description} />
+      <TextArea {...inputProps.description} />
       <RadioGroup {...inputProps.isPrivate} />
     </Modal>
   );
