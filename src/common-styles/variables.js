@@ -41,6 +41,7 @@ export const secondaryGreen = "#268216";
 export const navbarHeight = "75px";
 export const pageHeaderHeight = "70px";
 export const inputHeight = "45px";
+export const textAreaHeight = "100px";
 export const buttonHeight = "45px";
 export const smallButtonHeight = "32px";
 export const sidebarWidth = "250px";
