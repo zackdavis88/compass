@@ -23,8 +23,8 @@ const Modal = (props) => {
 
   // Attach the clickHandler, if the modal is open, so we can close the modal if the background is clicked.
   useEffect(() => {
-    window.addEventListener("click", _handleClick);
-    return () => window.removeEventListener("click", _handleClick); // Remove listener if the modal is unmounted.
+    window.addEventListener("mousedown", _handleClick);
+    return () => window.removeEventListener("mousedown", _handleClick); // Remove listener if the modal is unmounted.
   });
 
   return (

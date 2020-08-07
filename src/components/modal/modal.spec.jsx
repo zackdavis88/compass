@@ -29,7 +29,7 @@ describe("<Modal />", () => {
   it("should call the onClose method when the area outside of the modal box is clicked", () => {
     const {getByTestId} = render(<Modal {...props} />);
     const outsideArea = getByTestId(`${props.dataTestId}.wrapper`);
-    fireEvent.click(outsideArea);
+    fireEvent.mouseDown(outsideArea);
     expect(props.onClose).toHaveBeenCalledTimes(1);
   });
 
