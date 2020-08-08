@@ -1,5 +1,10 @@
 import storyReducer from "./story";
+import {
+  createStory,
+  updateStory
+} from "../../actions/story";
 import {mockStore} from "../../../test-utils";
+import {waitFor} from "@testing-library/react";
 
 describe("Story Reducer / Actions", () => {
   let store;
@@ -43,5 +48,23 @@ describe("Story Reducer / Actions", () => {
       ...expectedInitialState,
       isLoading: false
     });
+  });
+
+  it("should dispatch a redux API call to create a story", async () => {
+    store.dispatch(createStory({id: "testProjectId"}, "testStory", "testDetails", "testOwner"));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    expect(store.getActions()[0].type).toBe("STORY_REQUEST_START");
+  
+    const expectedTypes = ["STORY_REQUEST_SUCCESS", "STORY_REQUEST_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
+  });
+
+  it("should dispatch a redux API call to update a story", async () => {
+    store.dispatch(updateStory({id: "testProjectId"}, {id: "testProjectId"}, "testStory", "testDetails", "testOwner"));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    expect(store.getActions()[0].type).toBe("STORY_REQUEST_START");
+  
+    const expectedTypes = ["STORY_REQUEST_SUCCESS", "STORY_REQUEST_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
   });
 });
