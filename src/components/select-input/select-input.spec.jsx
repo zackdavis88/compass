@@ -53,6 +53,14 @@ describe("<SelectInput />", () => {
     expect(getByText("required")).toBeDefined();
   });
 
+  it("should focus the input if 'required' is clicked", () => {
+    props.isRequired = true;
+    const { getByText, getByTestId } = render(<SelectInput  {...props} />);
+    const requiredText = getByText("required");
+    fireEvent.click(requiredText);
+    expect(getByTestId(`${props.dataTestId}.input`)).toHaveFocus();
+  });
+
   it("should not render the options flyout if the component is disabled", () => {
     props.disabled = true;
     const {getByTestId, queryByTestId} = render(<SelectInput {...props}/>);
