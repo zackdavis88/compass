@@ -32,12 +32,14 @@ const InputBox = (props) => {
     inputProps["data-testid"] = `${props.dataTestId}.input`;
   }
 
+  const _focusInput = () => document.getElementById(props.id).focus();
+
   return (
     <InputBoxWrapper {...wrapperProps}>
       {(isFocused || hasValue ) && <label htmlFor={props.id}>{props.label}</label>}
       <input {...inputProps}/>
       {helperVisible && <div>{props.errorText || props.helperText}</div>}
-      {(props.isRequired && (!isFocused && !hasValue)) && <span>required</span>}
+      {(props.isRequired && (!isFocused && !hasValue)) && <span onClick={_focusInput}>required</span>}
     </InputBoxWrapper>
   )
 };

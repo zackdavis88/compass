@@ -44,7 +44,7 @@ const DashboardProjectsTable = ({projects, actions}) => {
       label: "Name",
       keyName: "name",
       format: (name) => (
-        <TableValue truncated maxWidth="300px">{name}</TableValue>
+        <TableValue truncated maxWidth="250px">{name}</TableValue>
       )
     }, {
       label: "Unique ID",

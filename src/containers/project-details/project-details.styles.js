@@ -107,6 +107,7 @@ export const ProjectVisibility = styled.div`
 export const ProjectDescription = styled.div`
   margin-top: 20px;
   overflow-wrap: break-word;
+  white-space: pre-line;
 
   & div {
     font-style: italic;

@@ -1,53 +1,61 @@
-import styled, { css } from "styled-components";
-import { 
-  primaryRed,
-  white,
-  black,
-  black33,
-  black80,
-  black0d,
-  black05,
-  inputHeight
+import styled, {css} from "styled-components";
+import {
+  black, 
+  black33, 
+  black80, 
+  black05, 
+  black0d, 
+  white, 
+  primaryRed, 
+  textAreaHeight
 } from "../../common-styles/variables";
-import { fadeIn } from "../../common-styles/animations";
+import {fadeIn} from "../../common-styles/animations";
 
-//TODO: Making margin-bottom dynamic based on the amount of characters in helperText.
-//      Each line of text is 24px height. margin-bottom: calc(Math.ceil(helperText.length / CHAR_PER_LINE));
-export const InputBoxWrapper = styled.div`
+export const TextAreaWrapper = styled.div`
   position: relative;
+  width: 100%;
   transition: margin 100ms linear;
   overflow: visible;
-  
+
   ${({helperVisible}) => helperVisible && css`
-    margin-bottom: 35px !important;
+    margin-bottom: 20px !important;
   `}
 
-  & input {
+  & textarea {
     background-color: ${white};
+    color: ${black};
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    min-height: ${textAreaHeight};
+    height: ${textAreaHeight};
+    max-height: calc(${textAreaHeight} + 350px);
+    border-radius: 5px;
     font-size: 16px;
-    font-weight: normal;
-    height: ${inputHeight};
+    font-stretch: 100%;
+    font-weight: 400;
+    font-family: "Arial";
     padding-left: 20px;
     padding-right: 20px;
-    color: ${black};
-    border-radius: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     border: 1px solid ${black33};
-    width: 100%;
-    transition: border 100ms linear, background-color 100ms linear;
+    resize: vertical;
+    transition: border-color 100ms linear, background-color 100ms linear;
     ${({hasError}) => hasError && css`
       border-color: ${primaryRed} !important;
     `}
   }
 
-  & input::placeholder {
+  & textarea::placeholder {
     user-select: none;
   }
 
-  & input:focus {
+  & textarea:focus {
     border: 1px solid ${black80};
   }
 
-  & input:hover {
+  & textarea:hover {
     border: 1px solid ${black33};
     background-color: ${black05};
     ${({hasValue}) => hasValue && css`
@@ -55,14 +63,14 @@ export const InputBoxWrapper = styled.div`
     `}
   }
 
-  & input:disabled {
+  & textarea:disabled {
     cursor: not-allowed;
     color: ${black};
     background-color: ${black0d};
     border-color: ${black80};
   }
 
-  & input:focus:hover {
+  & textarea:focus:hover {
     background-color: ${white};
     border: 1px solid ${black80};
   }
@@ -72,13 +80,14 @@ export const InputBoxWrapper = styled.div`
     position: absolute;
     padding-left: 3px;
     padding-right: 3px;
-    top: -13px;
+    top: -10px;
     left: 17px;
     background-color: ${white};
     font-size: 15px;
     font-weight: bold;
     user-select: none;
     animation: 100ms linear 0s 1 ${fadeIn};
+    line-height: 11px;
 
     ${({hasError}) => hasError && css`
       color: ${primaryRed};
@@ -88,6 +97,7 @@ export const InputBoxWrapper = styled.div`
   & div {
     color: ${black};
     position: absolute;
+    top: calc(${textAreaHeight} + 2px);
     left: 20px;
     text-align: left;
     font-size: 15px;
@@ -103,7 +113,7 @@ export const InputBoxWrapper = styled.div`
     color: ${black80};
     font-style: italic;
     position: absolute;
-    top: 10px;
+    top: 5px;
     right: 20px;
     cursor: text;
   }

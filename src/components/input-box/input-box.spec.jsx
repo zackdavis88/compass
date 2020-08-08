@@ -73,9 +73,18 @@ describe("<InputBox />", () => {
   });
 
   it("should not render the 'required' text if the input has a value", () => {
+    inputProps.isRequired = true;
     inputProps.value = "something";
     const { queryByText } = render(<InputBox  {...inputProps} />);
     expect(queryByText("required")).toBeNull();
+  });
+
+  it("should focus the input if 'required' is clicked", () => {
+    inputProps.isRequired = true;
+    const { getByText, getByTestId } = render(<InputBox  {...inputProps} />);
+    const requiredText = getByText("required");
+    fireEvent.click(requiredText);
+    expect(getByTestId(`${inputProps.dataTestId}.input`)).toHaveFocus();
   });
 
   it("should call the onChange method when the input value has changed", () => {
