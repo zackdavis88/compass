@@ -26,6 +26,13 @@ export const getAvailableUsers = (project) => dispatch => {
   });
 };
 
+export const getMemberNames = (project) => dispatch => {
+  return dispatch({
+    types: [MEMBERSHIP_REQUEST_START, MEMBERSHIP_REQUEST_SUCCESS, MEMBERSHIP_REQUEST_FAILURE],
+    request: request.get(`/api/projects/${project.id}/memberships/all`)
+  });
+};
+
 export const getMemberships = (projectId, page, itemsPerPage) => dispatch => {
   const queryString = {};
   if(page)
