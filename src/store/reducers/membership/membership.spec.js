@@ -4,7 +4,8 @@ import {
   getAvailableUsers,
   getMemberships,
   updateMembership,
-  deleteMembership
+  deleteMembership,
+  getMemberNames
 } from "../../actions/membership";
 import {mockStore} from "../../../test-utils";
 import { waitFor } from "@testing-library/react";
@@ -87,6 +88,14 @@ describe("Membership Reducer / Actions", () => {
 
   it("should dispatch a redux API call to delete a project's memberships", async () => {
     store.dispatch(deleteMembership({id: "someMemberId", project: {id: "someProjectId"}}));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    expect(store.getActions()[0].type).toBe("MEMBERSHIP_REQUEST_START");
+    const expectedTypes = ["MEMBERSHIP_REQUEST_SUCCESS", "MEMBERSHIP_REQUEST_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
+  });
+
+  it("should dispatch a redux API call to get all member names", async () => {
+    store.dispatch(getMemberNames("testProjectId"));
     await waitFor(() => expect(store.getActions()).toHaveLength(2));
     expect(store.getActions()[0].type).toBe("MEMBERSHIP_REQUEST_START");
     const expectedTypes = ["MEMBERSHIP_REQUEST_SUCCESS", "MEMBERSHIP_REQUEST_FAILURE"];

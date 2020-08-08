@@ -19,6 +19,8 @@ const SelectInput = (props) => {
     ));
   };
 
+  const _focusInput = () => document.getElementById(props.id).focus();
+
   const wrapperProps = {
     hasError: !!props.errorText,
     hasValue,
@@ -55,7 +57,7 @@ const SelectInput = (props) => {
       {(isFocused || hasValue || showFlyout) && <label htmlFor={props.id}>{props.label}</label>}
       <input {...inputProps}/>
       {helperVisible && <div>{props.errorText}</div>}
-      {(props.isRequired && (!isFocused && !hasValue)) && <span>required</span>}
+      {(props.isRequired && (!isFocused && !hasValue)) && <span onClick={_focusInput}>required</span>}
       {showFlyout && <SelectOptionsFlyout {...flyoutProps}/>}
     </SelectInputWrapper>
   );

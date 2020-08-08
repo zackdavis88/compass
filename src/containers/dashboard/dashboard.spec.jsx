@@ -31,6 +31,9 @@ describe("<Dashboard />", () => {
       },
       membership: {
         isLoading: false
+      },
+      story: {
+        isLoading: false
       }
     });
   });
@@ -62,6 +65,9 @@ describe("<Dashboard />", () => {
         isLoading: false
       },
       membership: {
+        isLoading: false
+      },
+      story: {
         isLoading: false
       }
     });
@@ -123,6 +129,9 @@ describe("<Dashboard />", () => {
       },
       membership: {
         isLoading: false
+      },
+      story: {
+        isLoading: false
       }
     });
     const {getByText} = render(<Dashboard />, store);
@@ -149,6 +158,16 @@ describe("<Dashboard />", () => {
     expect(queryByTestId("membershipModal.wrapper")).toBeNull();
     fireEvent.click(addMemberButton);
     expect(queryByTestId("membershipModal.wrapper")).toBeDefined();
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+  });
+
+  it("should render the StoryModal if the new story action is clicked", async() => {
+    store.dispatch = jest.fn().mockReturnValue({});
+    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
+    const addStoryButton = getByTestId("action.addStory");
+    expect(queryByTestId("storyModal.wrapper")).toBeNull();
+    fireEvent.click(addStoryButton);
+    expect(queryByTestId("storyModal.wrapper")).toBeDefined();
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
   });
 

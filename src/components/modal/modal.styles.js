@@ -1,6 +1,8 @@
 import styled, { keyframes, css } from "styled-components";
 import { white, black, black26, black33, black66, black99, transparent } from "../../common-styles/variables";
 import { InputBoxWrapper } from "../input-box/input-box.styles";
+import { SelectInputWrapper } from "../select-input/select-input.styles";
+import { TextAreaWrapper } from "../text-area/text-area.styles";
 import { ButtonWrapper } from "../button/button.styles";
 const scaleIn = keyframes`
   0% {
@@ -92,7 +94,15 @@ export const ModalBody = styled.div`
   padding-right: 15px;
 
   & ${InputBoxWrapper} {
-    margin-bottom: 15px;
+    margin-bottom: 25px;
+  }
+
+  & ${SelectInputWrapper} {
+    margin-bottom: 25px;
+  }
+
+  & ${TextAreaWrapper} {
+    margin-bottom: 25px;
   }
 `;
 

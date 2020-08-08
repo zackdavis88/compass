@@ -18,7 +18,7 @@ export const TextAreaWrapper = styled.div`
   overflow: visible;
 
   ${({helperVisible}) => helperVisible && css`
-    margin-bottom: 20px !important;
+    margin-bottom: 30px !important;
   `}
 
   & textarea {

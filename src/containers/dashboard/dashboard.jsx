@@ -6,7 +6,8 @@ import Tabs from "../../components/tabs/tabs";
 import {showNotification} from "../../store/actions/notification";
 import {getDashboard} from "../../store/actions/dashboard";
 import {createProject, deleteProject} from "../../store/actions/project";
-import {getAvailableUsers, createMembership} from "../../store/actions/membership";
+import {createStory} from "../../store/actions/story";
+import {getAvailableUsers, createMembership, getMemberNames} from "../../store/actions/membership";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
@@ -16,6 +17,7 @@ import {push} from "connected-react-router";
 import MembershipModal from "../../components/membership-modal/membership-modal";
 import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
+import StoryModal from "../../components/story-modal/story-modal";
 
 const Dashboard = (props) => {
   const {
@@ -25,16 +27,20 @@ const Dashboard = (props) => {
     showNotification,
     projectRequestInProgress,
     membershipRequestInProgress,
+    storyRequestInProgress,
     createProject,
     deleteProject,
     projects,
     historyPush,
     getAvailableUsers,
-    createMembership
+    createMembership,
+    getMemberNames,
+    createStory
   } = props;
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [deleteProjectData, setDeleteProject] = useState({});
   const [membershipData, setMembershipData] = useState({});
+  const [newStoryData, setNewStoryData] = useState({});
 
   useEffect(() => {
     getDashboard();
@@ -46,7 +52,7 @@ const Dashboard = (props) => {
       deleteProject: (project) => setDeleteProject(project),
       addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
       viewProject: (project) => historyPush(`/projects/${project.id}`),
-      addStory: (project) => {}
+      addStory: (project) => setNewStoryData({project})
     }
   };
 
@@ -123,6 +129,17 @@ const Dashboard = (props) => {
               refresh={getDashboard}
             />
           )}
+          {newStoryData.project && (
+            <StoryModal
+              onClose={() => setNewStoryData({})}
+              onSubmit={createStory}
+              requestInProgress={storyRequestInProgress}
+              showNotification={showNotification}
+              getMemberNames={getMemberNames}
+              project={newStoryData.project}
+              refresh={getDashboard}
+            />
+          )}
         </Fragment>
       )}
     </DashboardWrapper>
@@ -136,12 +153,15 @@ Dashboard.propTypes = {
   getDashboard: PropTypes.func.isRequired,
   projectRequestInProgress: PropTypes.bool.isRequired,
   membershipRequestInProgress: PropTypes.bool.isRequired,
+  storyRequestInProgress: PropTypes.bool.isRequired,
   createProject: PropTypes.func.isRequired,
   deleteProject: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
   historyPush: PropTypes.func.isRequired,
   getAvailableUsers: PropTypes.func.isRequired,
-  createMembership: PropTypes.func.isRequired
+  createMembership: PropTypes.func.isRequired,
+  getMemberNames: PropTypes.func.isRequired,
+  createStory: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
@@ -150,7 +170,8 @@ export default connect((state) => ({
   stories: state.dashboard.stories,
   userInfo: state.auth.user,
   projectRequestInProgress: state.project.isLoading,
-  membershipRequestInProgress: state.membership.isLoading
+  membershipRequestInProgress: state.membership.isLoading,
+  storyRequestInProgress: state.story.isLoading
 }), {
   getDashboard,
   showNotification,
@@ -158,5 +179,7 @@ export default connect((state) => ({
   deleteProject,
   historyPush: push,
   getAvailableUsers,
-  createMembership
+  createMembership,
+  getMemberNames,
+  createStory
 })(Dashboard);
