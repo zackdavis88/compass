@@ -155,7 +155,7 @@ StoryModal.propTypes =  {
   getMemberNames: PropTypes.func.isRequired,
   project: PropTypes.shape({
     id: PropTypes.string.isRequired,
-  }),
+  }).isRequired,
   story: PropTypes.object,
   refresh: PropTypes.func
 };
