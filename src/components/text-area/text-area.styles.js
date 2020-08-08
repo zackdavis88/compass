@@ -29,7 +29,7 @@ export const TextAreaWrapper = styled.div`
     min-width: 100%;
     min-height: ${textAreaHeight};
     height: ${textAreaHeight};
-    max-height: calc(${textAreaHeight} + 150px);
+    max-height: calc(${textAreaHeight} + 350px);
     border-radius: 5px;
     font-size: 16px;
     font-stretch: 100%;
@@ -40,6 +40,7 @@ export const TextAreaWrapper = styled.div`
     padding-top: 10px;
     padding-bottom: 10px;
     border: 1px solid ${black33};
+    resize: vertical;
     transition: border-color 100ms linear, background-color 100ms linear;
     ${({hasError}) => hasError && css`
       border-color: ${primaryRed} !important;
