@@ -161,6 +161,16 @@ describe("<Dashboard />", () => {
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
   });
 
+  it("should render the StoryModal if the new story action is clicked", async() => {
+    store.dispatch = jest.fn().mockReturnValue({});
+    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
+    const addStoryButton = getByTestId("action.addStory");
+    expect(queryByTestId("storyModal.wrapper")).toBeNull();
+    fireEvent.click(addStoryButton);
+    expect(queryByTestId("storyModal.wrapper")).toBeDefined();
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+  });
+
   it("should call the push redux action when the view project action is clicked", async() => {
     store.dispatch = jest.fn();
     const {getByTestId} = render(<Dashboard />, store);
