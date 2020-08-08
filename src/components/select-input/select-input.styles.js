@@ -105,6 +105,7 @@ export const SelectInputWrapper = styled.div`
     position: absolute;
     top: 10px;
     right: 20px;
+    cursor: text;
   }
 `;
 
