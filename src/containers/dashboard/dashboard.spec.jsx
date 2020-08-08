@@ -31,6 +31,9 @@ describe("<Dashboard />", () => {
       },
       membership: {
         isLoading: false
+      },
+      story: {
+        isLoading: false
       }
     });
   });
@@ -62,6 +65,9 @@ describe("<Dashboard />", () => {
         isLoading: false
       },
       membership: {
+        isLoading: false
+      },
+      story: {
         isLoading: false
       }
     });
@@ -122,6 +128,9 @@ describe("<Dashboard />", () => {
         isLoading: false
       },
       membership: {
+        isLoading: false
+      },
+      story: {
         isLoading: false
       }
     });
