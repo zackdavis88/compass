@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faUserTimes, faUserEdit} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate, getPermissionLevel} from "../../utils";
-import {ActionsWrapper, Action} from "../table/table.styles";
-import {MembershipsTableWrapper, PaginationSection} from "./memberships-table.styles";
+import {ActionsWrapper, Action, PaginationSection} from "../table/table.styles";
+import {MembershipsTableWrapper} from "./memberships-table.styles";
 import Pagination from "../pagination/pagination";
 import {TableValue} from "../table/table.styles";
 

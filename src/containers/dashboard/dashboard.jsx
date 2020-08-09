@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import {DashboardWrapper} from "./dashboard.styles";
 import Tabs from "../../components/tabs/tabs";
 import {showNotification} from "../../store/actions/notification";
-import {getDashboard} from "../../store/actions/dashboard";
 import {createProject, deleteProject} from "../../store/actions/project";
 import {createStory} from "../../store/actions/story";
 import {getAvailableUsers, createMembership, getMemberNames} from "../../store/actions/membership";
@@ -18,11 +17,12 @@ import MembershipModal from "../../components/membership-modal/membership-modal"
 import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
 import StoryModal from "../../components/story-modal/story-modal";
+import {getDashboardProjects, getDashboardStories} from "../../store/actions/dashboard";
 
 const Dashboard = (props) => {
   const {
-    getDashboard,
-    isLoading,
+    getDashboardProjects,
+    getDashboardStories,
     userInfo,
     showNotification,
     projectRequestInProgress,
@@ -30,7 +30,6 @@ const Dashboard = (props) => {
     storyRequestInProgress,
     createProject,
     deleteProject,
-    projects,
     historyPush,
     getAvailableUsers,
     createMembership,
@@ -41,11 +40,39 @@ const Dashboard = (props) => {
   const [deleteProjectData, setDeleteProject] = useState({});
   const [membershipData, setMembershipData] = useState({});
   const [newStoryData, setNewStoryData] = useState({});
+  const [projectsData, setProjectsData] = useState(undefined);
+  const [storiesData, setStoriesData] = useState(undefined);
 
+  // called once, after the component is mounted.
+  const _loadData = async() => {
+    const projectsResponse = await getDashboardProjects();
+    const storiesResponse = await getDashboardStories();
+    if(!projectsResponse.error)
+      setProjectsData(projectsResponse);
+    
+    if(!storiesResponse.error)
+      setStoriesData(storiesResponse);
+  };
   useEffect(() => {
-    getDashboard();
+    _loadData();
   }, []);
 
+  const _refreshProjects = async() => {
+    const {page, itemsPerPage} = projectsData;
+    const projectsResponse = await getDashboardProjects(page, itemsPerPage);
+    if(!projectsResponse.error)
+      setProjectsData(projectsResponse);
+  };
+
+  const _refreshStories = async() => {
+    const {page, itemsPerPage} = storiesData;
+    const storiesResponse = await getDashboardStories(page, itemsPerPage);
+    if(!storiesResponse.error)
+      setStoriesData(storiesResponse);
+  };
+
+  const projects = projectsData && projectsData.projects;
+  const stories = storiesData && storiesData.stories;
   const projectsTableProps = {
     projects,
     actions: {
@@ -53,6 +80,18 @@ const Dashboard = (props) => {
       addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
       viewProject: (project) => historyPush(`/projects/${project.id}`),
       addStory: (project) => setNewStoryData({project})
+    },
+    pagination: {
+      itemsPerPage: projectsData && projectsData.itemsPerPage,
+      page: projectsData && projectsData.page,
+      totalPages: projectsData && projectsData.totalPages,
+      getPage: async(page) => {
+        if(page === projectsData.page)
+          return;
+        const response = await getDashboardProjects(page, projectsData.itemsPerPage);
+        if(!response.error)
+          return setProjectsData(response);
+      }
     }
   };
 
@@ -67,7 +106,7 @@ const Dashboard = (props) => {
 
   return (
     <DashboardWrapper>
-      {isLoading ? (
+      {!projects || !stories ? (
         <LoadingSpinner alignCenter dataTestId="dashboardLoader" message={`Loading Dashboard for ${userInfo.displayName}`}/>
       ) : (
         <Fragment>
@@ -98,7 +137,7 @@ const Dashboard = (props) => {
               onSubmit={createProject}
               showNotification={showNotification}
               requestInProgress={projectRequestInProgress}
-              refresh={getDashboard}
+              refresh={_refreshProjects}
             />
           )}
           {membershipData.project && (
@@ -126,7 +165,7 @@ const Dashboard = (props) => {
                 label: "Project Name",
                 placeholder: "Enter the project's name"
               }}
-              refresh={getDashboard}
+              refresh={_refreshProjects}
             />
           )}
           {newStoryData.project && (
@@ -137,7 +176,7 @@ const Dashboard = (props) => {
               showNotification={showNotification}
               getMemberNames={getMemberNames}
               project={newStoryData.project}
-              refresh={getDashboard}
+              refresh={_refreshStories}
             />
           )}
         </Fragment>
@@ -147,10 +186,9 @@ const Dashboard = (props) => {
 };
 
 Dashboard.propTypes = {
+  getDashboardProjects: PropTypes.func.isRequired,
+  getDashboardStories: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  projects: PropTypes.array.isRequired,
-  stories: PropTypes.array.isRequired,
-  getDashboard: PropTypes.func.isRequired,
   projectRequestInProgress: PropTypes.bool.isRequired,
   membershipRequestInProgress: PropTypes.bool.isRequired,
   storyRequestInProgress: PropTypes.bool.isRequired,
@@ -166,14 +204,11 @@ Dashboard.propTypes = {
 
 export default connect((state) => ({
   isLoading: state.dashboard.isLoading,
-  projects: state.dashboard.projects,
-  stories: state.dashboard.stories,
   userInfo: state.auth.user,
   projectRequestInProgress: state.project.isLoading,
   membershipRequestInProgress: state.membership.isLoading,
   storyRequestInProgress: state.story.isLoading
 }), {
-  getDashboard,
   showNotification,
   createProject,
   deleteProject,
@@ -181,5 +216,7 @@ export default connect((state) => ({
   getAvailableUsers,
   createMembership,
   getMemberNames,
-  createStory
+  createStory,
+  getDashboardProjects,
+  getDashboardStories
 })(Dashboard);

@@ -1,5 +1,6 @@
 import styled, {css} from "styled-components";
 import {
+  white,
   black,
   black80,
   black33,
@@ -86,4 +87,14 @@ export const TableWrapper = styled.div`
       border-bottom: 1px solid ${black80};
     }
   }
+`;
+
+export const PaginationSection = styled.div`
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  text-align: center;
+  background-color: ${white};
 `;
