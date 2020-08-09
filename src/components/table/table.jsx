@@ -19,11 +19,12 @@ const Table = (props) => {
       return header.renderActions(row);
 
     const cellData = row[header.keyName];
-    if(typeof cellData === "undefined")
-      return;
     
     if(header.format)
       return header.format(cellData, row);
+
+    if(typeof cellData === "undefined")
+      return;
     
     return cellData.toString();
   };
