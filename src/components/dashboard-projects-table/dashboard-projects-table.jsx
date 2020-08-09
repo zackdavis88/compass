@@ -6,9 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faArrowRight, faTrash, faBook, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate, getPermissionLevel} from "../../utils";
-import {ActionsWrapper, Action} from "../table/table.styles";
+import {ActionsWrapper, Action, PaginationSection} from "../table/table.styles";
+import {DashboardProjectsTableWrapper} from "./dashboard-projects-table.styles";
+import Pagination from "../pagination/pagination";
 
-const DashboardProjectsTable = ({projects, actions}) => {
+const DashboardProjectsTable = ({projects, actions, pagination}) => {
   const _renderActions = (row) => {
     const {deleteProject, addStory, addMember, viewProject} = actions;
     const {isAdmin, isManager, isDeveloper, isViewer} = row.roles;
@@ -68,8 +70,23 @@ const DashboardProjectsTable = ({projects, actions}) => {
     rows: projects
   };
 
+  const paginationProps = {
+    dataTestId: "dashboardProjectsPagination",
+    itemsPerPage: pagination && pagination.itemsPerPage,
+    page: pagination && pagination.page,
+    totalPages: pagination && pagination.totalPages,
+    onPageClick: (page) => pagination && pagination.getPage(page)
+  };
+
   return (
-    <Table {...tableProps} />
+    <DashboardProjectsTableWrapper>
+      <Table {...tableProps} />
+      {pagination && (
+        <PaginationSection>
+          <Pagination {...paginationProps} />
+        </PaginationSection>
+      )}
+    </DashboardProjectsTableWrapper>
   );
 };
 
@@ -80,7 +97,13 @@ DashboardProjectsTable.propTypes = {
     addMember: PropTypes.func.isRequired,
     addStory: PropTypes.func.isRequired,
     viewProject: PropTypes.func.isRequired
-  }).isRequired
+  }).isRequired,
+  pagination: PropTypes.shape({
+    page: PropTypes.number.isRequired,
+    totalPages: PropTypes.number.isRequired,
+    itemsPerPage: PropTypes.number.isRequired,
+    getPage: PropTypes.func.isRequired
+  })
 };
 
 export default DashboardProjectsTable;

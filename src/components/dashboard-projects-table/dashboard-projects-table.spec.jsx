@@ -30,6 +30,12 @@ describe("<DashboardProjectsTable />", () => {
         addMember: jest.fn(),
         addStory: jest.fn(),
         viewProject: jest.fn()
+      },
+      pagination: {
+        page: 1,
+        totalPages: 5,
+        itemsPerPage: 10,
+        getPage: jest.fn()
       }
     };
   });
@@ -98,5 +104,17 @@ describe("<DashboardProjectsTable />", () => {
     expect(getAllByText("Add Story")).toHaveLength(2);
     expect(getAllByText("Add Member")).toHaveLength(1);
     expect(getAllByText("View Project")).toHaveLength(2);
+  });
+
+  it("should render the pagination component", () => {
+    const {getByTestId} = render(<DashboardProjectsTable {...props}/>);
+    expect(getByTestId("dashboardProjectsPagination")).toBeDefined();
+  });
+
+  it("should call the getPage method when paginating", () => {
+    const {getByTestId} = render(<DashboardProjectsTable {...props}/>);
+    const nextPage = getByTestId("dashboardProjectsPagination.next");
+    fireEvent.click(nextPage);
+    expect(props.pagination.getPage).toHaveBeenCalledWith(2);
   });
 });
