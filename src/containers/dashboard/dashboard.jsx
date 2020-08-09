@@ -18,6 +18,7 @@ import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
 import StoryModal from "../../components/story-modal/story-modal";
 import {getDashboardProjects, getDashboardStories} from "../../store/actions/dashboard";
+import StoriesTable from "../../components/stories-table/stories-table";
 
 const Dashboard = (props) => {
   const {
@@ -95,6 +96,25 @@ const Dashboard = (props) => {
     }
   };
 
+  const storiesTableProps = {
+    stories,
+    actions: {
+      viewStory: (story) => historyPush(`/projects/${story.project.id}/stories/${story.id}`)
+    },
+    pagination: {
+      itemsPerPage: storiesData && storiesData.itemsPerPage,
+      page: storiesData && storiesData.page,
+      totalPages: storiesData && storiesData.totalPages,
+      getPage: async(page) => {
+        if(page === storiesData.page)
+          return;
+        const response = await getDashboardStories(page, storiesData.itemsPerPage);
+        if(!response.error)
+          return setStoriesData(response);
+      }
+    }
+  };
+
   const actionsMenuProps = {
     dataTestId: "dashboardActionsMenu",
     menuItems: [{
@@ -126,7 +146,11 @@ const Dashboard = (props) => {
                 )}
               </Tabs.Panel>
               <Tabs.Panel>
-                This is some srs content.
+                {stories.length ? (
+                  <StoriesTable {...storiesTableProps} />
+                ) : (
+                  <div>You are not the owner/creator of any stories</div>
+                )}
               </Tabs.Panel>
             </Tabs.TabPanels>
           </Tabs>
