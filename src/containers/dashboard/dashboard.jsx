@@ -80,6 +80,18 @@ const Dashboard = (props) => {
       addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
       viewProject: (project) => historyPush(`/projects/${project.id}`),
       addStory: (project) => setNewStoryData({project})
+    },
+    pagination: {
+      itemsPerPage: projectsData && projectsData.itemsPerPage,
+      page: projectsData && projectsData.page,
+      totalPages: projectsData && projectsData.totalPages,
+      getPage: async(page) => {
+        if(page === projectsData.page)
+          return;
+        const response = await getDashboardProjects(page, projectsData.itemsPerPage);
+        if(!response.error)
+          return setProjectsData(response);
+      }
     }
   };
 
