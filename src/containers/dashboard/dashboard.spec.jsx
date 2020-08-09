@@ -226,4 +226,20 @@ describe("<Dashboard />", () => {
     fireEvent.click(storiesTab);
     expect(queryByTestId("storiesTable")).toBeDefined();
   });
+
+  it("should call the push redux action when the view story action is clicked", async() => {
+    const {getByText, getAllByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const storiesTab = getByText("My Stories");
+    fireEvent.click(storiesTab);
+    const viewButton = getAllByTestId("action.viewStory")[0];
+    fireEvent.click(viewButton);
+    expect(store.dispatch).toHaveBeenLastCalledWith({
+      type: "@@router/CALL_HISTORY_METHOD",
+      payload: {
+        method: "push",
+        args: [`/projects/${storiesResponse.stories[0].project.id}/stories/${storiesResponse.stories[0].id}`]
+      }
+    });
+  });
 });
