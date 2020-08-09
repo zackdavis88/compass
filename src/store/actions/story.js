@@ -32,7 +32,7 @@ export const updateStory = (project, story, name, details, owner) => dispatch =>
   });
 };
 
-export const getStories = (project, page, itemsPerPage) => dispatch => {
+export const getStories = (projectId, page, itemsPerPage) => dispatch => {
   const queryString = {};
   if(page)
     queryString.page = page;
@@ -40,6 +40,6 @@ export const getStories = (project, page, itemsPerPage) => dispatch => {
     queryString.itemsPerPage = itemsPerPage;
   return dispatch({
     types: [STORY_REQUEST_START, STORY_REQUEST_SUCCESS, STORY_REQUEST_FAILURE],
-    request: request.get(`/api/projects/${project.id}/stories`).query(queryString)
+    request: request.get(`/api/projects/${projectId}/stories`).query(queryString)
   });
 };

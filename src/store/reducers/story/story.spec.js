@@ -69,7 +69,7 @@ describe("Story Reducer / Actions", () => {
   });
 
   it("should dispatch a redux API call to get all stories for a project", async () => {
-    store.dispatch(getStories({id: "testProjectId"}));
+    store.dispatch(getStories("testProjectId"));
     await waitFor(() => expect(store.getActions()).toHaveLength(2));
     expect(store.getActions()[0].type).toBe("STORY_REQUEST_START");
     const expectedTypes = ["STORY_REQUEST_SUCCESS", "STORY_REQUEST_FAILURE"];
