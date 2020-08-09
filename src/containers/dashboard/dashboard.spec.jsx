@@ -5,21 +5,52 @@ import {waitFor, fireEvent} from "@testing-library/react";
 
 describe("<Dashboard />", () => {
   let store;
+  const projectsResponse = {
+    page: 1,
+    totalPages: 1,
+    itemsPerPage: 10,
+    projects: [{
+      id: "testProject1",
+      name: "Some Name",
+      isPrivate: true,
+      createdOn: "2020-08-01T19:08:37.237Z",
+      roles: {
+        isAdmin: true
+      }
+    },{
+      id: "testProject2",
+      name: "Another Name",
+      isPrivate: false,
+      createdOn: "2020-08-05T12:00:37.237Z",
+      roles: {
+        isDeveloper: true
+      }
+    }]
+  };
+  const storiesResponse = {
+    page: 1,
+    totalPages: 1,
+    itemsPerPages: 10,
+    stories: [{
+      id: "testStory1",
+      name: "test story",
+      creator: {displayName: "testUser1"},
+      owner: {displayName: "testUser55"}
+    },{
+      id: "testStory2",
+      name: "test story 2",
+      creator: {displayName: "testUser1"}
+    },{
+      id: "testStory3",
+      name: "test story 3",
+      creator: {displayName: "testUser123"},
+      owner: {displayName: "testUser1"}
+    }]
+  };
   beforeEach(() => {
     store = mockStore({
       dashboard: {
-        isLoading: false,
-        projects: [{
-          id: "some-id",
-          name: "Test Project",
-          description: "",
-          isPrivate: true,
-          roles: {
-            isAdmin: true
-          },
-          createdOn: new Date().toISOString()
-        }],
-        stories: []
+        isLoading: false
       },
       auth: {
         user: {
@@ -36,74 +67,67 @@ describe("<Dashboard />", () => {
         isLoading: false
       }
     });
+
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce(projectsResponse);
+    store.dispatch.mockReturnValueOnce(storiesResponse);
   });
 
-  it("should mount the component", () => {
+  it("should mount the component", async() => {
     const component = render(<Dashboard />, store);
     expect(component).toBeDefined();
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
   });
 
-  it("should call props.getDashboard on component mount", async() => {
-    render(<Dashboard />, store);
-    await waitFor(() => expect(store.getActions()).toHaveLength(2));
-    expect(store.getActions()[0]).toEqual({type: "DASHBOARD_REQUEST_START"});
+  it("should call getDashboardProjects and getDashboardStories on component mount", async() => {
+    const component = render(<Dashboard />, store);
+    expect(component).toBeDefined();
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
   });
 
-  it("should render the loading spinner when awaiting API data", () => {
-    store = mockStore({
-      dashboard: {
-        isLoading: true,
-        stories: [],
-        projects: []
-      },
-      auth: {
-        user: {
-          displayName: "unitTestUser"
-        }
-      },
-      project: {
-        isLoading: false
-      },
-      membership: {
-        isLoading: false
-      },
-      story: {
-        isLoading: false
-      }
-    });
+  it("should render the loading spinner when awaiting API data", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({});
+    store.dispatch.mockReturnValueOnce({});
     const {getByTestId, getByText} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardLoader")).toBeDefined();
     expect(getByText("Loading Dashboard for unitTestUser")).toBeDefined();
   });
 
-  it("should render the Dashboard header", () => {
+  it("should render the Dashboard header", async() => {
     const {getByTestId, getByText} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardHeader")).toBeDefined();
     expect(getByText("Dashboard")).toBeDefined();
   });
 
-  it("should render the dashboard actions menu", () => {
+  it("should render the dashboard actions menu", async() => {
     const {getByTestId, getAllByText} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardActionsMenu")).toBeDefined();
     expect(getAllByText("Actions")).toBeDefined();
   });
 
-  it("should render the 'New Project' item under the actions menu", () => {
+  it("should render the 'New Project' item under the actions menu", async() => {
     const {getByTestId, getByText} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const actionsMenu = getByTestId("dashboardActionsMenu");
     fireEvent.click(actionsMenu);
     expect(getByText("New Project")).toBeDefined();
   });
 
-  it("should render the tabs component", () => {
+  it("should render the tabs component", async() => {
     const {getByTestId, getByText} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardTabs")).toBeDefined();
     expect(getByText("My Projects")).toBeDefined();
     expect(getByText("My Stories")).toBeDefined();
   });
 
-  it("should render the ProjectModal when the new project button is clicked", () => {
+  it("should render the ProjectModal when the new project button is clicked", async() => {
     const {getByTestId, getByText, queryByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const actionsMenu = getByTestId("dashboardActionsMenu");
     fireEvent.click(actionsMenu);
     const newProjectButton = getByText("New Project");
@@ -112,77 +136,62 @@ describe("<Dashboard />", () => {
     expect(queryByTestId("projectModal.wrapper")).toBeDefined();
   });
 
-  it("should render a message is there are no projects to display", () => {
-    store = mockStore({
-      dashboard: {
-        isLoading: false,
-        stories: [],
-        projects: []
-      },
-      auth: {
-        user: {
-          displayName: "unitTestUser"
-        }
-      },
-      project: {
-        isLoading: false
-      },
-      membership: {
-        isLoading: false
-      },
-      story: {
-        isLoading: false
-      }
-    });
+  it("should render a message is there are no projects to display", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({...projectsResponse, projects: []});
+    store.dispatch.mockReturnValueOnce(storiesResponse);
     const {getByText} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByText("You are not a member of any projects")).toBeDefined();
   });
 
-  it("should render the projects table if there are projects to display", () => {
+  it("should render the projects table if there are projects to display", async() => {
     const {getByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardProjects")).toBeDefined();
   });
 
-  it("should render the DeleteModal if the delete project action is clicked", () => {
-    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
-    const deleteButton = getByTestId("action.deleteProject");
+  it("should render the DeleteModal if the delete project action is clicked", async() => {
+    const {getAllByTestId, queryByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const deleteButton = getAllByTestId("action.deleteProject")[0];
     expect(queryByTestId("projectDeleteModal.wrapper")).toBeNull();
     fireEvent.click(deleteButton);
     expect(queryByTestId("projectDeleteModal.wrapper")).toBeDefined();
   });
 
   it("should render the MembershipModal if the add member action is clicked", async() => {
-    store.dispatch = jest.fn().mockReturnValue({});
-    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
-    const addMemberButton = getByTestId("action.addMember");
+    const {getAllByTestId, queryByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    store.dispatch.mockReturnValueOnce({}); // mock get available members API response.
+    const addMemberButton = getAllByTestId("action.addMember")[0];
     expect(queryByTestId("membershipModal.wrapper")).toBeNull();
     fireEvent.click(addMemberButton);
     expect(queryByTestId("membershipModal.wrapper")).toBeDefined();
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
   });
 
   it("should render the StoryModal if the new story action is clicked", async() => {
-    store.dispatch = jest.fn().mockReturnValue({});
-    const {getByTestId, queryByTestId} = render(<Dashboard />, store);
-    const addStoryButton = getByTestId("action.addStory");
+    const {getAllByTestId, queryByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    store.dispatch.mockReturnValueOnce({});
+    const addStoryButton = getAllByTestId("action.addStory")[0];
     expect(queryByTestId("storyModal.wrapper")).toBeNull();
     fireEvent.click(addStoryButton);
     expect(queryByTestId("storyModal.wrapper")).toBeDefined();
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
   });
 
   it("should call the push redux action when the view project action is clicked", async() => {
-    store.dispatch = jest.fn();
-    const {getByTestId} = render(<Dashboard />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
-    const viewButton = getByTestId("action.viewProject");
-    fireEvent.mouseOver(viewButton);
+    const {getAllByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const viewButton = getAllByTestId("action.viewProject")[0];
     fireEvent.click(viewButton);
     expect(store.dispatch).toHaveBeenLastCalledWith({
       type: "@@router/CALL_HISTORY_METHOD",
       payload: {
         method: "push",
-        args: [`/projects/${store.getState().dashboard.projects[0].id}`]
+        args: [`/projects/${projectsResponse.projects[0].id}`]
       }
     });
   });
