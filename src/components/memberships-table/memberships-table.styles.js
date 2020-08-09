@@ -17,13 +17,3 @@ export const MembershipsTableWrapper = styled.div`
     margin-top: 25px;
   }
 `;
-
-export const PaginationSection = styled.div`
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  overflow: hidden;
-  text-align: center;
-  background-color: ${white};
-`;
