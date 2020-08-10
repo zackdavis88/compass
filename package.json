@@ -1,6 +1,6 @@
 {
   "name": "compass",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "React UI for agile project backlog management",
   "main": "index.js",
   "scripts": {
