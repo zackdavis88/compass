@@ -56,6 +56,37 @@ describe("<ProjectDetails />", () => {
       isViewer: false
     }
   };
+  const mockStoriesResponse = {
+    page: 1,
+    totalPages: 1,
+    itemsPerPage: 10,
+    stories: [{
+      id: "testStory1",
+      name: "Test Story 1",
+      creator: {
+        displayName: "testUser1"
+      },
+      project: {
+        id: "testProject1",
+        name: "Test Project 1"
+      },
+      createdOn: "2020-08-13T17:59:52.639Z"
+    }, {
+      id: "testStory2",
+      name: "Test Story 2",
+      creator: {
+        displayName: "testUser1"
+      },
+      owner: {
+        displayName: "testUser344"
+      },
+      project: {
+        id: "testProject1",
+        name: "Test Project 5"
+      },
+      createdOn: "2019-01-13T17:59:52.639Z"
+    }]
+  };
   beforeEach(() => {
     props = {
       match: {
@@ -75,11 +106,15 @@ describe("<ProjectDetails />", () => {
       },
       membership: {
         isLoading: false
+      },
+      story: {
+        isLoading: false
       }
     });
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce(mockProjectResponse);
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
   });
 
   it("should mount the component", async() => {
@@ -89,39 +124,26 @@ describe("<ProjectDetails />", () => {
   });
 
   it("should render the loading spinner when awaiting API data", async() => {
-    store = mockStore({
-      auth: {
-        user: {
-          displayName: "unitTestUser"
-        }
-      },
-      project: {
-        isLoading: true
-      },
-      membership: {
-        isLoading: true
-      }
-    });
-    // Kinda hacky but we dont use projectIsLoading to determine if we show the spinner or not anymore...
-    // instead we just show the spinner if we have undefined data.
-    store.dispatch = jest.fn().mockReturnValueOnce(undefined).mockReturnValueOnce(undefined);
+    store.dispatch = jest.fn()
+    store.dispatch.mockReturnValueOnce(undefined)
+    store.dispatch.mockReturnValueOnce(undefined)
+    store.dispatch.mockReturnValueOnce(undefined);
     const {getByTestId, getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByTestId("projectDetailsLoader")).toBeDefined();
     expect(getByText("Loading project details")).toBeDefined();
   });
 
   it("should render the project details page header", async() => {
     const {getByTestId, getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByTestId("projectDetailsHeader")).toBeDefined();
     expect(getByText(`Project - Unit Test Project`)).toBeDefined();
-
   });
 
   it("should render the project details, members, and backlog tabs", async() => {
     const {getByTestId, getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByTestId("projectDetailsTabs")).toBeDefined();
     expect(getByText("Details")).toBeDefined();
     expect(getByText("Members")).toBeDefined();
@@ -130,13 +152,13 @@ describe("<ProjectDetails />", () => {
 
   it("should render the project ID under the details tab", async() => {
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("testProjectId")).toBeDefined();
   });
 
   it("should render the project name under the details tab", async() => {
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Unit Test Project")).toBeDefined();
   });
 
@@ -147,35 +169,35 @@ describe("<ProjectDetails />", () => {
         ...mockProjectResponse.project,
         isPrivate: false
       }
-    }).mockReturnValueOnce(mockMembershipsResponse);
+    }).mockReturnValueOnce(mockMembershipsResponse).mockReturnValueOnce(mockStoriesResponse);
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Public")).toBeDefined();
   });
 
   it("should render the private label under the details tab if the project is private", async() => {
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Private")).toBeDefined();
   });
 
   it("should render the project description, if present, under the details tab", async() => {
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Description")).toBeDefined();
     expect(getByText("this is a test description")).toBeDefined();
   });
 
   it("should render the project create date under the details tab", async() => {
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Create Date")).toBeDefined();
     expect(getByText("Aug 1, 2020")).toBeDefined();
   });
 
   it("should render the project update date under the details tab", async() => {
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Last Modified")).toBeDefined();
     expect(getByText("Aug 5, 2020")).toBeDefined();
   });
@@ -190,21 +212,22 @@ describe("<ProjectDetails />", () => {
       }
     });
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {queryByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(queryByText("Last Modified")).toBeNull();
   });
 
   it("should render the project total members under the details tab", async() => {
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Total Members")).toBeDefined();
     expect(getByText("15")).toBeDefined();
   });
 
   it("should render the project total stories under the details tab", async() => {
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Total Stories")).toBeDefined();
     expect(getByText("150")).toBeDefined();
   });
@@ -212,16 +235,18 @@ describe("<ProjectDetails />", () => {
   it("should render a page error if API returns an error", async() => {
     store.dispatch = jest.fn().mockReturnValueOnce({error: "something went wrong"});
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {getByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("something went wrong")).toBeDefined();
   });
 
   it("should render a message if there are no members to display", async() => {
     store.dispatch = jest.fn().mockReturnValueOnce(mockProjectResponse);
     store.dispatch.mockReturnValueOnce({memberships: []});
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {getByText, queryByText} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const membersTab = getByText("Members");
     expect(queryByText("This project has no members")).toBeNull();
     fireEvent.click(membersTab);
@@ -230,7 +255,7 @@ describe("<ProjectDetails />", () => {
 
   it("should render a the memberships table is the members tab is clicked", async() => {
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const membersTab = getByText("Members");
     fireEvent.click(membersTab);
     expect(getByTestId("projectMemberships")).toBeDefined();
@@ -238,7 +263,7 @@ describe("<ProjectDetails />", () => {
 
   it("should show the delete membership modal if the action is clicked with sufficient permission", async() => {
     const {getByText, getAllByTestId, queryByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const membersTab = getByText("Members");
     fireEvent.click(membersTab);
     const deleteAction = getAllByTestId("action.deleteMembership")[1];
@@ -249,7 +274,7 @@ describe("<ProjectDetails />", () => {
 
   it("should show the edit membership modal if the action is clicked with sufficient permission", async() => {
     const {getByText, getAllByTestId, queryByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const membersTab = getByText("Members");
     fireEvent.click(membersTab);
     const editAction = getAllByTestId("action.editMembership")[1];
@@ -260,7 +285,7 @@ describe("<ProjectDetails />", () => {
 
   it("should render the actions menu component for admins/managers", async() => {
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByTestId("projectDetailsActionsMenu")).toBeDefined();
     expect(getByText("Actions")).toBeDefined();
   });
@@ -269,15 +294,16 @@ describe("<ProjectDetails />", () => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isDeveloper: true}}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {queryByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(queryByTestId("projectDetailsActionsMenu")).toBeNull();
     expect(queryByText("Actions")).toBeNull();
   });
   
   it("should render the 'Delete Project' action if the user has admin permissions", async() => {
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     expect(getByText("Delete Project")).toBeDefined();
@@ -287,8 +313,9 @@ describe("<ProjectDetails />", () => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isManager: true}}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {queryByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     expect(queryByText("Delete Project")).toBeNull();
@@ -296,7 +323,7 @@ describe("<ProjectDetails />", () => {
 
   it("should render the delete project modal when 'Delete Project' is clicked", async() => {
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     const deleteItem = getByText("Delete Project");
@@ -308,8 +335,9 @@ describe("<ProjectDetails />", () => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isManager: true}}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     expect(getByText("Edit Project")).toBeDefined();
@@ -317,7 +345,7 @@ describe("<ProjectDetails />", () => {
 
   it("should render the edit project modal when 'Edit Project' is clicked", async() => {
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     const editItem = getByText("Edit Project");
@@ -330,8 +358,9 @@ describe("<ProjectDetails />", () => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isManager: true}}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     expect(getByText("Add Member")).toBeDefined();
@@ -340,12 +369,44 @@ describe("<ProjectDetails />", () => {
   it("should render the add member modal when 'Add Member' is clicked", async() => {
     store.dispatch.mockReturnValueOnce({users: []});
     const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     const editItem = getByText("Add Member");
     fireEvent.click(editItem);
     expect(getByTestId("membershipModal.wrapper")).toBeDefined();
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(4));
+  });
+
+  it("should render a message if there are no stories to display", async() => {
+    store.dispatch = jest.fn().mockReturnValueOnce(mockProjectResponse);
+    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce({...mockStoriesResponse, stories: []});
+    const {getByText, queryByText} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const backlogTab = getByText("Backlog");
+    expect(queryByText("This project has no stories")).toBeNull();
+    fireEvent.click(backlogTab);
+    expect(queryByText("This project has no stories")).toBeDefined();
+  });
+
+  it("should render a the stories table is the backlog tab is clicked", async() => {
+    const {getByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const backlogTab = getByText("Backlog");
+    expect(queryByTestId("storiesTable")).toBeNull();
+    fireEvent.click(backlogTab);
+    expect(queryByTestId("storiesTable")).toBeDefined();
+  });
+
+  it("should show the delete story modal if the action is clicked with sufficient permission", async() => {
+    const {getByText, getAllByTestId, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const backlogTab = getByText("Backlog");
+    fireEvent.click(backlogTab);
+    const deleteAction = getAllByTestId("action.deleteStory")[1];
+    expect(queryByTestId("storyDeleteModal.wrapper")).toBeNull();
+    fireEvent.click(deleteAction);
+    expect(queryByTestId("storyDeleteModal.wrapper")).toBeDefined();
   });
 });
