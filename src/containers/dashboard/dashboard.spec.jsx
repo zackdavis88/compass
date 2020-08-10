@@ -30,21 +30,32 @@ describe("<Dashboard />", () => {
   const storiesResponse = {
     page: 1,
     totalPages: 1,
-    itemsPerPages: 10,
+    itemsPerPage: 10,
     stories: [{
       id: "testStory1",
-      name: "test story",
-      creator: {displayName: "testUser1"},
-      owner: {displayName: "testUser55"}
-    },{
+      name: "Test Story 1",
+      creator: {
+        displayName: "testUser1"
+      },
+      project: {
+        id: "testProject1",
+        name: "Test Project 1"
+      },
+      createdOn: "2020-08-13T17:59:52.639Z"
+    }, {
       id: "testStory2",
-      name: "test story 2",
-      creator: {displayName: "testUser1"}
-    },{
-      id: "testStory3",
-      name: "test story 3",
-      creator: {displayName: "testUser123"},
-      owner: {displayName: "testUser1"}
+      name: "Test Story 2",
+      creator: {
+        displayName: "testUser1"
+      },
+      owner: {
+        displayName: "testUser344"
+      },
+      project: {
+        id: "testProject1",
+        name: "Test Project 5"
+      },
+      createdOn: "2019-01-13T17:59:52.639Z"
     }]
   };
   beforeEach(() => {
@@ -192,6 +203,42 @@ describe("<Dashboard />", () => {
       payload: {
         method: "push",
         args: [`/projects/${projectsResponse.projects[0].id}`]
+      }
+    });
+  });
+
+  it("should render a message is there are no stories to display", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce(projectsResponse);
+    store.dispatch.mockReturnValueOnce({...storiesResponse, stories: []});
+    const {getByText} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const storiesTab = getByText("My Stories");
+    fireEvent.click(storiesTab);
+    expect(getByText("You are not the owner/creator of any stories")).toBeDefined();
+  });
+
+  it("should render the StoriesTable when the Stories tab is clicked", async() => {
+    const {getByText, queryByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const storiesTab = getByText("My Stories");
+    expect(queryByTestId("storiesTable")).toBeNull();
+    fireEvent.click(storiesTab);
+    expect(queryByTestId("storiesTable")).toBeDefined();
+  });
+
+  it("should call the push redux action when the view story action is clicked", async() => {
+    const {getByText, getAllByTestId} = render(<Dashboard />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const storiesTab = getByText("My Stories");
+    fireEvent.click(storiesTab);
+    const viewButton = getAllByTestId("action.viewStory")[0];
+    fireEvent.click(viewButton);
+    expect(store.dispatch).toHaveBeenLastCalledWith({
+      type: "@@router/CALL_HISTORY_METHOD",
+      payload: {
+        method: "push",
+        args: [`/projects/${storiesResponse.stories[0].project.id}/stories/${storiesResponse.stories[0].id}`]
       }
     });
   });
