@@ -32,6 +32,17 @@ export const updateStory = (project, story, name, details, owner) => dispatch =>
   });
 };
 
+export const deleteStory = (storyData, confirm) => dispatch => {
+  const projectId = storyData.project.id;
+  return dispatch({
+    types: [STORY_REQUEST_START, STORY_REQUEST_SUCCESS, STORY_REQUEST_FAILURE],
+    request: request.delete(`/api/projects/${projectId}/stories/${storyData.id}`),
+    payload: {
+      confirm
+    }
+  });
+};
+
 export const getStories = (projectId, page, itemsPerPage) => dispatch => {
   const queryString = {};
   if(page)

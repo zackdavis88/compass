@@ -2,7 +2,8 @@ import storyReducer from "./story";
 import {
   createStory,
   updateStory,
-  getStories
+  getStories,
+  deleteStory
 } from "../../actions/story";
 import {mockStore} from "../../../test-utils";
 import {waitFor} from "@testing-library/react";
@@ -70,6 +71,14 @@ describe("Story Reducer / Actions", () => {
 
   it("should dispatch a redux API call to get all stories for a project", async () => {
     store.dispatch(getStories("testProjectId"));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    expect(store.getActions()[0].type).toBe("STORY_REQUEST_START");
+    const expectedTypes = ["STORY_REQUEST_SUCCESS", "STORY_REQUEST_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
+  });
+
+  it("should dispatch a redux API call to delete a story", async () => {
+    store.dispatch(deleteStory({id: "storyId", project: {id: "projectId"}}));
     await waitFor(() => expect(store.getActions()).toHaveLength(2));
     expect(store.getActions()[0].type).toBe("STORY_REQUEST_START");
     const expectedTypes = ["STORY_REQUEST_SUCCESS", "STORY_REQUEST_FAILURE"];
