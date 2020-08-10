@@ -12,8 +12,8 @@ import {
   Statistic
 } from "./project-details.styles";
 import {getProject, updateProject, deleteProject} from "../../store/actions/project";
-import {getMemberships, deleteMembership, updateMembership, createMembership, getAvailableUsers} from "../../store/actions/membership";
-import {getStories, deleteStory} from "../../store/actions/story";
+import {getMemberships, deleteMembership, updateMembership, createMembership, getAvailableUsers, getMemberNames} from "../../store/actions/membership";
+import {getStories, deleteStory, createStory} from "../../store/actions/story";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Tabs from "../../components/tabs/tabs";
 import {formatDate} from "../../utils";
@@ -21,19 +21,21 @@ import {PageError} from "../../common-styles/base";
 import MembershipsTable from "../../components/memberships-table/memberships-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import MembershipModal from "../../components/membership-modal/membership-modal";
-import { faTrash, faEdit, faUserTimes, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faEdit, faUserTimes, faUserPlus, faBook } from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
 import {push} from "connected-react-router";
 import {showNotification} from "../../store/actions/notification";
 import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
 import StoriesTable from "../../components/stories-table/stories-table";
+import StoryModal from "../../components/story-modal/story-modal";
 
 const ProjectDetails = (props) => {
   // Extracting our props for use and declaring component states.
   const {
     projectIsLoading,
     membershipIsLoading,
+    storyIsLoading,
     getProject,
     getMemberships,
     getStories,
@@ -45,7 +47,9 @@ const ProjectDetails = (props) => {
     showNotification,
     createMembership,
     getAvailableUsers,
-    deleteStory
+    deleteStory,
+    createStory,
+    getMemberNames
   } = props;
   const [pageError, setPageError] = useState(undefined);
   const [projectData, setProjectData] = useState(undefined);
@@ -57,6 +61,7 @@ const ProjectDetails = (props) => {
   const [showProjectDeleteModal, setShowProjectDeleteModal] = useState(false);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [deleteStoryData, setDeleteStoryData] = useState({});
+  const [showStoryModal, setShowStoryModal] = useState(false);
 
   // This is called once, on component mount (inside useEffect)
   const _loadData = async() => {
@@ -153,6 +158,13 @@ const ProjectDetails = (props) => {
   const actionsMenuProps = {
     dataTestId: "projectDetailsActionsMenu",
     menuItems: [{
+      icon: faBook,
+      label: "New Story",
+      onClick: () => setShowStoryModal(true)
+    }]
+  };
+  if(userRoles && (userRoles.isManager || userRoles.isAdmin)) {
+    actionsMenuProps.menuItems = actionsMenuProps.menuItems.concat([{
       icon: faEdit,
       label: "Edit Project",
       onClick: () => setShowProjectEditModal(true)
@@ -160,10 +172,10 @@ const ProjectDetails = (props) => {
       icon: faUserPlus,
       label: "Add Member",
       onClick: () => setShowAddMemberModal(true)
-    }]
-  };
+    }]);
+  }
   if(userRoles && userRoles.isAdmin) {
-    actionsMenuProps.menuItems.push({
+    actionsMenuProps.menuItems = actionsMenuProps.menuItems.concat({
       icon: faTrash,
       label: "Delete Project",
       onClick: () => setShowProjectDeleteModal(true)
@@ -181,7 +193,7 @@ const ProjectDetails = (props) => {
         (
           <Fragment>
             <PageHeader text={`Project - ${project.name}`} dataTestId="projectDetailsHeader" textCenter/>
-            {userRoles && (userRoles.isAdmin || userRoles.isManager) && (
+            {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper) && (
               <ActionsMenu {...actionsMenuProps} />
             )}
             <Tabs dataTestId="projectDetailsTabs">
@@ -264,7 +276,7 @@ const ProjectDetails = (props) => {
             </Tabs>
           </Fragment>
         )}
-        {/* Modal City, pop: 6 */}
+        {/* Modal City, pop: 7 */}
         {deleteMembershipData.id && (
           <DeleteModal
             onClose={() => setDeleteMembershipData({})}
@@ -351,6 +363,16 @@ const ProjectDetails = (props) => {
             refresh={_reloadStories}
           />
         )}
+        {showStoryModal && (
+          <StoryModal
+            onClose={() => setShowStoryModal(false)}
+            onSubmit={createStory}
+            requestInProgress={storyIsLoading}
+            getMemberNames={getMemberNames}
+            project={project}
+            refresh={_reloadStories}
+          />
+        )}
     </ProjectDetailsWrapper>
   );
 };
@@ -358,6 +380,7 @@ const ProjectDetails = (props) => {
 ProjectDetails.propTypes = {
   projectIsLoading: PropTypes.bool.isRequired,
   membershipIsLoading: PropTypes.bool.isRequired,
+  storyIsLoading: PropTypes.bool.isRequired,
   getProject: PropTypes.func.isRequired,
   getMemberships: PropTypes.func.isRequired,
   deleteMembership: PropTypes.func.isRequired,
@@ -369,12 +392,15 @@ ProjectDetails.propTypes = {
   createMembership: PropTypes.func.isRequired,
   getAvailableUsers: PropTypes.func.isRequired,
   getStories: PropTypes.func.isRequired,
-  deleteStory: PropTypes.func.isRequired
+  deleteStory: PropTypes.func.isRequired,
+  createStory: PropTypes.func.isRequired,
+  getMemberNames: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
   projectIsLoading: state.project.isLoading,
-  membershipIsLoading: state.membership.isLoading
+  membershipIsLoading: state.membership.isLoading,
+  storyIsLoading: state.story.isLoading
 }), {
   getProject,
   updateProject,
@@ -387,5 +413,7 @@ export default connect((state) => ({
   createMembership,
   getAvailableUsers,
   getStories,
-  deleteStory
+  deleteStory,
+  createStory,
+  getMemberNames
 })(ProjectDetails);

@@ -409,4 +409,7 @@ describe("<ProjectDetails />", () => {
     fireEvent.click(deleteAction);
     expect(queryByTestId("storyDeleteModal.wrapper")).toBeDefined();
   });
+
+  //TODO: You updated the logic for rendering the Actions menu. Items conditionally appear now and all funcionality is implemented.
+  //      Update/Add tests to ensure that conditional rendering and expected modals are showing up for each ActionMenu item.
 });
