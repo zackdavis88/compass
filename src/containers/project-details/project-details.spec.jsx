@@ -290,9 +290,9 @@ describe("<ProjectDetails />", () => {
     expect(getByText("Actions")).toBeDefined();
   });
 
-  it("should not render the actions menu component for developers/viewers", async() => {
+  it("should not render the actions menu component for viewers", async() => {
     store.dispatch = jest.fn();
-    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isDeveloper: true}}));
+    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isViewer: true}}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
     store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {queryByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
@@ -364,6 +364,35 @@ describe("<ProjectDetails />", () => {
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     expect(getByText("Add Member")).toBeDefined();
+  });
+
+  it("should render the 'New Story' action if the user has developer permissions", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isDeveloper: true}}));
+    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
+    expect(getByText("New Story")).toBeDefined();
+  });
+
+  it("should render the story modal when 'New Story' is clicked", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isDeveloper: true}}));
+    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
+    const {getByText, getByTestId, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
+    store.dispatch.mockReturnValueOnce({});
+    const newStoryAction = getByText("New Story");
+    expect(queryByTestId("storyModal.wrapper")).toBeNull();
+    fireEvent.click(newStoryAction);
+    expect(queryByTestId("storyModal.wrapper")).toBeDefined();
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(4));
   });
 
   it("should render the add member modal when 'Add Member' is clicked", async() => {
