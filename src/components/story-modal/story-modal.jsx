@@ -13,7 +13,7 @@ const StoryModal = (props) => {
   const isEdit = !!story;
   const [state, setState] = useState({
     name: isEdit ? story.name : "",
-    details: isEdit ? story.details : "",
+    details: isEdit && story.details ? story.details : "",
     owner: isEdit && story.owner ? story.owner.displayName : "",
     nameError: undefined,
     detailsError: undefined,

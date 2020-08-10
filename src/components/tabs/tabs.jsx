@@ -28,7 +28,7 @@ const Tabs = ({dataTestId, children}) => {
 const TabHeaders = ({dataTestId, setActiveTab, children, activeTab}) => {
   const _renderTabHeaders = () => {
     if(children && !Array.isArray(children) && children.type === TabHeader)
-      return cloneElement(children, {dataTestId, setActiveTab: () => setActiveTab(0), tabIsActive: activeTab});
+      return cloneElement(children, {dataTestId, setActiveTab: () => setActiveTab(0), tabIsActive: 1});
 
     if(children && Array.isArray(children))
       return children.reduce((prev, curr, index) => curr.type === TabHeader ? prev.concat(

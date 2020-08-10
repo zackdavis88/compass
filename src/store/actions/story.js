@@ -54,3 +54,10 @@ export const getStories = (projectId, page, itemsPerPage) => dispatch => {
     request: request.get(`/api/projects/${projectId}/stories`).query(queryString)
   });
 };
+
+export const getStory = (projectId, storyId) => dispatch => {
+  return dispatch({
+    types: [STORY_REQUEST_START, STORY_REQUEST_SUCCESS, STORY_REQUEST_FAILURE],
+    request: request.get(`/api/projects/${projectId}/stories/${storyId}`)
+  });
+};
