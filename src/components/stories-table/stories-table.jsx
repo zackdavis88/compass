@@ -3,18 +3,33 @@ import PropTypes from "prop-types";
 import Table from "../table/table";
 import {TableValue} from "../table/table.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate} from "../../utils";
 import {ActionsWrapper, Action, PaginationSection} from "../table/table.styles";
 import {StoriesTableWrapper} from "./stories-table.styles";
 import Pagination from "../pagination/pagination";
 
-const StoriesTable = ({stories, actions, pagination}) => {
+const StoriesTable = ({stories, project, actions, pagination}) => {
   const _renderActions = (row) => {
-    const {viewStory} = actions;
+    const {editStory, deleteStory, viewStory} = actions;
+    const userRoles = project ? (project.userRoles || {}) : {};
+    const {isAdmin, isManager, isDeveloper} = userRoles;
+    const actionAllowed = isAdmin || isManager || isDeveloper;
     return (
       <ActionsWrapper>
+        {deleteStory && actionAllowed && (
+          <Action data-testid="action.deleteStory" highlightAction={actionAllowed} onClick={() => deleteStory(row)}>
+            <FontAwesomeIcon icon={faTrash} fixedWidth />
+            {actionAllowed && <Tooltip text={"Delete Story"} />}
+          </Action>
+        )}
+        {editStory && actionAllowed && (
+          <Action data-testid="action.editStory" highlightAction={actionAllowed} onClick={() => editStory(row)}>
+            <FontAwesomeIcon icon={faEdit} fixedWidth />
+            {actionAllowed && <Tooltip text={"Edit Story"} />}
+          </Action>
+        )}
         <Action data-testid="action.viewStory" highlightAction={true} onClick={() => viewStory(row)}>
           <FontAwesomeIcon icon={faArrowRight} fixedWidth />
           <Tooltip text={"View Story"} />
@@ -54,7 +69,10 @@ const StoriesTable = ({stories, actions, pagination}) => {
       label: "Actions",
       renderActions: _renderActions
     }],
-    rows: stories
+    rows: !project ? stories : stories.map(story => ({
+      ...story,
+      project: project
+    }))
   };
 
   const paginationProps = {
@@ -80,13 +98,20 @@ const StoriesTable = ({stories, actions, pagination}) => {
 StoriesTable.propTypes = {
   stories: PropTypes.array.isRequired,
   actions: PropTypes.shape({
-    viewStory: PropTypes.func.isRequired
+    viewStory: PropTypes.func.isRequired,
+    editStory: PropTypes.func,
+    deleteStory: PropTypes.func
   }).isRequired,
   pagination: PropTypes.shape({
     page: PropTypes.number.isRequired,
     totalPages: PropTypes.number.isRequired,
     itemsPerPage: PropTypes.number.isRequired,
     getPage: PropTypes.func.isRequired
+  }),
+  project: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    userRoles: PropTypes.object
   })
 };
 

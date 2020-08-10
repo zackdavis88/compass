@@ -85,9 +85,67 @@ describe("<StoriesTable />", () => {
     expect(getAllByTestId("action.viewStory")).toHaveLength(2);
   });
 
-  // TODO: After component updates; it should render additional Actions if userPermissions are present.
+  it("should render the edit action if actions.editStory is present and user has permission", () => {
+    props.actions.editStory = jest.fn();
+    props.project = {id: "testProject", name: "test project", userRoles: {isDeveloper: true}};
+    const {getAllByTestId} = render(<StoriesTable {...props} />);
+    expect(getAllByTestId("action.editStory")).toHaveLength(2);
+  });
 
-  it("should call an view story action if clicked", () => {
+  it("should not render the edit action if actions.editStory is present and user has no permission", () => {
+    props.actions.editStory = jest.fn();
+    props.project = {id: "testProject", name: "test project", userRoles: {isViewer: true}};
+    const {queryAllByTestId} = render(<StoriesTable {...props} />);
+    expect(queryAllByTestId("action.editStory")).toHaveLength(0);
+  });
+
+  it("should call an edit story action if clicked", () => {
+    props.actions.editStory = jest.fn();
+    props.project = {id: "testProject", name: "test project", userRoles: {isDeveloper: true}};
+    const {getAllByTestId} = render(<StoriesTable {...props} />);
+    const editButton = getAllByTestId("action.editStory")[0];
+    fireEvent.click(editButton);
+    expect(props.actions.editStory).toHaveBeenCalledWith({
+      ...props.stories[0],
+      project: {
+        id: props.project.id,
+        name: props.project.name,
+        userRoles: props.project.userRoles
+      }
+    });
+  });
+
+  it("should render the delete action if actions.deleteStory is present and user has permission", () => {
+    props.actions.deleteStory = jest.fn();
+    props.project = {id: "testProject", name: "test project", userRoles: {isDeveloper: true}};
+    const {getAllByTestId} = render(<StoriesTable {...props} />);
+    expect(getAllByTestId("action.deleteStory")).toHaveLength(2);
+  });
+
+  it("should not render the delete action if actions.deleteStory is present and user has no permission", () => {
+    props.actions.deleteStory = jest.fn();
+    props.project = {id: "testProject", name: "test project", userRoles: {isViewer: true}};
+    const {queryAllByTestId} = render(<StoriesTable {...props} />);
+    expect(queryAllByTestId("action.deleteStory")).toHaveLength(0);
+  });
+
+  it("should call an delete story action if clicked", () => {
+    props.actions.deleteStory = jest.fn();
+    props.project = {id: "testProject", name: "test project", userRoles: {isDeveloper: true}};
+    const {getAllByTestId} = render(<StoriesTable {...props} />);
+    const deleteButton = getAllByTestId("action.deleteStory")[0];
+    fireEvent.click(deleteButton);
+    expect(props.actions.deleteStory).toHaveBeenCalledWith({
+      ...props.stories[0],
+      project: {
+        id: props.project.id,
+        name: props.project.name,
+        userRoles: props.project.userRoles
+      }
+    });
+  });
+
+  it("should call a view story action if clicked", () => {
     const {getAllByTestId} = render(<StoriesTable {...props} />);
     const viewStory = getAllByTestId("action.viewStory")[0];
     fireEvent.click(viewStory);
