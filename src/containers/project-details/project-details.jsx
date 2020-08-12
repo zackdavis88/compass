@@ -29,6 +29,7 @@ import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
 import StoriesTable from "../../components/stories-table/stories-table";
 import StoryModal from "../../components/story-modal/story-modal";
+import {generateUrlWithQuery, generateObjectFromSearch} from "../../utils";
 
 const ProjectDetails = (props) => {
   // Extracting our props for use and declaring component states.
@@ -65,10 +66,11 @@ const ProjectDetails = (props) => {
 
   // This is called once, on component mount (inside useEffect)
   const _loadData = async() => {
+    const query = generateObjectFromSearch(props.location.search);
     const projectId = props.match.params.projectId;
     const projectResponse = await getProject(projectId, true);
-    const membershipResponse = await getMemberships(projectId);
-    const storiesResponse = await getStories(projectId);
+    const membershipResponse = await getMemberships(projectId, query.membershipsPage);
+    const storiesResponse = await getStories(projectId, query.storiesPage);
 
     if(projectResponse && projectResponse.error)
       return setPageError(projectResponse.error);
@@ -79,6 +81,12 @@ const ProjectDetails = (props) => {
     if(storiesResponse && storiesResponse.error)
       return setPageError(storiesResponse.error);
 
+    // If the initial query-string had values that changed (page > totalPages), update the query-string.
+    if(query.membershipsPage && membershipResponse && membershipResponse.page.toString() !== query.membershipsPage)
+      _updateQueryString("membershipsPage", membershipResponse.page);
+    
+    if(query.storiesPage && storiesResponse && storiesResponse.page.toString() !== query.storiesPage)
+      _updateQueryString("storiesPage", storiesResponse.page);
     setProjectData(projectResponse);
     setMembershipsData(membershipResponse);
     setStoriesData(storiesResponse);
@@ -122,6 +130,11 @@ const ProjectDetails = (props) => {
       _loadData();
   }, []);
 
+  const _updateQueryString = (key, value) => {
+    const newUrl = generateUrlWithQuery(key, value);
+    history.pushState({path: newUrl}, "", newUrl);
+  }
+
   // Props that will be utilized in the membership tab's Pagination component.
   const membershipsPagination = {
     itemsPerPage: membershipsData && membershipsData.itemsPerPage,
@@ -130,6 +143,7 @@ const ProjectDetails = (props) => {
     getPage: async(page) => {
       if(page === membershipsData.page)
         return;
+      _updateQueryString("membershipsPage", page);
       const response = await getMemberships(props.match.params.projectId, page, membershipsData.itemsPerPage);
       if(response.error)
         return setPageError(response.error);
@@ -142,9 +156,10 @@ const ProjectDetails = (props) => {
     itemsPerPage: storiesData && storiesData.itemsPerPage,
     page: storiesData && storiesData.page,
     totalPages: storiesData && storiesData.totalPages,
-    getPage: async() => {
+    getPage: async(page) => {
       if(page === storiesData.page)
         return;
+      _updateQueryString("storiesPage", page);
       const response = await getStories(props.match.params.projectId, page, storiesData.itemsPerPage);
       if(response.error)
         return setPageError(response.error);
@@ -242,7 +257,7 @@ const ProjectDetails = (props) => {
                   {membershipsData.memberships.length ? (
                     <MembershipsTable
                       memberships={membershipsData.memberships}
-                      project={userRoles}
+                      userRoles={userRoles}
                       actions={{
                         deleteMembership: (membership) => setDeleteMembershipData(membership),
                         editMembership: (membership) => setEditMembershipData(membership)

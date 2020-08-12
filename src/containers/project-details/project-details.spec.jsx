@@ -93,6 +93,9 @@ describe("<ProjectDetails />", () => {
         params: {
           projectId: "testProjectId"
         }
+      },
+      location: {
+        search: ""
       }
     };
     store = mockStore({
@@ -120,7 +123,7 @@ describe("<ProjectDetails />", () => {
   it("should mount the component", async() => {
     const component = render(<ProjectDetails {...props} />, store);
     expect(component).toBeDefined();
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
   });
 
   it("should render the loading spinner when awaiting API data", async() => {
