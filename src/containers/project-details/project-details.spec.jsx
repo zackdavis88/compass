@@ -246,14 +246,14 @@ describe("<ProjectDetails />", () => {
 
   it("should render a message if there are no members to display", async() => {
     store.dispatch = jest.fn().mockReturnValueOnce(mockProjectResponse);
-    store.dispatch.mockReturnValueOnce({memberships: []});
+    store.dispatch.mockReturnValueOnce({...mockMembershipsResponse, memberships: []});
     store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {getByText, queryByText} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const membersTab = getByText("Members");
-    expect(queryByText("This project has no members")).toBeNull();
+    expect(queryByText("There are no memberships to display")).toBeNull();
     fireEvent.click(membersTab);
-    expect(queryByText("This project has no members")).toBeDefined();
+    expect(queryByText("There are no memberships to display")).toBeDefined();
   });
 
   it("should render a the memberships table is the members tab is clicked", async() => {
@@ -440,5 +440,27 @@ describe("<ProjectDetails />", () => {
     expect(queryByTestId("storyDeleteModal.wrapper")).toBeNull();
     fireEvent.click(deleteAction);
     expect(queryByTestId("storyDeleteModal.wrapper")).toBeDefined();
+  });
+
+  it("should not render the members searchbar for non-members", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({...mockProjectResponse, userRoles: {}});
+    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
+    const {getByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const membersTab = getByText("Members");
+    expect(queryByTestId("projectMembersSearch")).toBeNull();
+    fireEvent.click(membersTab);
+    expect(queryByTestId("projectMembersSearch")).toBeNull();
+  });
+
+  it("should render the members searchbar for members", async() => {
+    const {getByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const membersTab = getByText("Members");
+    expect(queryByTestId("projectMembersSearch")).toBeNull();
+    fireEvent.click(membersTab);
+    expect(queryByTestId("projectMembersSearch")).toBeDefined();
   });
 });

@@ -33,12 +33,14 @@ export const getMemberNames = (project) => dispatch => {
   });
 };
 
-export const getMemberships = (projectId, page, itemsPerPage) => dispatch => {
+export const getMemberships = (projectId, page, itemsPerPage, filterUsername) => dispatch => {
   const queryString = {};
   if(page)
     queryString.page = page;
   if(itemsPerPage)
     queryString.itemsPerPage = itemsPerPage;
+  if(filterUsername)
+    queryString.filterUsername = filterUsername;
   return dispatch({
     types: [MEMBERSHIP_REQUEST_START, MEMBERSHIP_REQUEST_SUCCESS, MEMBERSHIP_REQUEST_FAILURE],
     request: request.get(`/api/projects/${projectId}/memberships`).query(queryString)

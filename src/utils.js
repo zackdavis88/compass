@@ -29,7 +29,8 @@ export const getPermissionLevel = (roles) => {
 };
 
 // Taken from stackoverflow: https://stackoverflow.com/questions/5999118/how-can-i-add-or-update-a-query-string-parameter
-export const generateUrlWithQuery = (key, value, url) => {
+export const generateUrlWithQuery = (key, rawValue, url) => {
+  const value = rawValue ? encodeURIComponent(rawValue) : rawValue;
   if (!url) url = window.location.href;
   var re = new RegExp("([?&])" + key + "=.*?(&|#|$)(.*)", "gi"),
       hash;
