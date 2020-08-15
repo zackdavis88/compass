@@ -5,6 +5,7 @@ import {waitFor, fireEvent} from "@testing-library/react";
 
 describe("<Dashboard />", () => {
   let store;
+  let props;
   const projectsResponse = {
     page: 1,
     totalPages: 1,
@@ -59,6 +60,11 @@ describe("<Dashboard />", () => {
     }]
   };
   beforeEach(() => {
+    props = {
+      location: {
+        search: ""
+      }
+    };
     store = mockStore({
       dashboard: {
         isLoading: false
@@ -85,13 +91,13 @@ describe("<Dashboard />", () => {
   });
 
   it("should mount the component", async() => {
-    const component = render(<Dashboard />, store);
+    const component = render(<Dashboard {...props} />, store);
     expect(component).toBeDefined();
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
   });
 
   it("should call getDashboardProjects and getDashboardStories on component mount", async() => {
-    const component = render(<Dashboard />, store);
+    const component = render(<Dashboard {...props} />, store);
     expect(component).toBeDefined();
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
   });
@@ -100,28 +106,28 @@ describe("<Dashboard />", () => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce({});
     store.dispatch.mockReturnValueOnce({});
-    const {getByTestId, getByText} = render(<Dashboard />, store);
+    const {getByTestId, getByText} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardLoader")).toBeDefined();
     expect(getByText("Loading Dashboard for unitTestUser")).toBeDefined();
   });
 
   it("should render the Dashboard header", async() => {
-    const {getByTestId, getByText} = render(<Dashboard />, store);
+    const {getByTestId, getByText} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardHeader")).toBeDefined();
     expect(getByText("Dashboard")).toBeDefined();
   });
 
   it("should render the dashboard actions menu", async() => {
-    const {getByTestId, getAllByText} = render(<Dashboard />, store);
+    const {getByTestId, getAllByText} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardActionsMenu")).toBeDefined();
     expect(getAllByText("Actions")).toBeDefined();
   });
 
   it("should render the 'New Project' item under the actions menu", async() => {
-    const {getByTestId, getByText} = render(<Dashboard />, store);
+    const {getByTestId, getByText} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const actionsMenu = getByTestId("dashboardActionsMenu");
     fireEvent.click(actionsMenu);
@@ -129,7 +135,7 @@ describe("<Dashboard />", () => {
   });
 
   it("should render the tabs component", async() => {
-    const {getByTestId, getByText} = render(<Dashboard />, store);
+    const {getByTestId, getByText} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardTabs")).toBeDefined();
     expect(getByText("My Projects")).toBeDefined();
@@ -137,7 +143,7 @@ describe("<Dashboard />", () => {
   });
 
   it("should render the ProjectModal when the new project button is clicked", async() => {
-    const {getByTestId, getByText, queryByTestId} = render(<Dashboard />, store);
+    const {getByTestId, getByText, queryByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const actionsMenu = getByTestId("dashboardActionsMenu");
     fireEvent.click(actionsMenu);
@@ -151,19 +157,19 @@ describe("<Dashboard />", () => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce({...projectsResponse, projects: []});
     store.dispatch.mockReturnValueOnce(storiesResponse);
-    const {getByText} = render(<Dashboard />, store);
+    const {getByText} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(getByText("You are not a member of any projects")).toBeDefined();
+    expect(getByText("There are no projects to display")).toBeDefined();
   });
 
   it("should render the projects table if there are projects to display", async() => {
-    const {getByTestId} = render(<Dashboard />, store);
+    const {getByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     expect(getByTestId("dashboardProjects")).toBeDefined();
   });
 
   it("should render the DeleteModal if the delete project action is clicked", async() => {
-    const {getAllByTestId, queryByTestId} = render(<Dashboard />, store);
+    const {getAllByTestId, queryByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const deleteButton = getAllByTestId("action.deleteProject")[0];
     expect(queryByTestId("projectDeleteModal.wrapper")).toBeNull();
@@ -172,7 +178,7 @@ describe("<Dashboard />", () => {
   });
 
   it("should render the MembershipModal if the add member action is clicked", async() => {
-    const {getAllByTestId, queryByTestId} = render(<Dashboard />, store);
+    const {getAllByTestId, queryByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     store.dispatch.mockReturnValueOnce({}); // mock get available members API response.
     const addMemberButton = getAllByTestId("action.addMember")[0];
@@ -183,7 +189,7 @@ describe("<Dashboard />", () => {
   });
 
   it("should render the StoryModal if the new story action is clicked", async() => {
-    const {getAllByTestId, queryByTestId} = render(<Dashboard />, store);
+    const {getAllByTestId, queryByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     store.dispatch.mockReturnValueOnce({});
     const addStoryButton = getAllByTestId("action.addStory")[0];
@@ -194,7 +200,7 @@ describe("<Dashboard />", () => {
   });
 
   it("should call the push redux action when the view project action is clicked", async() => {
-    const {getAllByTestId} = render(<Dashboard />, store);
+    const {getAllByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const viewButton = getAllByTestId("action.viewProject")[0];
     fireEvent.click(viewButton);
@@ -211,7 +217,7 @@ describe("<Dashboard />", () => {
     store.dispatch = jest.fn();
     store.dispatch.mockReturnValueOnce(projectsResponse);
     store.dispatch.mockReturnValueOnce({...storiesResponse, stories: []});
-    const {getByText} = render(<Dashboard />, store);
+    const {getByText} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const storiesTab = getByText("My Stories");
     fireEvent.click(storiesTab);
@@ -219,7 +225,7 @@ describe("<Dashboard />", () => {
   });
 
   it("should render the StoriesTable when the Stories tab is clicked", async() => {
-    const {getByText, queryByTestId} = render(<Dashboard />, store);
+    const {getByText, queryByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const storiesTab = getByText("My Stories");
     expect(queryByTestId("storiesTable")).toBeNull();
@@ -228,7 +234,7 @@ describe("<Dashboard />", () => {
   });
 
   it("should call the push redux action when the view story action is clicked", async() => {
-    const {getByText, getAllByTestId} = render(<Dashboard />, store);
+    const {getByText, getAllByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const storiesTab = getByText("My Stories");
     fireEvent.click(storiesTab);
@@ -241,5 +247,13 @@ describe("<Dashboard />", () => {
         args: [`/projects/${storiesResponse.stories[0].project.id}/stories/${storiesResponse.stories[0].id}`]
       }
     });
+  });
+
+  it("should render the projects search bar", async() => {
+    const {getByTestId} = render(<Dashboard {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    expect(getByTestId("dashboardProjectSearch")).toBeDefined();
+    expect(getByTestId("dashboardProjectSearch.input")).toBeDefined();
+    expect(getByTestId("dashboardProjectSearch.search")).toBeDefined();
   });
 });
