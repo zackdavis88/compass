@@ -30,6 +30,7 @@ import PageHeader from "../../components/page-header/page-header";
 import StoriesTable from "../../components/stories-table/stories-table";
 import StoryModal from "../../components/story-modal/story-modal";
 import {generateUrlWithQuery, generateObjectFromSearch} from "../../utils";
+import SearchBar from "../../components/search-bar/search-bar";
 
 const ProjectDetails = (props) => {
   // Extracting our props for use and declaring component states.
@@ -52,6 +53,8 @@ const ProjectDetails = (props) => {
     createStory,
     getMemberNames
   } = props;
+  const query = generateObjectFromSearch(props.location.search);
+  const projectId = props.match.params.projectId;
   const [pageError, setPageError] = useState(undefined);
   const [projectData, setProjectData] = useState(undefined);
   const [membershipsData, setMembershipsData] = useState(undefined);
@@ -63,13 +66,12 @@ const ProjectDetails = (props) => {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [deleteStoryData, setDeleteStoryData] = useState({});
   const [showStoryModal, setShowStoryModal] = useState(false);
+  const [memberSearchValue, setMemberSearchValue] = useState(query.memberSearch || "");
 
   // This is called once, on component mount (inside useEffect)
   const _loadData = async() => {
-    const query = generateObjectFromSearch(props.location.search);
-    const projectId = props.match.params.projectId;
     const projectResponse = await getProject(projectId, true);
-    const membershipResponse = await getMemberships(projectId, query.membershipsPage);
+    const membershipResponse = await getMemberships(projectId, query.membersPage, null, query.memberSearch);
     const storiesResponse = await getStories(projectId, query.storiesPage);
 
     if(projectResponse && projectResponse.error)
@@ -82,8 +84,8 @@ const ProjectDetails = (props) => {
       return setPageError(storiesResponse.error);
 
     // If the initial query-string had values that changed (page > totalPages), update the query-string.
-    if(query.membershipsPage && membershipResponse && membershipResponse.page.toString() !== query.membershipsPage)
-      _updateQueryString("membershipsPage", membershipResponse.page);
+    if(query.membersPage && membershipResponse && membershipResponse.page.toString() !== query.membersPage)
+      _updateQueryString("membersPage", membershipResponse.page);
     
     if(query.storiesPage && storiesResponse && storiesResponse.page.toString() !== query.storiesPage)
       _updateQueryString("storiesPage", storiesResponse.page);
@@ -95,7 +97,6 @@ const ProjectDetails = (props) => {
   // This is called when we delete or edit a membership.
   const _reloadMemberships = async() => {
     const {itemsPerPage, page} = membershipsData;
-    const projectId = props.match.params.projectId;
     const response = await getMemberships(projectId, page, itemsPerPage);
     if(response && response.error)
       return setPageError(response.error);
@@ -106,7 +107,6 @@ const ProjectDetails = (props) => {
     // This is called when we delete or edit a story.
     const _reloadStories = async() => {
       const {itemsPerPage, page} = storiesData;
-      const projectId = props.match.params.projectId;
       const response = await getStories(projectId, page, itemsPerPage);
       if(response && response.error)
         return setPageError(response.error);
@@ -116,11 +116,10 @@ const ProjectDetails = (props) => {
 
   // This is called when we edit project details.
   const _reloadDetails = async() => {
-    const projectId = props.match.params.projectId;
     const response = await getProject(projectId, true);
     if(response && response.error)
       return setPageError(response.error);
-    
+
     setProjectData(response);
   };
 
@@ -143,8 +142,8 @@ const ProjectDetails = (props) => {
     getPage: async(page) => {
       if(page === membershipsData.page)
         return;
-      _updateQueryString("membershipsPage", page);
-      const response = await getMemberships(props.match.params.projectId, page, membershipsData.itemsPerPage);
+      _updateQueryString("membersPage", page);
+      const response = await getMemberships(projectId, page, membershipsData.itemsPerPage);
       if(response.error)
         return setPageError(response.error);
       
@@ -160,7 +159,7 @@ const ProjectDetails = (props) => {
       if(page === storiesData.page)
         return;
       _updateQueryString("storiesPage", page);
-      const response = await getStories(props.match.params.projectId, page, storiesData.itemsPerPage);
+      const response = await getStories(projectId, page, storiesData.itemsPerPage);
       if(response.error)
         return setPageError(response.error);
       
@@ -196,6 +195,33 @@ const ProjectDetails = (props) => {
       onClick: () => setShowProjectDeleteModal(true)
     });
   }
+
+  // SearchBar Props
+  const membersSearchBarProps = {
+    id: "projectMembersSearch",
+    dataTestId: `projectMembersSearch`,
+    label: "Member Name",
+    placeholder: "Search by member name",
+    searchedValue: memberSearchValue,
+    search: async(value) => {
+      _updateQueryString("memberSearch", value ? value : null);
+      setMemberSearchValue(value);
+      const {itemsPerPage} = membershipsData;
+      const membershipsResponse = await getMemberships(projectId, 1, itemsPerPage, value);
+      _updateQueryString("membersPage", 1);
+      if(!membershipsResponse.error)
+        setMembershipsData(membershipsResponse);
+    },
+    clear: async() => {
+      _updateQueryString("memberSearch", null);
+      setMemberSearchValue("");
+      const {itemsPerPage} = membershipsData;
+      const membershipsResponse = await getMemberships(projectId, 1, itemsPerPage);
+      _updateQueryString("membersPage", 1);
+      if(!membershipsResponse.error)
+        setMembershipsData(membershipsResponse);
+    }
+  };
 
   return (
     <ProjectDetailsWrapper>
@@ -254,6 +280,9 @@ const ProjectDetails = (props) => {
                   </DetailsSection>
                 </Tabs.Panel>
                 <Tabs.Panel>
+                  {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper || userRoles.isViewer) && (
+                    <SearchBar {...membersSearchBarProps} />
+                  )}
                   <MembershipsTable
                     memberships={membershipsData.memberships}
                     userRoles={userRoles}

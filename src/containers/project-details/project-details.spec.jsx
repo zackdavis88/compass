@@ -441,4 +441,26 @@ describe("<ProjectDetails />", () => {
     fireEvent.click(deleteAction);
     expect(queryByTestId("storyDeleteModal.wrapper")).toBeDefined();
   });
+
+  it("should not render the members searchbar for non-members", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({...mockProjectResponse, userRoles: {}});
+    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
+    const {getByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const membersTab = getByText("Members");
+    expect(queryByTestId("projectMembersSearch")).toBeNull();
+    fireEvent.click(membersTab);
+    expect(queryByTestId("projectMembersSearch")).toBeNull();
+  });
+
+  it("should render the members searchbar for members", async() => {
+    const {getByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const membersTab = getByText("Members");
+    expect(queryByTestId("projectMembersSearch")).toBeNull();
+    fireEvent.click(membersTab);
+    expect(queryByTestId("projectMembersSearch")).toBeDefined();
+  });
 });

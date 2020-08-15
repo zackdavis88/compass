@@ -10,6 +10,7 @@ import {
   pageHeaderHeight
 } from "../../common-styles/variables";
 import {ActionsWrapper} from "../../components/actions-menu/actions-menu.styles";
+import {SearchBarWrapper} from "../../components/search-bar/search-bar.styles";
 
 export const ProjectDetailsWrapper = styled.div`
   position: relative;
@@ -29,6 +30,10 @@ export const ProjectDetailsWrapper = styled.div`
 
   & ${ActionsWrapper} {
     top: 100px;
+  }
+
+  & ${SearchBarWrapper} {
+    padding-bottom: 30px;
   }
 `;
 
