@@ -19,6 +19,8 @@ import PageHeader from "../../components/page-header/page-header";
 import StoryModal from "../../components/story-modal/story-modal";
 import {getDashboardProjects, getDashboardStories} from "../../store/actions/dashboard";
 import StoriesTable from "../../components/stories-table/stories-table";
+import SearchBar from "../../components/search-bar/search-bar";
+import {generateUrlWithQuery, generateObjectFromSearch} from "../../utils";
 
 const Dashboard = (props) => {
   const {
@@ -43,16 +45,28 @@ const Dashboard = (props) => {
   const [newStoryData, setNewStoryData] = useState({});
   const [projectsData, setProjectsData] = useState(undefined);
   const [storiesData, setStoriesData] = useState(undefined);
+  const [searchValue, setSearchValue] = useState("");
 
   // called once, after the component is mounted.
   const _loadData = async() => {
-    const projectsResponse = await getDashboardProjects();
-    const storiesResponse = await getDashboardStories();
+    const query = generateObjectFromSearch(props.location.search);
+    const projectsResponse = await getDashboardProjects(query.projectsPage, undefined, query.projectSearch);
+    const storiesResponse = await getDashboardStories(query.storiesPage);
+    if(query.projectSearch)
+      setSearchValue(query.projectSearch);
+    
     if(!projectsResponse.error)
       setProjectsData(projectsResponse);
     
     if(!storiesResponse.error)
       setStoriesData(storiesResponse);
+
+    // If the initial query-string had values that changed (page > totalPages), update the query-string.
+    if(query.projectsPage && projectsResponse && projectsResponse.page.toString() !== query.projectsPage)
+      _updateQueryString("projectsPage", projectsResponse.page);
+  
+    if(query.storiesPage && storiesResponse && storiesResponse.page.toString() !== query.storiesPage)
+      _updateQueryString("storiesPage", storiesResponse.page);
   };
   useEffect(() => {
     _loadData();
@@ -60,9 +74,11 @@ const Dashboard = (props) => {
 
   const _refreshProjects = async() => {
     const {page, itemsPerPage} = projectsData;
-    const projectsResponse = await getDashboardProjects(page, itemsPerPage);
+    const projectsResponse = await getDashboardProjects(page, itemsPerPage, searchValue);
     if(!projectsResponse.error)
       setProjectsData(projectsResponse);
+    
+    _updateQueryString("projectsPage", projectsResponse.page);
   };
 
   const _refreshStories = async() => {
@@ -70,6 +86,11 @@ const Dashboard = (props) => {
     const storiesResponse = await getDashboardStories(page, itemsPerPage);
     if(!storiesResponse.error)
       setStoriesData(storiesResponse);
+  };
+
+  const _updateQueryString = (key, value) => {
+    const newUrl = generateUrlWithQuery(key, value);
+    history.pushState({path: newUrl}, "", newUrl);
   };
 
   const projects = projectsData && projectsData.projects;
@@ -89,9 +110,11 @@ const Dashboard = (props) => {
       getPage: async(page) => {
         if(page === projectsData.page)
           return;
-        const response = await getDashboardProjects(page, projectsData.itemsPerPage);
+        const response = await getDashboardProjects(page, projectsData.itemsPerPage, searchValue);
         if(!response.error)
-          return setProjectsData(response);
+          setProjectsData(response);
+        
+        _updateQueryString("projectsPage", page);
       }
     }
   };
@@ -110,7 +133,9 @@ const Dashboard = (props) => {
           return;
         const response = await getDashboardStories(page, storiesData.itemsPerPage);
         if(!response.error)
-          return setStoriesData(response);
+          setStoriesData(response);
+        
+        _updateQueryString("storiesPage", page);
       }
     }
   };
@@ -122,6 +147,32 @@ const Dashboard = (props) => {
       label: "New Project",
       onClick: () => setShowNewProjectModal(true)
     }]
+  };
+
+  const searchBarProps = {
+    id: "dashboardProjectSearch",
+    dataTestId: `dashboardProjectSearch`,
+    label: "Project Name",
+    placeholder: "Search by project name",
+    searchedValue: searchValue,
+    search: async(value) => {
+      _updateQueryString("projectSearch", value ? value : null);
+      setSearchValue(value);
+      const {itemsPerPage} = projectsData;
+      const projectsResponse = await getDashboardProjects(1, itemsPerPage, value);
+      _updateQueryString("projectsPage", 1);
+      if(!projectsResponse.error)
+        setProjectsData(projectsResponse);
+    },
+    clear: async() => {
+      _updateQueryString("projectSearch", null);
+      setSearchValue("");
+      const {itemsPerPage} = projectsData;
+      const projectsResponse = await getDashboardProjects(1, itemsPerPage);
+      _updateQueryString("projectsPage", 1);
+      if(!projectsResponse.error)
+        setProjectsData(projectsResponse);
+    }
   };
 
   return (
@@ -139,11 +190,8 @@ const Dashboard = (props) => {
             </Tabs.TabHeaders>
             <Tabs.TabPanels>
               <Tabs.Panel>
-                {projects.length ? (
-                  <ProjectsTable {...projectsTableProps} />
-                ) : (
-                  <div>You are not a member of any projects</div>
-                )}
+                <SearchBar {...searchBarProps}/>
+                <ProjectsTable {...projectsTableProps} />
               </Tabs.Panel>
               <Tabs.Panel>
                 {stories.length ? (

@@ -45,6 +45,12 @@ describe("<DashboardProjectsTable />", () => {
     expect(component).toBeDefined();
   });
 
+  it("should render a message if there are no projects to display", () => {
+    props.projects = [];
+    const {getByText} = render(<DashboardProjectsTable {...props} />);
+    expect(getByText("There are no projects to display")).toBeDefined();
+  });
+
   it("should render the expected headers", () => {
     const {getByTestId, getByText} = render(<DashboardProjectsTable {...props}/>);
     expect(getByTestId("dashboardProjects")).toBeDefined();

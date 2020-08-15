@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import PropTypes from "prop-types";
 import Table from "../table/table";
 import {TableValue} from "../table/table.styles";
@@ -11,6 +11,7 @@ import {DashboardProjectsTableWrapper} from "./dashboard-projects-table.styles";
 import Pagination from "../pagination/pagination";
 
 const DashboardProjectsTable = ({projects, actions, pagination}) => {
+  const isEmpty = projects.length === 0;
   const _renderActions = (row) => {
     const {deleteProject, addStory, addMember, viewProject} = actions;
     const {isAdmin, isManager, isDeveloper, isViewer} = row.roles;
@@ -79,12 +80,18 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
   };
 
   return (
-    <DashboardProjectsTableWrapper>
-      <Table {...tableProps} />
-      {pagination && (
-        <PaginationSection>
-          <Pagination {...paginationProps} />
-        </PaginationSection>
+    <DashboardProjectsTableWrapper isEmpty={isEmpty}>
+      {!isEmpty ? (
+        <Fragment>
+          <Table {...tableProps} />
+          {pagination && (
+            <PaginationSection>
+              <Pagination {...paginationProps} />
+            </PaginationSection>
+          )}
+        </Fragment>
+      ) : (
+        <div>There are no projects to display</div>
       )}
     </DashboardProjectsTableWrapper>
   );
