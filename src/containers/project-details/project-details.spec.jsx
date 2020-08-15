@@ -246,14 +246,14 @@ describe("<ProjectDetails />", () => {
 
   it("should render a message if there are no members to display", async() => {
     store.dispatch = jest.fn().mockReturnValueOnce(mockProjectResponse);
-    store.dispatch.mockReturnValueOnce({memberships: []});
+    store.dispatch.mockReturnValueOnce({...mockMembershipsResponse, memberships: []});
     store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {getByText, queryByText} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const membersTab = getByText("Members");
-    expect(queryByText("This project has no members")).toBeNull();
+    expect(queryByText("There are no memberships to display")).toBeNull();
     fireEvent.click(membersTab);
-    expect(queryByText("This project has no members")).toBeDefined();
+    expect(queryByText("There are no memberships to display")).toBeDefined();
   });
 
   it("should render a the memberships table is the members tab is clicked", async() => {

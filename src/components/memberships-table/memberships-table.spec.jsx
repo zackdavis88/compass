@@ -47,6 +47,12 @@ describe("<MembershipsTable />", () => {
     expect(component).toBeDefined();
   });
 
+  it("should render a message if there are no memberships to display", () => {
+    props.memberships = [];
+    const {getByText} = render(<MembershipsTable {...props}/>);
+    expect(getByText("There are no memberships to display")).toBeDefined();
+  });
+
   it("should render the expected headers", () => {
     const {getByTestId, getByText} = render(<MembershipsTable {...props}/>);
     expect(getByTestId("projectMemberships")).toBeDefined();

@@ -254,19 +254,15 @@ const ProjectDetails = (props) => {
                   </DetailsSection>
                 </Tabs.Panel>
                 <Tabs.Panel>
-                  {membershipsData.memberships.length ? (
-                    <MembershipsTable
-                      memberships={membershipsData.memberships}
-                      userRoles={userRoles}
-                      actions={{
-                        deleteMembership: (membership) => setDeleteMembershipData(membership),
-                        editMembership: (membership) => setEditMembershipData(membership)
-                      }}
-                      pagination={membershipsPagination}
-                    />
-                  ) : (
-                    <div>This project has no members</div>
-                  )}
+                  <MembershipsTable
+                    memberships={membershipsData.memberships}
+                    userRoles={userRoles}
+                    actions={{
+                      deleteMembership: (membership) => setDeleteMembershipData(membership),
+                      editMembership: (membership) => setEditMembershipData(membership)
+                    }}
+                    pagination={membershipsPagination}
+                  />
                 </Tabs.Panel>
                 <Tabs.Panel>
                   {storiesData.stories.length ? (

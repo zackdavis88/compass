@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import PropTypes from "prop-types";
 import Table from "../table/table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,7 @@ import Pagination from "../pagination/pagination";
 import {TableValue} from "../table/table.styles";
 
 const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
+  const isEmpty = memberships.length === 0;
   const _renderActions = (row) => {//row is a membership object in this Table instance.
     const {deleteMembership, editMembership} = actions;
     // determine logged in user's permission levels
@@ -68,12 +69,18 @@ const MembershipsTable = ({memberships, userRoles, actions, pagination}) => {
   };
 
   return (
-    <MembershipsTableWrapper>
-      <Table {...tableProps} />
-      {pagination && (
-        <PaginationSection>
-          <Pagination {...paginationProps} />
-        </PaginationSection>
+    <MembershipsTableWrapper isEmpty={isEmpty}>
+      {!isEmpty ? (
+        <Fragment>
+          <Table {...tableProps} />
+          {pagination && (
+            <PaginationSection>
+              <Pagination {...paginationProps} />
+            </PaginationSection>
+          )}
+        </Fragment>
+      ) : (
+        <div>There are no memberships to display</div>
       )}
     </MembershipsTableWrapper>
   );
