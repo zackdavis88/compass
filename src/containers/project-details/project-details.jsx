@@ -66,17 +66,20 @@ const ProjectDetails = (props) => {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [deleteStoryData, setDeleteStoryData] = useState({});
   const [showStoryModal, setShowStoryModal] = useState(false);
-  const [memberSearchValue, setMemberSearchValue] = useState(query.memberSearch || "");
   const [memberSearchData, setMemberSearchData] = useState({
     inputValue: query.memberSearch || "",
     searchedValue: query.memberSearch || ""
+  });
+  const [storySearchData, setStorySearchData] = useState({
+    inputValue: query.storySearch || "",
+    searchedValue: query.storySearch || ""
   });
 
   // This is called once, on component mount (inside useEffect)
   const _loadData = async() => {
     const projectResponse = await getProject(projectId, true);
     const membershipResponse = await getMemberships(projectId, query.membersPage, null, query.memberSearch);
-    const storiesResponse = await getStories(projectId, query.storiesPage);
+    const storiesResponse = await getStories(projectId, query.storiesPage, null, query.storySearch);
 
     if(projectResponse && projectResponse.error)
       return setPageError(projectResponse.error);
@@ -101,7 +104,7 @@ const ProjectDetails = (props) => {
   // This is called when we delete or edit a membership.
   const _reloadMemberships = async() => {
     const {itemsPerPage, page} = membershipsData;
-    const response = await getMemberships(projectId, page, itemsPerPage);
+    const response = await getMemberships(projectId, page, itemsPerPage, memberSearchData.searchedValue);
     if(response && response.error)
       return setPageError(response.error);
     
@@ -111,7 +114,7 @@ const ProjectDetails = (props) => {
     // This is called when we delete or edit a story.
     const _reloadStories = async() => {
       const {itemsPerPage, page} = storiesData;
-      const response = await getStories(projectId, page, itemsPerPage);
+      const response = await getStories(projectId, page, itemsPerPage, storySearchData.searchedValue);
       if(response && response.error)
         return setPageError(response.error);
       
@@ -147,7 +150,7 @@ const ProjectDetails = (props) => {
       if(page === membershipsData.page)
         return;
       _updateQueryString("membersPage", page);
-      const response = await getMemberships(projectId, page, membershipsData.itemsPerPage);
+      const response = await getMemberships(projectId, page, membershipsData.itemsPerPage, memberSearchData.searchedValue);
       if(response.error)
         return setPageError(response.error);
       
@@ -163,7 +166,7 @@ const ProjectDetails = (props) => {
       if(page === storiesData.page)
         return;
       _updateQueryString("storiesPage", page);
-      const response = await getStories(projectId, page, storiesData.itemsPerPage);
+      const response = await getStories(projectId, page, storiesData.itemsPerPage, storySearchData.searchedValue);
       if(response.error)
         return setPageError(response.error);
       
@@ -238,6 +241,43 @@ const ProjectDetails = (props) => {
     }
   };
 
+  const storiesSearchBarProps = {
+    id: "projectStoriesSearch",
+    dataTestId: `projectStoriesSearch`,
+    label: "Story Name",
+    placeholder: "Search by story name",
+    searchedValue: storySearchData.searchedValue,
+    value: storySearchData.inputValue,
+    onChange: (value) => setStorySearchData({
+      ...storySearchData,
+      inputValue: value
+    }),
+    search: async(value) => {
+      _updateQueryString("storySearch", value ? value : null);
+      setStorySearchData({
+        ...storySearchData,
+        searchedValue: value
+      });
+      const {itemsPerPage} = storiesData;
+      const storiesResponse = await getStories(projectId, 1, itemsPerPage, value);
+      _updateQueryString("storiesPage", 1);
+      if(!storiesResponse.error)
+        setStoriesData(storiesResponse);
+    },
+    clear: async() => {
+      _updateQueryString("storySearch", null);
+      setStorySearchData({
+        inputValue: "",
+        searchedValue: ""
+      });
+      const {itemsPerPage} = storiesData;
+      const storiesResponse = await getStories(projectId, 1, itemsPerPage);
+      _updateQueryString("storiesPage", 1);
+      if(!storiesResponse.error)
+        setStoriesData(storiesResponse);
+    }
+  };
+
   return (
     <ProjectDetailsWrapper>
       {pageError ? (
@@ -309,23 +349,22 @@ const ProjectDetails = (props) => {
                   />
                 </Tabs.Panel>
                 <Tabs.Panel>
-                  {storiesData.stories.length ? (
-                    <StoriesTable
-                      stories={storiesData.stories}
-                      project={{
-                        id: project.id,
-                        name: project.name,
-                        userRoles: userRoles
-                      }}
-                      actions={{
-                        deleteStory: (story) => setDeleteStoryData(story),
-                        viewStory: (story) => historyPush(`/projects/${project.id}/stories/${story.id}`)
-                      }}
-                      pagination={storiesPagination}
-                    />
-                  ) : (
-                    <div>This project has no stories</div>
+                  {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper || userRoles.isViewer) && (
+                    <SearchBar {...storiesSearchBarProps} />
                   )}
+                  <StoriesTable
+                    stories={storiesData.stories}
+                    project={{
+                      id: project.id,
+                      name: project.name,
+                      userRoles: userRoles
+                    }}
+                    actions={{
+                      deleteStory: (story) => setDeleteStoryData(story),
+                      viewStory: (story) => historyPush(`/projects/${project.id}/stories/${story.id}`)
+                    }}
+                    pagination={storiesPagination}
+                  />
                 </Tabs.Panel>
               </Tabs.TabPanels>
             </Tabs>
