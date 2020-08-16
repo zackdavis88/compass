@@ -136,7 +136,7 @@ const Dashboard = (props) => {
       getPage: async(page) => {
         if(page === storiesData.page)
           return;
-        const response = await getDashboardStories(page, storiesData.itemsPerPage);
+        const response = await getDashboardStories(page, storiesData.itemsPerPage, storySearchData.searchedValue);
         if(!response.error)
           setStoriesData(response);
         
