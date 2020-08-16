@@ -228,6 +228,13 @@ const Dashboard = (props) => {
     }
   };
 
+  const _onHeaderClick = (headerIndex) => {
+    if(headerIndex === 0)
+      return _updateQueryString("activeTab", null);
+    
+    _updateQueryString("activeTab", headerIndex);
+  };
+
   return (
     <DashboardWrapper>
       {!projects || !stories ? (
@@ -236,7 +243,7 @@ const Dashboard = (props) => {
         <Fragment>
           <PageHeader text="Dashboard" textCenter dataTestId="dashboardHeader" />
           <ActionsMenu {...actionsMenuProps} />
-          <Tabs dataTestId="dashboardTabs">
+          <Tabs dataTestId="dashboardTabs" tabOverride={query.activeTab} onHeaderClick={_onHeaderClick}>
             <Tabs.TabHeaders>
               <Tabs.Header>My Projects</Tabs.Header>
               <Tabs.Header>My Stories</Tabs.Header>

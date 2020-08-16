@@ -278,6 +278,13 @@ const ProjectDetails = (props) => {
     }
   };
 
+  const _onHeaderClick = (headerIndex) => {
+    if(headerIndex === 0)
+      return _updateQueryString("activeTab", null);
+    
+    _updateQueryString("activeTab", headerIndex);
+  };
+
   return (
     <ProjectDetailsWrapper>
       {pageError ? (
@@ -292,7 +299,7 @@ const ProjectDetails = (props) => {
             {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper) && (
               <ActionsMenu {...actionsMenuProps} />
             )}
-            <Tabs dataTestId="projectDetailsTabs">
+            <Tabs dataTestId="projectDetailsTabs" tabOverride={query.activeTab} onHeaderClick={_onHeaderClick}>
               <Tabs.TabHeaders>
                 <Tabs.Header>Details</Tabs.Header>
                 <Tabs.Header>Members</Tabs.Header>
