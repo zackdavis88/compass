@@ -23,6 +23,16 @@ import SearchBar from "../../components/search-bar/search-bar";
 import {generateUrlWithQuery, generateObjectFromSearch} from "../../utils";
 
 const Dashboard = (props) => {
+  {/*
+    TODO: We got a major bug on our hands.
+    SearchBar appeared to be working fine till I used it in 2 places on the same page.
+    even though all my experienced told me it would be fine, it appears that the state between
+    the two SearchBar instances is persisting...if you enter 'wads' on one bar, then click another tab
+    the second bar will render with 'wads' as well. This is a huge problem and I think its because I wanted
+    the searchbar to manage its own state for input value. We need to control it on the container level and see
+    if the bug is still an issue.
+  */}
+  const query = generateObjectFromSearch(props.location.search);
   const {
     getDashboardProjects,
     getDashboardStories,
@@ -45,15 +55,19 @@ const Dashboard = (props) => {
   const [newStoryData, setNewStoryData] = useState({});
   const [projectsData, setProjectsData] = useState(undefined);
   const [storiesData, setStoriesData] = useState(undefined);
-  const [searchValue, setSearchValue] = useState("");
+  const [projectSearchData, setProjectSearchData] = useState({
+    inputValue: query.projectSearch || "",
+    searchedValue: query.projectSearch || ""
+  });
+  const [storySearchData, setStorySearchData] = useState({
+    inputValue: query.storySearch || "",
+    searchedValue: query.storySearch || ""
+  });
 
   // called once, after the component is mounted.
   const _loadData = async() => {
-    const query = generateObjectFromSearch(props.location.search);
     const projectsResponse = await getDashboardProjects(query.projectsPage, undefined, query.projectSearch);
-    const storiesResponse = await getDashboardStories(query.storiesPage);
-    if(query.projectSearch)
-      setSearchValue(query.projectSearch);
+    const storiesResponse = await getDashboardStories(query.storiesPage, undefined, query.storySearch);
     
     if(!projectsResponse.error)
       setProjectsData(projectsResponse);
@@ -74,7 +88,7 @@ const Dashboard = (props) => {
 
   const _refreshProjects = async() => {
     const {page, itemsPerPage} = projectsData;
-    const projectsResponse = await getDashboardProjects(page, itemsPerPage, searchValue);
+    const projectsResponse = await getDashboardProjects(page, itemsPerPage, projectSearchData.searchedValue);
     if(!projectsResponse.error)
       setProjectsData(projectsResponse);
     
@@ -110,7 +124,7 @@ const Dashboard = (props) => {
       getPage: async(page) => {
         if(page === projectsData.page)
           return;
-        const response = await getDashboardProjects(page, projectsData.itemsPerPage, searchValue);
+        const response = await getDashboardProjects(page, projectsData.itemsPerPage, projectSearchData.searchedValue);
         if(!response.error)
           setProjectsData(response);
         
@@ -149,15 +163,23 @@ const Dashboard = (props) => {
     }]
   };
 
-  const searchBarProps = {
+  const projectsSearchBarProps = {
     id: "dashboardProjectSearch",
     dataTestId: `dashboardProjectSearch`,
     label: "Project Name",
     placeholder: "Search by project name",
-    searchedValue: searchValue,
+    value: projectSearchData.inputValue,
+    searchedValue: projectSearchData.searchedValue,
+    onChange: (value) => setProjectSearchData({
+      ...projectSearchData,
+      inputValue: value
+    }),
     search: async(value) => {
       _updateQueryString("projectSearch", value ? value : null);
-      setSearchValue(value);
+      setProjectSearchData({
+        ...projectSearchData,
+        searchedValue: value
+      });
       const {itemsPerPage} = projectsData;
       const projectsResponse = await getDashboardProjects(1, itemsPerPage, value);
       _updateQueryString("projectsPage", 1);
@@ -166,12 +188,52 @@ const Dashboard = (props) => {
     },
     clear: async() => {
       _updateQueryString("projectSearch", null);
-      setSearchValue("");
+      setProjectSearchData({
+        inputValue: "",
+        searchedValue: ""
+      });
       const {itemsPerPage} = projectsData;
       const projectsResponse = await getDashboardProjects(1, itemsPerPage);
       _updateQueryString("projectsPage", 1);
       if(!projectsResponse.error)
         setProjectsData(projectsResponse);
+    }
+  };
+
+  const storiesSearchBarProps = {
+    id: "dashboardStorySearch",
+    dataTestId: `dashboardStorySearch`,
+    label: "Story Name",
+    placeholder: "Search by story name",
+    value: storySearchData.inputValue,
+    searchedValue: storySearchData.searchedValue,
+    onChange: (value) => setStorySearchData({
+      ...storySearchData,
+      inputValue: value
+    }),
+    search: async(value) => {
+      _updateQueryString("storySearch", value ? value : null);
+      setStorySearchData({
+        ...storySearchData,
+        searchedValue: value
+      });
+      const {itemsPerPage} = storiesData;
+      const storiesResponse = await getDashboardStories(1, itemsPerPage, value);
+      _updateQueryString("storiesPage", 1);
+      if(!storiesResponse.error)
+        setStoriesData(storiesResponse);
+    },
+    clear: async() => {
+      _updateQueryString("storySearch", null);
+      setStorySearchData({
+        inputValue: "",
+        searchedValue: ""
+      });
+      const {itemsPerPage} = storiesData;
+      const storiesResponse = await getDashboardStories(1, itemsPerPage);
+      _updateQueryString("storiesPage", 1);
+      if(!storiesResponse.error)
+        setStoriesData(storiesResponse);
     }
   };
 
@@ -190,15 +252,12 @@ const Dashboard = (props) => {
             </Tabs.TabHeaders>
             <Tabs.TabPanels>
               <Tabs.Panel>
-                <SearchBar {...searchBarProps}/>
+                <SearchBar {...projectsSearchBarProps}/>
                 <ProjectsTable {...projectsTableProps} />
               </Tabs.Panel>
               <Tabs.Panel>
-                {stories.length ? (
-                  <StoriesTable {...storiesTableProps} />
-                ) : (
-                  <div>You are not the owner/creator of any stories</div>
-                )}
+                <SearchBar {...storiesSearchBarProps}/>
+                <StoriesTable {...storiesTableProps} />
               </Tabs.Panel>
             </Tabs.TabPanels>
           </Tabs>
