@@ -20,12 +20,14 @@ export const getDashboardProjects = (page, itemsPerPage, searchValue) => dispatc
   });
 };
 
-export const getDashboardStories = (page, itemsPerPage) => dispatch => {
+export const getDashboardStories = (page, itemsPerPage, filterName) => dispatch => {
   const queryString = {};
   if(page)
     queryString.page = page;
   if(itemsPerPage)
     queryString.itemsPerPage = itemsPerPage;
+  if(filterName)
+    queryString.filterName = filterName;
   return dispatch({
     types: [DASHBOARD_REQUEST_START, DASHBOARD_REQUEST_SUCCESS, DASHBOARD_REQUEST_FAILURE],
     request: request.get(`${apiRoute}/stories`).query(queryString)
