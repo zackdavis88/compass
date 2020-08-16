@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import PropTypes from "prop-types";
 import Table from "../table/table";
 import {TableValue} from "../table/table.styles";
@@ -11,6 +11,7 @@ import {StoriesTableWrapper} from "./stories-table.styles";
 import Pagination from "../pagination/pagination";
 
 const StoriesTable = ({stories, project, actions, pagination}) => {
+  const isEmpty = stories.length === 0;
   const _renderActions = (row) => {
     const {editStory, deleteStory, viewStory} = actions;
     const userRoles = project ? (project.userRoles || {}) : {};
@@ -84,12 +85,18 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
   };
 
   return (
-    <StoriesTableWrapper>
-      <Table {...tableProps} />
-      {pagination && (
-        <PaginationSection>
-          <Pagination {...paginationProps} />
-        </PaginationSection>
+    <StoriesTableWrapper isEmpty={isEmpty}>
+      {!isEmpty ? (
+        <Fragment>
+          <Table {...tableProps} />
+          {pagination && (
+            <PaginationSection>
+              <Pagination {...paginationProps} />
+            </PaginationSection>
+          )}
+        </Fragment>
+      ) : (
+        <div>There are no stories to display</div>
       )}
     </StoriesTableWrapper>
   );

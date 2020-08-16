@@ -50,6 +50,12 @@ describe("<StoriesTable />", () => {
     expect(component).toBeDefined();
   });
 
+  it("should render a message if there are no stories to display", () => {
+    props.stories = [];
+    const {getByText} = render(<StoriesTable {...props} />);
+    expect(getByText("There are no stories to display")).toBeDefined();
+  });
+
   it("should render the expected headers", () => {
     const {getByTestId, getByText} = render(<StoriesTable {...props}/>);
     expect(getByTestId("storiesTable")).toBeDefined();
