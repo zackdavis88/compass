@@ -8,13 +8,13 @@ import {
   PanelWrapper
 } from "./tabs.styles";
 
-const Tabs = ({dataTestId, children}) => {
-  const [activeTab, setActiveTab] = useState(0);
+const Tabs = ({dataTestId, children, tabOverride, onHeaderClick}) => {
+  const [activeTab, setActiveTab] = useState(Number(tabOverride) || 0);
   return (
     <TabsWrapper data-testid={dataTestId}>
       {children && Array.isArray(children) && children.reduce((prev, curr, index) => {
         if(curr.type === TabHeaders)
-          return prev.concat(cloneElement(curr, {key: index, dataTestId, setActiveTab, activeTab}));
+          return prev.concat(cloneElement(curr, {key: index, dataTestId, setActiveTab, activeTab, onHeaderClick}));
         
         if(curr.type === TabPanels)
           return prev.concat(cloneElement(curr, {key: index, dataTestId, activeTab}));
@@ -25,14 +25,23 @@ const Tabs = ({dataTestId, children}) => {
   );
 };
 
-const TabHeaders = ({dataTestId, setActiveTab, children, activeTab}) => {
+const TabHeaders = ({dataTestId, setActiveTab, children, activeTab, onHeaderClick}) => {
   const _renderTabHeaders = () => {
     if(children && !Array.isArray(children) && children.type === TabHeader)
       return cloneElement(children, {dataTestId, setActiveTab: () => setActiveTab(0), tabIsActive: 1});
 
     if(children && Array.isArray(children))
       return children.reduce((prev, curr, index) => curr.type === TabHeader ? prev.concat(
-        cloneElement(curr, {key: index, dataTestId, setActiveTab: () => setActiveTab(index), tabIsActive: index === activeTab})
+        cloneElement(curr, {
+          key: index, 
+          dataTestId, 
+          setActiveTab: () => {
+            if(onHeaderClick)
+              onHeaderClick(index);
+            setActiveTab(index);
+          }, 
+          tabIsActive: index === activeTab
+        })
       ) : prev, []);
     return children;
   };
@@ -78,7 +87,9 @@ const TabPanel = ({dataTestId, children}) => {
 };
 
 Tabs.propTypes = {
-  dataTestId: PropTypes.string
+  dataTestId: PropTypes.string,
+  tabOverride: PropTypes.string,
+  onHeaderClick: PropTypes.func
 };
 
 Tabs.TabHeaders = TabHeaders;

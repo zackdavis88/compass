@@ -12,6 +12,8 @@ describe("<SearchBar />", () => {
       label: "Test Label",
       placeholder: "Test Placeholder",
       searchedValue: "",
+      value: "",
+      onChange: jest.fn(),
       search: jest.fn(),
       clear: jest.fn()
     };
@@ -41,13 +43,9 @@ describe("<SearchBar />", () => {
   });
 
   it("should render a label if the input has a value", () => {
+    props.value = "some value";
     const {getByLabelText, getByTestId} = render(<SearchBar {...props} />);
     const inputBox = getByTestId("testSearchBar.input");
-    fireEvent.change(inputBox, {
-      target: {
-        value: "some value"
-      }
-    });
     fireEvent.blur(inputBox);
     expect(getByLabelText("Test Label")).toBeDefined();
   });
@@ -57,14 +55,13 @@ describe("<SearchBar />", () => {
     expect(getByPlaceholderText("Test Placeholder")).toBeDefined();
   });
 
-  it("should update input box value on change", () => {
+  it("should call onChange prop when input is changed", () => {
     const {getByTestId} = render(<SearchBar {...props} />);
     const input = getByTestId("testSearchBar.input");
-    expect(input).toHaveValue("");
     fireEvent.change(input, {
       target: {value: "test value"}
     });
-    expect(input).toHaveValue("test value");
+    expect(props.onChange).toHaveBeenCalledWith("test value");
   });
 
   it("should not call the search method if searchedValue equals input value", () => {
@@ -75,12 +72,11 @@ describe("<SearchBar />", () => {
   });
 
   it("should call the search method if value does not equal searchedValue", () => {
+    props.value = "something";
     const {getByTestId} = render(<SearchBar {...props}/>);
     const searchButton = getByTestId("testSearchBar.search");
-    const input = getByTestId("testSearchBar.input");
-    fireEvent.change(input, {target: {value: "test value"}});
     fireEvent.click(searchButton);
-    expect(props.search).toHaveBeenCalledWith("test value");
+    expect(props.search).toHaveBeenCalledWith("something");
   });
 
   it("should not render the clear button if searchedValue is empty", () => {

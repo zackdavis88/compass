@@ -221,7 +221,7 @@ describe("<Dashboard />", () => {
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const storiesTab = getByText("My Stories");
     fireEvent.click(storiesTab);
-    expect(getByText("You are not the owner/creator of any stories")).toBeDefined();
+    expect(getByText("There are no stories to display")).toBeDefined();
   });
 
   it("should render the StoriesTable when the Stories tab is clicked", async() => {
@@ -255,5 +255,18 @@ describe("<Dashboard />", () => {
     expect(getByTestId("dashboardProjectSearch")).toBeDefined();
     expect(getByTestId("dashboardProjectSearch.input")).toBeDefined();
     expect(getByTestId("dashboardProjectSearch.search")).toBeDefined();
+  });
+
+  it("should render the stories search bar", async() => {
+    const {queryByTestId, getByText} = render(<Dashboard {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const storiesTab = getByText("My Stories");
+    expect(queryByTestId("dashboardStorySearch")).toBeNull();
+    expect(queryByTestId("dashboardStorySearch.input")).toBeNull();
+    expect(queryByTestId("dashboardStorySearch.search")).toBeNull();
+    fireEvent.click(storiesTab);
+    expect(queryByTestId("dashboardStorySearch")).toBeDefined();
+    expect(queryByTestId("dashboardStorySearch.input")).toBeDefined();
+    expect(queryByTestId("dashboardStorySearch.search")).toBeDefined();
   });
 });

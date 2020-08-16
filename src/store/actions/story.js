@@ -43,12 +43,14 @@ export const deleteStory = (storyData, confirm) => dispatch => {
   });
 };
 
-export const getStories = (projectId, page, itemsPerPage) => dispatch => {
+export const getStories = (projectId, page, itemsPerPage, filterName) => dispatch => {
   const queryString = {};
   if(page)
     queryString.page = page;
   if(itemsPerPage)
     queryString.itemsPerPage = itemsPerPage;
+  if(filterName)
+    queryString.filterName = filterName;
   return dispatch({
     types: [STORY_REQUEST_START, STORY_REQUEST_SUCCESS, STORY_REQUEST_FAILURE],
     request: request.get(`/api/projects/${projectId}/stories`).query(queryString)
