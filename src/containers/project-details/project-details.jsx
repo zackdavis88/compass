@@ -67,6 +67,10 @@ const ProjectDetails = (props) => {
   const [deleteStoryData, setDeleteStoryData] = useState({});
   const [showStoryModal, setShowStoryModal] = useState(false);
   const [memberSearchValue, setMemberSearchValue] = useState(query.memberSearch || "");
+  const [memberSearchData, setMemberSearchData] = useState({
+    inputValue: query.memberSearch || "",
+    searchedValue: query.memberSearch || ""
+  });
 
   // This is called once, on component mount (inside useEffect)
   const _loadData = async() => {
@@ -202,10 +206,18 @@ const ProjectDetails = (props) => {
     dataTestId: `projectMembersSearch`,
     label: "Member Name",
     placeholder: "Search by member name",
-    searchedValue: memberSearchValue,
+    searchedValue: memberSearchData.searchedValue,
+    value: memberSearchData.inputValue,
+    onChange: (value) => setMemberSearchData({
+      ...memberSearchData,
+      inputValue: value
+    }),
     search: async(value) => {
       _updateQueryString("memberSearch", value ? value : null);
-      setMemberSearchValue(value);
+      setMemberSearchData({
+        ...memberSearchData,
+        searchedValue: value
+      });
       const {itemsPerPage} = membershipsData;
       const membershipsResponse = await getMemberships(projectId, 1, itemsPerPage, value);
       _updateQueryString("membersPage", 1);
@@ -214,7 +226,10 @@ const ProjectDetails = (props) => {
     },
     clear: async() => {
       _updateQueryString("memberSearch", null);
-      setMemberSearchValue("");
+      setMemberSearchData({
+        inputValue: "",
+        searchedValue: ""
+      });
       const {itemsPerPage} = membershipsData;
       const membershipsResponse = await getMemberships(projectId, 1, itemsPerPage);
       _updateQueryString("membersPage", 1);
