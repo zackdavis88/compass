@@ -6,9 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const SearchBar = (props) => {
-  const [inputValue, setInputValue] = useState(props.searchedValue || "");
   const [isFocused, setIsFocused] = useState(false);
-  const hasValue = !!inputValue;
+  const hasValue = !!props.value;
   const wrapperProps = {
     hasValue
   };
@@ -17,16 +16,16 @@ const SearchBar = (props) => {
     id: props.id,
     type: "text",
     placeholder: isFocused ? "" : props.placeholder,
-    value: inputValue,
+    value: props.value,
     onChange: (event) => {
-      setInputValue(event.target.value);
+      props.onChange(event.target.value);
     },
     onFocus: () => setIsFocused(true),
     onBlur: () => setIsFocused(false)
   };
 
   const searchButtonProps = {
-    onClick: () => props.searchedValue !== inputValue && props.search(inputValue),
+    onClick: () => props.searchedValue !== props.value && props.search(props.value),
     label: "Search",
     small: true,
     primary: true
@@ -34,7 +33,6 @@ const SearchBar = (props) => {
 
   const clearButtonProps = {
     onClick: () => {
-      setInputValue("");
       props.clear();
     }
   };
@@ -64,10 +62,12 @@ SearchBar.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
   searchedValue: PropTypes.string.isRequired,
   dataTestId: PropTypes.string,
   search: PropTypes.func.isRequired,
-  clear: PropTypes.func.isRequired
+  clear: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired
 };
 
 export default SearchBar;
