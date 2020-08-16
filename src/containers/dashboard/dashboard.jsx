@@ -23,15 +23,6 @@ import SearchBar from "../../components/search-bar/search-bar";
 import {generateUrlWithQuery, generateObjectFromSearch} from "../../utils";
 
 const Dashboard = (props) => {
-  {/*
-    TODO: We got a major bug on our hands.
-    SearchBar appeared to be working fine till I used it in 2 places on the same page.
-    even though all my experienced told me it would be fine, it appears that the state between
-    the two SearchBar instances is persisting...if you enter 'wads' on one bar, then click another tab
-    the second bar will render with 'wads' as well. This is a huge problem and I think its because I wanted
-    the searchbar to manage its own state for input value. We need to control it on the container level and see
-    if the bug is still an issue.
-  */}
   const query = generateObjectFromSearch(props.location.search);
   const {
     getDashboardProjects,
@@ -97,7 +88,7 @@ const Dashboard = (props) => {
 
   const _refreshStories = async() => {
     const {page, itemsPerPage} = storiesData;
-    const storiesResponse = await getDashboardStories(page, itemsPerPage);
+    const storiesResponse = await getDashboardStories(page, itemsPerPage, storySearchData.searchedValue);
     if(!storiesResponse.error)
       setStoriesData(storiesResponse);
   };
