@@ -93,10 +93,11 @@ describe("<StoryDetails />", () => {
   });
 
   it("should render the story details, if present, under the details tab", async() => {
-    const {getByText} = render(<StoryDetails {...props} />, store);
+    const {getByText, getByTestId} = render(<StoryDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
     expect(getByText("Full Details")).toBeDefined();
     expect(getByText(mockStoryResponse.story.details)).toBeDefined();
+    expect(getByTestId("storyMarkdownText")).toBeDefined();
   });
 
   it("should render default text if story details are empty", async() => {

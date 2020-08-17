@@ -119,6 +119,10 @@ export const SideItem = styled.div`
   position: relative;
   width: 100%;
   height: 20%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   & span{
     user-select: none;
@@ -139,6 +143,7 @@ export const SideItem = styled.div`
   & a {
     color: ${black};
     text-decoration: none;
+
   }
 
   & a:hover {
