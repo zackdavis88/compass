@@ -24,16 +24,7 @@ import DeleteModal from "../../components/delete-modal/delete-modal";
 import StoryModal from "../../components/story-modal/story-modal";
 import {push} from "connected-react-router";
 import MarkdownText from "../../components/markdown-text/markdown-text";
-/*
-  TODO:
-  This is where you left off.
 
-  We have MarkdownText implemented on StoryDetails and it seems to work fine...
-
-  Now we need to implement it on ProjectDetails. However, I am not happy with the size
-  inconsistancy between Project/Story details. Lets update ProjectDetails to have the same
-  dimensions as StoryDetails and then implement MarkdownText on ProjectDetails.
-*/
 const StoryDetails = (props) => {
   const {
     storyIsLoading,
