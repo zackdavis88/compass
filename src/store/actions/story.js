@@ -21,7 +21,7 @@ export const updateStory = (project, story, name, details, owner) => dispatch =>
   const payload = {};
   if(name)
     payload.name = name;
-  if(details)
+  if(typeof details === "string")
     payload.details = details;
   if(owner)
     payload.owner = owner;

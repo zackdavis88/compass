@@ -7,6 +7,7 @@ import {
   pageHeaderHeight
 } from "../../common-styles/variables";
 import {ActionsWrapper} from "../../components/actions-menu/actions-menu.styles";
+import {MarkdownTextWrapper} from "../../components/markdown-text/markdown-text.styles";
 
 export const StoryDetailsWrapper = styled.div`
   position: relative;
@@ -88,6 +89,10 @@ export const StoryDetailsBlock = styled.div`
   margin-top: 20px;
   overflow-wrap: break-word;
   white-space: pre-line;
+
+  & ${MarkdownTextWrapper} {
+    font-style: normal;
+  }
 
   & div {
     font-style: italic;
