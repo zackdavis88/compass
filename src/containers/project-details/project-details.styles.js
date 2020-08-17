@@ -11,6 +11,7 @@ import {
 } from "../../common-styles/variables";
 import {ActionsWrapper} from "../../components/actions-menu/actions-menu.styles";
 import {SearchBarWrapper} from "../../components/search-bar/search-bar.styles";
+import {MarkdownTextWrapper} from "../../components/markdown-text/markdown-text.styles";
 
 export const ProjectDetailsWrapper = styled.div`
   position: relative;
@@ -40,7 +41,7 @@ export const ProjectDetailsWrapper = styled.div`
 export const DetailsSection = styled.div`
   position: relative;
   width: 100%;
-  min-height: 500px;
+  height: 700px;
 `;
 
 export const DetailsBlock = styled.div`
@@ -90,7 +91,7 @@ export const ProjectName = styled.h1`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  width: 655px;
+  width: 100%;
 `;
 
 export const ProjectVisibility = styled.div`
@@ -113,6 +114,10 @@ export const ProjectDescription = styled.div`
   margin-top: 20px;
   overflow-wrap: break-word;
   white-space: pre-line;
+
+  & ${MarkdownTextWrapper} {
+    font-style: normal;
+  }
 
   & div {
     font-style: italic;
@@ -137,7 +142,7 @@ export const ProjectDescription = styled.div`
 
 export const Statistic = styled.div`
   position: relative;
-  width: 50%;
+  width: 100%;
   margin-bottom: 42px;
 
   & span{

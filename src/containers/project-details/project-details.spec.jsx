@@ -185,10 +185,25 @@ describe("<ProjectDetails />", () => {
   });
 
   it("should render the project description, if present, under the details tab", async() => {
-    const {getByText} = render(<ProjectDetails {...props} />, store);
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByText("Description")).toBeDefined();
     expect(getByText("this is a test description")).toBeDefined();
+    expect(getByTestId("projectMarkdownText")).toBeDefined();
+  });
+
+  it("should render the a message if project description does not exist", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({
+      ...mockProjectResponse, 
+      project: {...mockProjectResponse.project, description: null}
+    });
+    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
+    const {getByText} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    expect(getByText("Description")).toBeDefined();
+    expect(getByText("This project has no description.")).toBeDefined();
   });
 
   it("should render the project create date under the details tab", async() => {

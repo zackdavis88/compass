@@ -31,6 +31,7 @@ import StoriesTable from "../../components/stories-table/stories-table";
 import StoryModal from "../../components/story-modal/story-modal";
 import {generateUrlWithQuery, generateObjectFromSearch} from "../../utils";
 import SearchBar from "../../components/search-bar/search-bar";
+import MarkdownText from "../../components/markdown-text/markdown-text";
 
 const ProjectDetails = (props) => {
   // Extracting our props for use and declaring component states.
@@ -308,7 +309,7 @@ const ProjectDetails = (props) => {
               <Tabs.TabPanels>
                 <Tabs.Panel>
                   <DetailsSection>
-                    <DetailsBlock width="60%" inlineLeft>
+                    <DetailsBlock width="80%" inlineLeft>
                       <ProjectID>{project.id}</ProjectID>
                       <ProjectName>{project.name}</ProjectName>
                       <ProjectVisibility isPrivate={project.isPrivate}>
@@ -316,10 +317,14 @@ const ProjectDetails = (props) => {
                       </ProjectVisibility>
                       <ProjectDescription>
                         <span>Description</span>
-                        {project.description ? project.description : <div>This project has no description.</div>}
+                        {project.description ? (
+                          <MarkdownText dataTestId="projectMarkdownText" sourceData={project.description} />
+                        ) : (
+                          <div>This project has no description.</div>
+                        )}
                       </ProjectDescription>
                     </DetailsBlock>
-                    <DetailsBlock width="40%" inlineRight>
+                    <DetailsBlock width="20%" inlineRight>
                       <Statistic>
                         <span>Create Date</span>
                         {formatDate(project.createdOn)}
