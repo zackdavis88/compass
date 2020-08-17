@@ -7,6 +7,7 @@ import {
   pageHeaderHeight
 } from "../../common-styles/variables";
 import {ActionsWrapper} from "../../components/actions-menu/actions-menu.styles";
+import {MarkdownTextWrapper} from "../../components/markdown-text/markdown-text.styles";
 
 export const StoryDetailsWrapper = styled.div`
   position: relative;
@@ -89,6 +90,10 @@ export const StoryDetailsBlock = styled.div`
   overflow-wrap: break-word;
   white-space: pre-line;
 
+  & ${MarkdownTextWrapper} {
+    font-style: normal;
+  }
+
   & div {
     font-style: italic;
   }
@@ -114,6 +119,10 @@ export const SideItem = styled.div`
   position: relative;
   width: 100%;
   height: 20%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   & span{
     user-select: none;
@@ -134,6 +143,7 @@ export const SideItem = styled.div`
   & a {
     color: ${black};
     text-decoration: none;
+
   }
 
   & a:hover {

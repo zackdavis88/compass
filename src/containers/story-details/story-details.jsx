@@ -23,6 +23,7 @@ import {formatDate} from "../../utils";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import StoryModal from "../../components/story-modal/story-modal";
 import {push} from "connected-react-router";
+import MarkdownText from "../../components/markdown-text/markdown-text";
 
 const StoryDetails = (props) => {
   const {
@@ -98,7 +99,11 @@ const StoryDetails = (props) => {
                       <StoryName>{story.name}</StoryName>
                       <StoryDetailsBlock>
                         <span>Full Details</span>
-                        {story.details ? story.details : <div>This story has no additional details.</div>}
+                        {story.details ? (
+                          <MarkdownText dataTestId="storyMarkdownText" sourceData={story.details} />
+                        ) : (
+                          <div>This story has no additional details.</div>
+                        )}
                       </StoryDetailsBlock>
                     </DetailsBlock>
                     <DetailsBlock inlineRight width="20%">

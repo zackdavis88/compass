@@ -24,6 +24,6 @@ export const DashboardWrapper = styled.div`
   }
 
   & ${SearchBarWrapper} {
-    padding-bottom: 30px;
+    margin-bottom: 30px;
   }
 `;
