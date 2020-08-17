@@ -48,7 +48,7 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
     }, {
       label: "Project",
       keyName: "project",
-      format: (project) => project.name
+      format: (project) => <TableValue truncated maxWidth="250px">{project.name}</TableValue>
     }, {
       label: "Owner",
       keyName: "owner",
