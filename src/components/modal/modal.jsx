@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import Button from "../button/button";
-// TODO: Write new tests to validate props.confirmBeforeClose is working as expected.
+
 const Modal = (props) => {
   const {dataTestId} = props;
   const _handleClick = useCallback((event) => {
