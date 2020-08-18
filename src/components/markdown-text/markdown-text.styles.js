@@ -1,5 +1,7 @@
 import styled from "styled-components";
-
+import {
+  black1a
+} from "../../common-styles/variables";
 export const MarkdownTextWrapper = styled.div`
   position: relative;
 
@@ -8,7 +10,8 @@ export const MarkdownTextWrapper = styled.div`
     margin: 0;
     font-size: 85%;
     background-color: rgba(27,31,35,.05);
-    border-radius: 6px;
+    background-color: ${black1a};
+    border-radius: 5px;
   }
 
   & pre {
@@ -17,8 +20,8 @@ export const MarkdownTextWrapper = styled.div`
     overflow: auto;
     font-size: 85%;
     line-height: 1.45;
-    background-color: #f6f8fa;
-    border-radius: 6px;
+    background-color: ${black1a};
+    border-radius: 5px;
 
     & code {
       display: inline;
