@@ -322,13 +322,6 @@ describe("<MembershipModal />", () => {
     await waitFor(() => expect(props.onClose).toHaveBeenCalled());
   });
 
-
-
-
-
-
-
-
   it("should prevent the modal from autoclosing on click if there are any state changes", async() => {
     const {getByTestId} = render(<MembershipModal {...props} />);
     await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
