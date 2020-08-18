@@ -15,7 +15,7 @@ import {
 const MembershipModal = (props) => {
   const membership = props.membership;
   const isEdit = !!membership;
-  const [state, setState] = useState({
+  const initialState = {
     username: isEdit ? membership.user.displayName : "",
     usernameError: "",
     roles: isEdit ? {
@@ -28,16 +28,16 @@ const MembershipModal = (props) => {
       isManager: false,
       isDeveloper: false,
       isViewer: true
-    },
-    availableUsers: isEdit ? [] : undefined
-  });
+    }
+  };
+  const [state, setState] = useState(initialState);
+  const [availableUsers, setAvailableUsers] = useState(isEdit ? [] : undefined);
+
+  const hasChanges = () => JSON.stringify(initialState) !== JSON.stringify(state);
 
   const _loadData = async() => {
     const response = await props.getAvailableUsers(props.project);
-    setState({
-      ...state,
-      availableUsers: response.users
-    });
+    setAvailableUsers(response.users);
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const MembershipModal = (props) => {
   const _submitTooltip = () => _submitDisabled() ? props.requestInProgress ? "request in progress" : "missing required fields" : "";
 
   const _onSubmit = async() => {
-    const {username, roles, availableUsers} = state;
+    const {username, roles} = state;
     
     // Validate username input matches something available, only validate for new memberships.
     if(!isEdit && availableUsers.indexOf(username) === -1)
@@ -83,7 +83,8 @@ const MembershipModal = (props) => {
       text: isEdit ? "Edit Roles" : "New Membership"
     },
     dataTestId: "membershipModal",
-    small: true
+    small: true,
+    confirmBeforeClose: hasChanges()
   };
 
   const inputProps = {
@@ -127,7 +128,7 @@ const MembershipModal = (props) => {
       focusedPlaceholder: "Start typing to filter options",
       value: state.username,
       onChange: (value) => setState({...state, username: value, usernameError: ""}),
-      items: state.availableUsers,
+      items: availableUsers,
       isRequired: true,
       errorText: state.usernameError,
       disabled: isEdit
@@ -137,7 +138,7 @@ const MembershipModal = (props) => {
   return (
     <MembershipModalWrapper>
       <Modal {...modalProps}>
-        {!state.availableUsers ? (
+        {!availableUsers ? (
           <LoadingSpinner alignCenter dataTestId="membershipModalLoader" message="Loading available users" />
         ) : (
           <Fragment>

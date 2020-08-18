@@ -321,4 +321,64 @@ describe("<MembershipModal />", () => {
     fireEvent.click(submitButton);
     await waitFor(() => expect(props.onClose).toHaveBeenCalled());
   });
+
+
+
+
+
+
+
+
+  it("should prevent the modal from autoclosing on click if there are any state changes", async() => {
+    const {getByTestId} = render(<MembershipModal {...props} />);
+    await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
+    const modalBackground = getByTestId("membershipModal.wrapper");
+    const nameInput = getByTestId("membershipUsernameInput.input");
+    fireEvent.change(nameInput, {
+      target: {value: "somevalue"}
+    });
+    fireEvent.click(modalBackground);
+    expect(props.onClose).not.toHaveBeenCalled();
+  });
+
+  it("should show a confirm prompt if cancel is clicked and there are state changes", async() => {
+    window.confirm = jest.fn();
+    const {getByTestId} = render(<MembershipModal {...props}/>);
+    await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
+    const cancelButton = getByTestId("membershipModal.actions.secondaryButton");
+    const nameInput = getByTestId("membershipUsernameInput.input");
+    fireEvent.change(nameInput, {
+      target: {value: "somevalue"}
+    });
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+  });
+
+  it("should call onClose if confirm prompt returns true", async() => {
+    window.confirm = jest.fn().mockReturnValueOnce(true);
+    const {getByTestId} = render(<MembershipModal {...props}/>);
+    await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
+    const cancelButton = getByTestId("membershipModal.actions.secondaryButton");
+    const nameInput = getByTestId("membershipUsernameInput.input");
+    fireEvent.change(nameInput, {
+      target: {value: "somevalue"}
+    });
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+    expect(props.onClose).toHaveBeenCalled();
+  });
+
+  it("should not call onClose if confirm prompt returns false", async() => {
+    window.confirm = jest.fn().mockReturnValueOnce(false);
+    const {getByTestId} = render(<MembershipModal {...props}/>);
+    await waitFor(() => expect(props.getAvailableUsers).toHaveBeenCalledWith(props.project));
+    const cancelButton = getByTestId("membershipModal.actions.secondaryButton");
+    const nameInput = getByTestId("membershipUsernameInput.input");
+    fireEvent.change(nameInput, {
+      target: {value: "somevalue"}
+    });
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+    expect(props.onClose).not.toHaveBeenCalled();
+  });
 });
