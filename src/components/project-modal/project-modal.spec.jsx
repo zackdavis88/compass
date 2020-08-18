@@ -152,4 +152,53 @@ describe("<ProjectModal />", () => {
     await waitFor(() => expect(props.onSubmit).toHaveBeenCalled());
     expect(props.onSubmit).toHaveBeenCalledWith("testId", "test project", "this is a test.", true);
   });
+
+  it("should prevent the modal from autoclosing on click if there are any state changes", () => {
+    const {getByTestId} = render(<ProjectModal {...props} />);
+    const modalBackground = getByTestId("projectModal.wrapper");
+    const nameInput = getByTestId("nameInput.input");
+    fireEvent.change(nameInput, {
+      target: {value: "somevalue"}
+    });
+    fireEvent.click(modalBackground);
+    expect(props.onClose).not.toHaveBeenCalled();
+  });
+
+  it("should show a confirm prompt if cancel is clicked and there are state changes", () => {
+    window.confirm = jest.fn();
+    const {getByTestId} = render(<ProjectModal {...props}/>);
+    const cancelButton = getByTestId("projectModal.actions.secondaryButton");
+    const nameInput = getByTestId("nameInput.input");
+    fireEvent.change(nameInput, {
+      target: {value: "somevalue"}
+    });
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+  });
+
+  it("should call onClose if confirm prompt returns true", () => {
+    window.confirm = jest.fn().mockReturnValueOnce(true);
+    const {getByTestId} = render(<ProjectModal {...props}/>);
+    const cancelButton = getByTestId("projectModal.actions.secondaryButton");
+    const nameInput = getByTestId("nameInput.input");
+    fireEvent.change(nameInput, {
+      target: {value: "somevalue"}
+    });
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+    expect(props.onClose).toHaveBeenCalled();
+  });
+
+  it("should not call onClose if confirm prompt returns false", () => {
+    window.confirm = jest.fn().mockReturnValueOnce(false);
+    const {getByTestId} = render(<ProjectModal {...props}/>);
+    const cancelButton = getByTestId("projectModal.actions.secondaryButton");
+    const nameInput = getByTestId("nameInput.input");
+    fireEvent.change(nameInput, {
+      target: {value: "somevalue"}
+    });
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+    expect(props.onClose).not.toHaveBeenCalled();
+  });
 });

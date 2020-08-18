@@ -8,14 +8,18 @@ import TextArea from "../text-area/text-area";
 
 const ProjectModal = (props) => {
   const isEdit = !!props.project;
-  const [state, setState] = useState({
+  const initialState = {
     name: isEdit ? props.project.name : "",
     description: isEdit ? props.project.description : "",
     isPrivate: isEdit ? props.project.isPrivate : false,
     nameError: undefined,
     descriptionError: undefined
-  });
-  
+  };
+  const [state, setState] = useState(initialState);
+
+  // Tracking if any data on the form has changed.
+  const hasChanges = () => JSON.stringify(initialState) !== JSON.stringify(state);
+
   const _submitDisabled = () => (
     !state.name ||
     !!state.nameError ||
@@ -27,7 +31,6 @@ const ProjectModal = (props) => {
 
   const _onSubmit = async() => {
     const { name, description, isPrivate } = state;
-    // const response = await props.onSubmit(name, description, isPrivate);
     let response;
     if(isEdit)
       response = await props.onSubmit(props.project.id, name, description, isPrivate);
@@ -57,7 +60,8 @@ const ProjectModal = (props) => {
       startIcon: faFolderPlus,
       text: isEdit ? "Edit Project" : "New Project"
     },
-    dataTestId: "projectModal"
+    dataTestId: "projectModal",
+    confirmBeforeClose: hasChanges()
   };
 
   const inputProps = {
