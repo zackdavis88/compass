@@ -19,10 +19,10 @@ export const ProjectDetailsWrapper = styled.div`
   width: 100%;
 
   & ${TabsWrapper} {
-    padding-top: 30px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     margin-left: 50px;
     margin-right: 50px;
-    height: 100%;
   }
 
   & ${Spinner} {
