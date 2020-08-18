@@ -33,11 +33,28 @@ describe("<Modal />", () => {
     expect(props.onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("should not call the onClose method when the area outside of the modal box is clicked and confirmBeforeClose is true", () => {
+    props.confirmBeforeClose = true;
+    const {getByTestId} = render(<Modal {...props} />);
+    const outsideArea = getByTestId(`${props.dataTestId}.wrapper`);
+    fireEvent.mouseDown(outsideArea);
+    expect(props.onClose).not.toHaveBeenCalled();
+  });
+
   it("should call the onClose method when the close button is clicked", () => {
     const {getByTestId} = render(<Modal {...props} />);
     const closeButton = getByTestId(`${props.dataTestId}.closeButton`);
     fireEvent.click(closeButton);
     expect(props.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("should show a confirm prompt if close button is clicked and confirmBeforeClose is true", () => {
+    props.confirmBeforeClose = true;
+    window.confirm = jest.fn();
+    const {getByTestId} = render(<Modal {...props} />);
+    const closeButton = getByTestId(`${props.dataTestId}.closeButton`);
+    fireEvent.click(closeButton);
+    expect(window.confirm).toHaveBeenCalled();
   });
 
   it("should render the header text and icons if provided", () => {
@@ -83,6 +100,15 @@ describe("<Modal />", () => {
     expect(props.onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("should show a confirm prompt if cancel button is clicked and confirmBeforeClose is true", () => {
+    props.confirmBeforeClose = true;
+    window.confirm = jest.fn();
+    const {getByTestId} = render(<Modal {...props} />);
+    const cancelButton = getByTestId(`${props.dataTestId}.actions.secondaryButton`);
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+  });
+
   it("should render the submit tooltip if present", () => {
     const {getByText} = render(<Modal {...props}/>);
     expect(getByText(props.submitTooltip)).toBeDefined();
@@ -92,5 +118,27 @@ describe("<Modal />", () => {
     props.danger = true;
     const {getByText} = render(<Modal {...props} />);
     expect(getByText("Delete")).toBeDefined();
+  });
+
+  it("should call onClose if a confirm prompt returns true", () => {
+    props.confirmBeforeClose = true;
+    window.confirm = jest.fn();
+    window.confirm.mockReturnValue(true);
+    const {getByTestId} = render(<Modal {...props} />);
+    const cancelButton = getByTestId(`${props.dataTestId}.actions.secondaryButton`);
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+    expect(props.onClose).toHaveBeenCalled();
+  });
+
+  it("should not call onClose if a confirm prompt returns false", () => {
+    props.confirmBeforeClose = true;
+    window.confirm = jest.fn();
+    window.confirm.mockReturnValue(false);
+    const {getByTestId} = render(<Modal {...props} />);
+    const cancelButton = getByTestId(`${props.dataTestId}.actions.secondaryButton`);
+    fireEvent.click(cancelButton);
+    expect(window.confirm).toHaveBeenCalled();
+    expect(props.onClose).not.toHaveBeenCalled();
   });
 });

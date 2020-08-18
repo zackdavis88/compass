@@ -11,15 +11,16 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import Button from "../button/button";
-
+// TODO: Write new tests to validate props.confirmBeforeClose is working as expected.
 const Modal = (props) => {
   const {dataTestId} = props;
   const _handleClick = useCallback((event) => {
-    // modalWrapper is the background behind the modal box, close the modal if this is clicked.
+    // modalWrapper is the background behind the modal box, close the modal if this is clicked. unless
+    // props.confirmBeforeClose is true.
     const modalWrapper = document.getElementById("compass-modal");
-    if(event.target == modalWrapper)
+    if(!props.confirmBeforeClose && event.target == modalWrapper)
       props.onClose();
-  }, [props.onClose]);
+  }, [props.onClose, props.confirmBeforeClose]);
 
   // Attach the clickHandler, if the modal is open, so we can close the modal if the background is clicked.
   useEffect(() => {
@@ -27,10 +28,20 @@ const Modal = (props) => {
     return () => window.removeEventListener("mousedown", _handleClick); // Remove listener if the modal is unmounted.
   });
 
+  const _onClose = () => {
+    if(props.confirmBeforeClose) {
+      const confirmResult = confirm("There are unsaved changes. Are you sure you want to close?");
+      if(confirmResult)
+        return props.onClose();
+    }
+    else
+      props.onClose();
+  };
+
   return (
     <ModalWrapper data-testid={`${dataTestId}.wrapper`} id="compass-modal">
       <ModalBox small={props.small}>
-        <CloseButton data-testid={`${dataTestId}.closeButton`} onClick={props.onClose}>
+        <CloseButton data-testid={`${dataTestId}.closeButton`} onClick={_onClose}>
           <FontAwesomeIcon icon={faTimes} fixedWidth />
         </CloseButton>
         {props.header && (
@@ -59,7 +70,7 @@ const Modal = (props) => {
           <Button
             secondary
             small
-            onClick={props.onClose}
+            onClick={_onClose}
             label="Cancel"
             dataTestId={`${dataTestId}.actions.secondaryButton`}
           />
@@ -82,7 +93,8 @@ Modal.propTypes = {
   }),
   centerHeader: PropTypes.bool,
   dataTestId: PropTypes.string,
-  danger: PropTypes.bool
+  danger: PropTypes.bool,
+  confirmBeforeClose: PropTypes.bool
 };
 
 export default Modal;
