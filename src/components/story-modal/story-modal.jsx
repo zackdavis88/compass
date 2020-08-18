@@ -11,22 +11,23 @@ import TextArea from "../text-area/text-area";
 const StoryModal = (props) => {
   const story = props.story;
   const isEdit = !!story;
-  const [state, setState] = useState({
+  const initialState = {
     name: isEdit ? story.name : "",
     details: isEdit && story.details ? story.details : "",
     owner: isEdit && story.owner ? story.owner.displayName : "",
     nameError: undefined,
     detailsError: undefined,
-    ownerError: undefined,
-    memberNames: undefined
-  });
+    ownerError: undefined
+  };
+  const [state, setState] = useState(initialState);
+  const [memberNames, setMemberNames] = useState(undefined);
+
+  // Tracking if any data on the form has changed.
+  const hasChanges = () => JSON.stringify(initialState) !== JSON.stringify(state);
 
   const _loadData = async() => {
     const response = await props.getMemberNames(props.project);
-    setState({
-      ...state,
-      memberNames: response.users
-    });
+    setMemberNames(response.users);
   };
 
   useEffect(() => {
@@ -54,7 +55,7 @@ const StoryModal = (props) => {
   };
 
   const _onSubmit = async() => {
-    const {name, details, owner, memberNames} = state;
+    const {name, details, owner} = state;
     
     // Validate owner input matches something valid.
     if(owner && memberNames.indexOf(owner) === -1)
@@ -90,7 +91,8 @@ const StoryModal = (props) => {
       startIcon: isEdit ? faEdit : faBook,
       text: isEdit ? "Edit Story" : "New Story"
     },
-    dataTestId: "storyModal"
+    dataTestId: "storyModal",
+    confirmBeforeClose: hasChanges()
   };
 
   const inputProps = {
@@ -121,7 +123,7 @@ const StoryModal = (props) => {
       focusedPlaceholder: "Start typing to filter options",
       value: state.owner,
       onChange: (value) => setState({...state, owner: value, ownerError: ""}),
-      items: state.memberNames,
+      items: memberNames,
       errorText: state.ownerError
     }
   };
@@ -129,7 +131,7 @@ const StoryModal = (props) => {
   return (
     <StoryModalWrapper>
       <Modal {...modalProps}>
-        {!state.memberNames ? (
+        {!memberNames ? (
           <LoadingSpinner alignCenter dataTestId="storyModalLoader" message="Loading available members" />
         ) : (
           <Fragment>
