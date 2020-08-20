@@ -88,7 +88,8 @@ export const CloseButton = styled.div`
   }
 `;
 
-// max-height: 500px;
+//TODO: Work more on modal styling. it looks/behaves just fine on my big monitors but that doesnt
+//      scale well when used on a smaller monitor like my laptop.
 export const ModalBody = styled.div`
   width: 100%;
   padding: 15px;
