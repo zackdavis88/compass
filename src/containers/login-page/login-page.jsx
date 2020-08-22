@@ -10,8 +10,10 @@ import { showNotification } from "../../store/actions/notification";
 import LoginForm from "../../components/login-form/login-form";
 import SignUpForm from "../../components/sign-up-form/sign-up-form";
 import { push } from "connected-react-router";
+import {setTitle} from "../../utils";
 
 const LoginPage = (props) => {
+  setTitle("Login Page");
   const [showSignUpForm, setShowSignUpForm] = useState(false);
 
   return (
