@@ -32,16 +32,41 @@ export const Action = styled.div`
   `}
 `;
 
+export const LinkAction = styled.a`
+  text-decoration: none;
+  position: relative;
+  user-select: none;
+  line-height: 0;
+  cursor: not-allowed;
+  color: ${black33};
+  transition: color 100ms linear;
+
+  &:hover ${TooltipWrapper} {
+    font-size: 16px;
+    visibility: visible;
+    opacity: 1;
+    left: -50px;
+    bottom: -33px;
+  }
+
+  ${({highlightAction}) => highlightAction && css`
+    table tr:hover & {
+      color: ${black};
+      cursor: pointer;
+    }
+  `}
+`;
+
 export const ActionsWrapper = styled.div`
   display: block;
   top: 20px;
 
-  & ${Action} {
+  & ${Action},${LinkAction} {
     display: inline-block;
     margin-right: 10px;
   }
 
-  & ${Action}:last-of-type {
+  & ${LinkAction}:last-of-type {
     margin-right: 0;
   }
 `;

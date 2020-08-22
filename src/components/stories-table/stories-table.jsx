@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faArrowRight, faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate} from "../../utils";
-import {ActionsWrapper, Action, PaginationSection} from "../table/table.styles";
+import {ActionsWrapper, Action, LinkAction, PaginationSection} from "../table/table.styles";
 import {StoriesTableWrapper} from "./stories-table.styles";
 import Pagination from "../pagination/pagination";
 
@@ -31,10 +31,14 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
             {actionAllowed && <Tooltip text={"Edit Story"} />}
           </Action>
         )}
-        <Action data-testid="action.viewStory" highlightAction={true} onClick={() => viewStory(row)}>
+        <LinkAction 
+        data-testid="action.viewStory" 
+        highlightAction={true}
+        href={`/projects/${row.project.id}/stories/${row.id}`}
+        onClick={(e) => {e.preventDefault(); viewStory(row)}}>
           <FontAwesomeIcon icon={faArrowRight} fixedWidth />
           <Tooltip text={"View Story"} />
-        </Action>
+        </LinkAction>
       </ActionsWrapper>
     );
   };
