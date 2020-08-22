@@ -48,7 +48,7 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
     headers: [{
       label: "Name",
       keyName: "name",
-      format: (name) => <TableValue truncated maxWidth="250px">{name}</TableValue>
+      format: (name) => <TableValue truncated maxWidth={project ? "350px" : "250px"}>{name}</TableValue>
     }, {
       label: "Project",
       keyName: "project",
@@ -79,6 +79,10 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
       project: project
     }))
   };
+
+  // If we have props.project present...lets remove Project data from the table and increase name size.
+  if(project)
+    tableProps.headers.splice(1, 1);
 
   const paginationProps = {
     dataTestId: "storiesTablePagination",
