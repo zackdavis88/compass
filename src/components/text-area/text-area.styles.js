@@ -28,8 +28,8 @@ export const TextAreaWrapper = styled.div`
     max-width: 100%;
     min-width: 100%;
     min-height: ${textAreaHeight};
+    max-height: 300px;
     height: ${textAreaHeight};
-    max-height: calc(${textAreaHeight} + 350px);
     border-radius: 5px;
     font-size: 16px;
     font-stretch: 100%;

@@ -20,9 +20,10 @@ import StoryModal from "../../components/story-modal/story-modal";
 import {getDashboardProjects, getDashboardStories} from "../../store/actions/dashboard";
 import StoriesTable from "../../components/stories-table/stories-table";
 import SearchBar from "../../components/search-bar/search-bar";
-import {generateUrlWithQuery, generateObjectFromSearch} from "../../utils";
+import {generateUrlWithQuery, generateObjectFromSearch, setTitle} from "../../utils";
 
 const Dashboard = (props) => {
+  setTitle("Dashboard");
   const query = generateObjectFromSearch(props.location.search);
   const {
     getDashboardProjects,
@@ -95,7 +96,7 @@ const Dashboard = (props) => {
 
   const _updateQueryString = (key, value) => {
     const newUrl = generateUrlWithQuery(key, value);
-    history.pushState({path: newUrl}, "", newUrl);
+    history.replaceState({path: newUrl}, "", newUrl);
   };
 
   const projects = projectsData && projectsData.projects;

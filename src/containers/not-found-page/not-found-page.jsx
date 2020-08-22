@@ -6,8 +6,10 @@ import { faDrumstickBite, faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { connect } from "react-redux";
 import {push as historyPush} from "connected-react-router";
 import Button from "../../components/button/button";
+import {setTitle} from "../../utils";
 
 const NotFoundPage = ({historyPush}) => {
+  setTitle("404 Not Found")
   return (
     <NotFoundPageWrapper>
       <PageHeader

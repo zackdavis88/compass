@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faArrowRight, faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate} from "../../utils";
-import {ActionsWrapper, Action, PaginationSection} from "../table/table.styles";
+import {ActionsWrapper, Action, LinkAction, PaginationSection} from "../table/table.styles";
 import {StoriesTableWrapper} from "./stories-table.styles";
 import Pagination from "../pagination/pagination";
 
@@ -31,10 +31,14 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
             {actionAllowed && <Tooltip text={"Edit Story"} />}
           </Action>
         )}
-        <Action data-testid="action.viewStory" highlightAction={true} onClick={() => viewStory(row)}>
+        <LinkAction 
+        data-testid="action.viewStory" 
+        highlightAction={true}
+        href={`/projects/${row.project.id}/stories/${row.id}`}
+        onClick={(e) => {e.preventDefault(); viewStory(row)}}>
           <FontAwesomeIcon icon={faArrowRight} fixedWidth />
           <Tooltip text={"View Story"} />
-        </Action>
+        </LinkAction>
       </ActionsWrapper>
     );
   };
@@ -44,7 +48,7 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
     headers: [{
       label: "Name",
       keyName: "name",
-      format: (name) => <TableValue truncated maxWidth="250px">{name}</TableValue>
+      format: (name) => <TableValue truncated maxWidth={project ? "350px" : "250px"}>{name}</TableValue>
     }, {
       label: "Project",
       keyName: "project",
@@ -75,6 +79,10 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
       project: project
     }))
   };
+
+  // If we have props.project present...lets remove Project data from the table and increase name size.
+  if(project)
+    tableProps.headers.splice(1, 1);
 
   const paginationProps = {
     dataTestId: "storiesTablePagination",

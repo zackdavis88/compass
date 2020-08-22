@@ -19,13 +19,14 @@ import PageHeader from "../../components/page-header/page-header";
 import ActionsMenu from "../../components/actions-menu/actions-menu";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Tabs from "../../components/tabs/tabs";
-import {formatDate} from "../../utils";
+import {formatDate, setTitle} from "../../utils";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import StoryModal from "../../components/story-modal/story-modal";
 import {push} from "connected-react-router";
 import MarkdownText from "../../components/markdown-text/markdown-text";
 
 const StoryDetails = (props) => {
+  setTitle("Story Details");
   const {
     storyIsLoading,
     getStory,

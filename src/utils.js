@@ -71,3 +71,8 @@ export const generateObjectFromSearch = (searchString) => {
   const search = searchString.substring(1);
   return JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value)})
 };
+
+// Title format will be: Compass - PAGE_NAME
+export const setTitle = (pageName) => {
+  document.title = `Compass - ${pageName}`;
+};

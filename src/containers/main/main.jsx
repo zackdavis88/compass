@@ -12,7 +12,7 @@ const Main = (props) => {
 
   const _validateToken = async(token) => {
     const response = await validateToken(token);
-    if(response.error)
+    if(!response || response.error)
       historyPush("/");
     setRenderContent(true);
   };

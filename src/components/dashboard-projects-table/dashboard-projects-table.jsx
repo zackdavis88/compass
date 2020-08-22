@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faArrowRight, faTrash, faBook, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate, getPermissionLevel} from "../../utils";
-import {ActionsWrapper, Action, PaginationSection} from "../table/table.styles";
+import {ActionsWrapper, Action, LinkAction, PaginationSection} from "../table/table.styles";
 import {DashboardProjectsTableWrapper} from "./dashboard-projects-table.styles";
 import Pagination from "../pagination/pagination";
 
@@ -33,10 +33,14 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
           <FontAwesomeIcon icon={faBook} fixedWidth />
           {developerAllowed && <Tooltip text={"Add Story"} />}
         </Action>
-        <Action data-testid="action.viewProject" highlightAction={viewerAllowed} onClick={() => viewerAllowed && viewProject(row)}>
+        <LinkAction 
+        data-testid="action.viewProject" 
+        highlightAction={viewerAllowed} 
+        href={`/projects/${row.id}`} 
+        onClick={(e) => {e.preventDefault(); if(viewerAllowed) return viewProject(row)}}>
           <FontAwesomeIcon icon={faArrowRight} fixedWidth />
           {viewerAllowed && <Tooltip text={"View Project"} />}
-        </Action>
+        </LinkAction>
       </ActionsWrapper>
     );
   };

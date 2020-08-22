@@ -16,7 +16,6 @@ import {getMemberships, deleteMembership, updateMembership, createMembership, ge
 import {getStories, deleteStory, createStory} from "../../store/actions/story";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Tabs from "../../components/tabs/tabs";
-import {formatDate} from "../../utils";
 import {PageError} from "../../common-styles/base";
 import MembershipsTable from "../../components/memberships-table/memberships-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
@@ -29,11 +28,12 @@ import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
 import StoriesTable from "../../components/stories-table/stories-table";
 import StoryModal from "../../components/story-modal/story-modal";
-import {generateUrlWithQuery, generateObjectFromSearch} from "../../utils";
+import {generateUrlWithQuery, generateObjectFromSearch, formatDate, setTitle} from "../../utils";
 import SearchBar from "../../components/search-bar/search-bar";
 import MarkdownText from "../../components/markdown-text/markdown-text";
 
 const ProjectDetails = (props) => {
+  setTitle("Project Details");
   // Extracting our props for use and declaring component states.
   const {
     projectIsLoading,
@@ -139,7 +139,7 @@ const ProjectDetails = (props) => {
 
   const _updateQueryString = (key, value) => {
     const newUrl = generateUrlWithQuery(key, value);
-    history.pushState({path: newUrl}, "", newUrl);
+    history.replaceState({path: newUrl}, "", newUrl);
   }
 
   // Props that will be utilized in the membership tab's Pagination component.
