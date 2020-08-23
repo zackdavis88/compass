@@ -22,6 +22,10 @@ export const InputBoxWrapper = styled.div`
     margin-bottom: 35px !important;
   `}
 
+  ${({isColorPicker}) => isColorPicker && css`
+    margin-bottom: 15px !important;
+  `}
+
   & input {
     background-color: ${white};
     font-size: 16px;
@@ -36,6 +40,12 @@ export const InputBoxWrapper = styled.div`
     transition: border 100ms linear, background-color 100ms linear;
     ${({hasError}) => hasError && css`
       border-color: ${primaryRed} !important;
+    `}
+
+    ${({isColorPicker}) => isColorPicker && css`
+      cursor: pointer;
+      border-radius: 5px;
+      padding: 5px 0;
     `}
   }
 
@@ -82,6 +92,10 @@ export const InputBoxWrapper = styled.div`
 
     ${({hasError}) => hasError && css`
       color: ${primaryRed};
+    `}
+
+    ${({isColorPicker}) => isColorPicker && css`
+      top: -14px;
     `}
   }
 

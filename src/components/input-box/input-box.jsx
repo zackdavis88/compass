@@ -7,11 +7,13 @@ const InputBox = (props) => {
 
   const helperVisible = !!(props.helperText || props.errorText);
   const hasValue = !!props.value;
+  const isColorPicker = props.type && props.type.toLowerCase() === "color";
   const wrapperProps = {
     hasError: !!props.errorText,
     hasValue,
     helperVisible,
-    helperText: props.errorText || props.helperText
+    helperText: props.errorText || props.helperText,
+    isColorPicker
   };
 
   const inputProps = {
