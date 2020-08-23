@@ -18,16 +18,31 @@ const ProjectModal = (props) => {
   const [state, setState] = useState(initialState);
 
   // Tracking if any data on the form has changed.
-  const hasChanges = () => JSON.stringify(initialState) !== JSON.stringify(state);
+  const hasChanges = JSON.stringify(initialState) !== JSON.stringify(state);
 
   const _submitDisabled = () => (
+    !hasChanges ||
     !state.name ||
     !!state.nameError ||
     !!state.descriptionError ||
     props.requestInProgress
   );
 
-  const _submitTooltip = () => _submitDisabled() ? props.requestInProgress ? "request in progress" : "missing required fields" : "";
+  const _submitTooltip = () => {
+    if(_submitDisabled()) {
+      if(props.requestInProgress)
+        return "request in progress";
+      
+      if(state.nameError || state.descriptionError)
+        return "please fix input errors";
+
+      if(!state.name)
+        return "missing required fields";
+      
+      if(!hasChanges)
+        return "there are no changes to submit";
+    }
+  };
 
   const _onSubmit = async() => {
     const { name, description, isPrivate } = state;
@@ -61,7 +76,7 @@ const ProjectModal = (props) => {
       text: isEdit ? "Edit Project" : "New Project"
     },
     dataTestId: "projectModal",
-    confirmBeforeClose: hasChanges()
+    confirmBeforeClose: hasChanges
   };
 
   const inputProps = {

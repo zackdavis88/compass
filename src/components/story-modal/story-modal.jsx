@@ -23,7 +23,7 @@ const StoryModal = (props) => {
   const [memberNames, setMemberNames] = useState(undefined);
 
   // Tracking if any data on the form has changed.
-  const hasChanges = () => JSON.stringify(initialState) !== JSON.stringify(state);
+  const hasChanges = JSON.stringify(initialState) !== JSON.stringify(state);
 
   const _loadData = async() => {
     const response = await props.getMemberNames(props.project);
@@ -35,6 +35,7 @@ const StoryModal = (props) => {
   }, []);
 
   const _submitDisabled = () => (
+    !hasChanges ||
     !state.name || 
     !!state.nameError ||
     !!state.detailsError ||
@@ -49,8 +50,12 @@ const StoryModal = (props) => {
       
       if(state.nameError || state.detailsError || state.ownerError)
         return "please fix input errors";
+
+      if(!state.name)
+        return "missing required fields";
       
-      return "missing required fields";
+      if(!hasChanges)
+        return "there are no changes to submit";
     }
   };
 
@@ -92,7 +97,7 @@ const StoryModal = (props) => {
       text: isEdit ? "Edit Story" : "New Story"
     },
     dataTestId: "storyModal",
-    confirmBeforeClose: hasChanges()
+    confirmBeforeClose: hasChanges
   };
 
   const inputProps = {

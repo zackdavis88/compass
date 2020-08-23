@@ -33,7 +33,7 @@ const MembershipModal = (props) => {
   const [state, setState] = useState(initialState);
   const [availableUsers, setAvailableUsers] = useState(isEdit ? [] : undefined);
 
-  const hasChanges = () => JSON.stringify(initialState) !== JSON.stringify(state);
+  const hasChanges = JSON.stringify(initialState) !== JSON.stringify(state);
 
   const _loadData = async() => {
     const response = await props.getAvailableUsers(props.project);
@@ -45,9 +45,23 @@ const MembershipModal = (props) => {
       _loadData();
   }, []);
 
-  const _submitDisabled = () => !state.username || !!state.usernameError || props.requestInProgress;
+  const _submitDisabled = () => !hasChanges || !state.username || !!state.usernameError || props.requestInProgress;
 
-  const _submitTooltip = () => _submitDisabled() ? props.requestInProgress ? "request in progress" : "missing required fields" : "";
+  const _submitTooltip = () => {
+    if(_submitDisabled()) {
+      if(props.requestInProgress)
+        return "request in progress";
+      
+      if(state.usernameError)
+        return "please fix input errors";
+
+      if(!state.username)
+        return "missing required fields";
+      
+      if(!hasChanges)
+        return "there are no changes to submit";
+    }
+  };
 
   const _onSubmit = async() => {
     const {username, roles} = state;
@@ -84,7 +98,7 @@ const MembershipModal = (props) => {
     },
     dataTestId: "membershipModal",
     small: true,
-    confirmBeforeClose: hasChanges()
+    confirmBeforeClose: hasChanges
   };
 
   const inputProps = {

@@ -76,3 +76,33 @@ export const generateObjectFromSearch = (searchString) => {
 export const setTitle = (pageName) => {
   document.title = `Compass - ${pageName}`;
 };
+
+// Stackoverflow to the rescue: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+const hexToRgb = (hex) => {
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+    return r + r + g + g + b + b;
+  });
+
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    red: parseInt(result[1], 16),
+    green: parseInt(result[2], 16),
+    blue: parseInt(result[3], 16)
+  } : null;
+};
+
+// Formula found from stackoverflow: https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
+export const calcTextColor = (backgroundColor) => {
+  const rgbValues = hexToRgb(backgroundColor);
+  // Shouldnt hit this case ever...but just in-case. Default to black text.
+  if(!rgbValues)
+    return "#000000";
+
+  const {red, green, blue} = rgbValues;
+  if((red*0.299 + green*0.587 + blue*0.114) > 130)
+    return "#000000";
+  else
+    return "#FFFFFF";
+};

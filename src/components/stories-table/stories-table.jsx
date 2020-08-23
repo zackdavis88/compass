@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Table from "../table/table";
 import {TableValue} from "../table/table.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faArrowRight, faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faTrash} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate} from "../../utils";
 import {ActionsWrapper, Action, LinkAction, PaginationSection} from "../table/table.styles";
@@ -13,22 +13,16 @@ import Pagination from "../pagination/pagination";
 const StoriesTable = ({stories, project, actions, pagination}) => {
   const isEmpty = stories.length === 0;
   const _renderActions = (row) => {
-    const {editStory, deleteStory, viewStory} = actions;
+    const {deleteStory, viewStory} = actions;
     const userRoles = project ? (project.userRoles || {}) : {};
     const {isAdmin, isManager, isDeveloper} = userRoles;
     const actionAllowed = isAdmin || isManager || isDeveloper;
     return (
       <ActionsWrapper>
-        {deleteStory && actionAllowed && (
-          <Action data-testid="action.deleteStory" highlightAction={actionAllowed} onClick={() => deleteStory(row)}>
+        {deleteStory && (
+          <Action data-testid="action.deleteStory" highlightAction={actionAllowed} onClick={() => actionAllowed && deleteStory(row)}>
             <FontAwesomeIcon icon={faTrash} fixedWidth />
             {actionAllowed && <Tooltip text={"Delete Story"} />}
-          </Action>
-        )}
-        {editStory && actionAllowed && (
-          <Action data-testid="action.editStory" highlightAction={actionAllowed} onClick={() => editStory(row)}>
-            <FontAwesomeIcon icon={faEdit} fixedWidth />
-            {actionAllowed && <Tooltip text={"Edit Story"} />}
           </Action>
         )}
         <LinkAction 
@@ -114,7 +108,6 @@ StoriesTable.propTypes = {
   stories: PropTypes.array.isRequired,
   actions: PropTypes.shape({
     viewStory: PropTypes.func.isRequired,
-    editStory: PropTypes.func,
     deleteStory: PropTypes.func
   }).isRequired,
   pagination: PropTypes.shape({

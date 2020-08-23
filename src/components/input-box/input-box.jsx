@@ -4,14 +4,15 @@ import { InputBoxWrapper } from "./input-box.styles";
 
 const InputBox = (props) => {
   const [isFocused, setIsFocused] = useState(false);
-
   const helperVisible = !!(props.helperText || props.errorText);
   const hasValue = !!props.value;
+  const isColorPicker = props.type && props.type.toLowerCase() === "color";
   const wrapperProps = {
     hasError: !!props.errorText,
     hasValue,
     helperVisible,
-    helperText: props.errorText || props.helperText
+    helperText: props.errorText || props.helperText,
+    isColorPicker
   };
 
   const inputProps = {
@@ -21,6 +22,9 @@ const InputBox = (props) => {
     value: props.value,
     disabled: props.disabled,
     onChange: (event) => {
+      if(!isColorPicker && props.maxLength)
+        return props.onChange(event.target.value.substring(0, props.maxLength));
+
       props.onChange(event.target.value);
     },
     onFocus: () => setIsFocused(true),
@@ -59,7 +63,8 @@ InputBox.propTypes = {
   disabled: PropTypes.bool,
   disabledTooltip: PropTypes.string,
   isRequired: PropTypes.bool,
-  dataTestId: PropTypes.string
+  dataTestId: PropTypes.string,
+  maxLength: PropTypes.number
 };
 
 export default InputBox;
