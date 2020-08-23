@@ -14,6 +14,7 @@ import {
 import {getProject, updateProject, deleteProject} from "../../store/actions/project";
 import {getMemberships, deleteMembership, updateMembership, createMembership, getAvailableUsers, getMemberNames} from "../../store/actions/membership";
 import {getStories, deleteStory, createStory} from "../../store/actions/story";
+import {getPriorities, createPriority, deletePriority, updatePriority} from "../../store/actions/priority";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Tabs from "../../components/tabs/tabs";
 import {PageError} from "../../common-styles/base";
@@ -31,6 +32,8 @@ import StoryModal from "../../components/story-modal/story-modal";
 import {generateUrlWithQuery, generateObjectFromSearch, formatDate, setTitle} from "../../utils";
 import SearchBar from "../../components/search-bar/search-bar";
 import MarkdownText from "../../components/markdown-text/markdown-text";
+import PrioritiesTable from "../../components/priorities-table/priorities-table";
+import PriorityModal from "../../components/priority-modal/priority-modal";
 
 const ProjectDetails = (props) => {
   setTitle("Project Details");
@@ -39,9 +42,11 @@ const ProjectDetails = (props) => {
     projectIsLoading,
     membershipIsLoading,
     storyIsLoading,
+    priorityIsLoading,
     getProject,
     getMemberships,
     getStories,
+    getPriorities,
     deleteMembership,
     updateMembership,
     updateProject,
@@ -52,7 +57,10 @@ const ProjectDetails = (props) => {
     getAvailableUsers,
     deleteStory,
     createStory,
-    getMemberNames
+    getMemberNames,
+    createPriority,
+    deletePriority,
+    updatePriority
   } = props;
   const query = generateObjectFromSearch(props.location.search);
   const projectId = props.match.params.projectId;
@@ -60,11 +68,14 @@ const ProjectDetails = (props) => {
   const [projectData, setProjectData] = useState(undefined);
   const [membershipsData, setMembershipsData] = useState(undefined);
   const [storiesData, setStoriesData] = useState(undefined);
+  const [prioritiesData, setPrioritiesData] = useState(undefined);
   const [deleteMembershipData, setDeleteMembershipData] = useState({});
   const [editMembershipData, setEditMembershipData] = useState({});
+  const [editPriorityData, setEditPriorityData] = useState({});
   const [showProjectEditModal, setShowProjectEditModal] = useState(false);
   const [showProjectDeleteModal, setShowProjectDeleteModal] = useState(false);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+  const [showAddPriorityModal, setShowAddPriorityModal] = useState(false);
   const [deleteStoryData, setDeleteStoryData] = useState({});
   const [showStoryModal, setShowStoryModal] = useState(false);
   const [memberSearchData, setMemberSearchData] = useState({
@@ -81,6 +92,7 @@ const ProjectDetails = (props) => {
     const projectResponse = await getProject(projectId, true);
     const membershipResponse = await getMemberships(projectId, query.membersPage, null, query.memberSearch);
     const storiesResponse = await getStories(projectId, query.storiesPage, null, query.storySearch);
+    const prioritiesResponse = await getPriorities(projectId, query.prioritiesPage);
 
     if(projectResponse && projectResponse.error)
       return setPageError(projectResponse.error);
@@ -90,6 +102,9 @@ const ProjectDetails = (props) => {
 
     if(storiesResponse && storiesResponse.error)
       return setPageError(storiesResponse.error);
+    
+    if(prioritiesResponse && prioritiesResponse.error)
+      return setPageError(prioritiesResponse.error);
 
     // If the initial query-string had values that changed (page > totalPages), update the query-string.
     if(query.membersPage && membershipResponse && membershipResponse.page.toString() !== query.membersPage)
@@ -97,9 +112,14 @@ const ProjectDetails = (props) => {
     
     if(query.storiesPage && storiesResponse && storiesResponse.page.toString() !== query.storiesPage)
       _updateQueryString("storiesPage", storiesResponse.page);
+
+    if(query.prioritiesPage && prioritiesResponse && prioritiesResponse.page.toString() !== query.prioritiesPage)
+      _updateQueryString("prioritiesPage", prioritiesResponse.page);
+
     setProjectData(projectResponse);
     setMembershipsData(membershipResponse);
     setStoriesData(storiesResponse);
+    setPrioritiesData(prioritiesResponse);
   };
 
   // This is called when we delete or edit a membership.
@@ -122,6 +142,15 @@ const ProjectDetails = (props) => {
       setStoriesData(response);
     };
 
+    const _reloadPriorities = async() => {
+      const {itemsPerPage, page} = prioritiesData;
+      const response = await getPriorities(projectId, page, itemsPerPage);
+      if(response && response.error)
+        return setPageError(response.error);
+      
+      setPrioritiesData(response);
+    };
+
   // This is called when we edit project details.
   const _reloadDetails = async() => {
     const response = await getProject(projectId, true);
@@ -133,8 +162,7 @@ const ProjectDetails = (props) => {
 
   // Called once upon component mount, fetches all data.
   useEffect(() => {
-    if(!projectData)
-      _loadData();
+    _loadData();
   }, []);
 
   const _updateQueryString = (key, value) => {
@@ -172,6 +200,22 @@ const ProjectDetails = (props) => {
         return setPageError(response.error);
       
       setStoriesData(response);
+    }
+  };
+
+  const prioritiesPagination = {
+    itemsPerPage: prioritiesData && prioritiesData.itemsPerPage,
+    page: prioritiesData && prioritiesData.page,
+    totalPages: prioritiesData && prioritiesData.totalPages,
+    getPage: async(page) => {
+      if(page === prioritiesData.page)
+        return;
+      _updateQueryString("prioritiesPage", page);
+      const response = await getPriorities(projectId, page, prioritiesData.itemsPerPage);
+      if(response.error)
+        return setPageError(response.error);
+      
+      setPrioritiesData(response);
     }
   };
   
@@ -291,7 +335,7 @@ const ProjectDetails = (props) => {
       {pageError ? (
           <PageError>{pageError}</PageError>
         ) : 
-        (!projectData || !membershipsData || !storiesData) ? (
+        (!projectData || !membershipsData || !storiesData || !prioritiesData) ? (
           <LoadingSpinner alignCenter dataTestId="projectDetailsLoader" message={`Loading project details`} />
         ) : 
         (
@@ -305,6 +349,7 @@ const ProjectDetails = (props) => {
                 <Tabs.Header>Details</Tabs.Header>
                 <Tabs.Header>Members</Tabs.Header>
                 <Tabs.Header>Backlog</Tabs.Header>
+                <Tabs.Header>Priorities</Tabs.Header>
               </Tabs.TabHeaders>
               <Tabs.TabPanels>
                 <Tabs.Panel>
@@ -378,11 +423,26 @@ const ProjectDetails = (props) => {
                     pagination={storiesPagination}
                   />
                 </Tabs.Panel>
+                <Tabs.Panel>
+                  <PrioritiesTable 
+                    priorities={prioritiesData.priorities}
+                    userRoles={userRoles}
+                    actions={{
+                      createPriority: () => setShowAddPriorityModal(true),
+                      deletePriority: async(priority) => {
+                        await deletePriority({...priority, project});
+                        _reloadPriorities();
+                      },
+                      editPriority: (priority) => setEditPriorityData(priority)
+                    }}
+                    pagination={prioritiesPagination}
+                  />
+                </Tabs.Panel>
               </Tabs.TabPanels>
             </Tabs>
           </Fragment>
         )}
-        {/* Modal City, pop: 7 */}
+        {/* Modal City, pop: 9...freaking 9... */}
         {deleteMembershipData.id && (
           <DeleteModal
             onClose={() => setDeleteMembershipData({})}
@@ -479,6 +539,25 @@ const ProjectDetails = (props) => {
             refresh={_reloadStories}
           />
         )}
+        {showAddPriorityModal && (
+          <PriorityModal 
+            onClose={() => setShowAddPriorityModal(false)}
+            onSubmit={createPriority}
+            requestInProgress={priorityIsLoading}
+            project={project}
+            refresh={_reloadPriorities}
+          />
+        )}
+        {editPriorityData.id && (
+          <PriorityModal
+            onClose={() => setEditPriorityData({})}
+            onSubmit={updatePriority}
+            requestInProgress={priorityIsLoading}
+            project={project}
+            priority={editPriorityData}
+            refresh={_reloadPriorities}
+          />
+        )}
     </ProjectDetailsWrapper>
   );
 };
@@ -487,6 +566,7 @@ ProjectDetails.propTypes = {
   projectIsLoading: PropTypes.bool.isRequired,
   membershipIsLoading: PropTypes.bool.isRequired,
   storyIsLoading: PropTypes.bool.isRequired,
+  priorityIsLoading: PropTypes.bool.isRequired,
   getProject: PropTypes.func.isRequired,
   getMemberships: PropTypes.func.isRequired,
   deleteMembership: PropTypes.func.isRequired,
@@ -500,13 +580,18 @@ ProjectDetails.propTypes = {
   getStories: PropTypes.func.isRequired,
   deleteStory: PropTypes.func.isRequired,
   createStory: PropTypes.func.isRequired,
-  getMemberNames: PropTypes.func.isRequired
+  getMemberNames: PropTypes.func.isRequired,
+  getPriorities: PropTypes.func.isRequired,
+  createPriority: PropTypes.func.isRequired,
+  deletePriority: PropTypes.func.isRequired,
+  updatePriority: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
   projectIsLoading: state.project.isLoading,
   membershipIsLoading: state.membership.isLoading,
-  storyIsLoading: state.story.isLoading
+  storyIsLoading: state.story.isLoading,
+  priorityIsLoading: state.priority.isLoading
 }), {
   getProject,
   updateProject,
@@ -521,5 +606,9 @@ export default connect((state) => ({
   getStories,
   deleteStory,
   createStory,
-  getMemberNames
+  getMemberNames,
+  getPriorities,
+  createPriority,
+  deletePriority,
+  updatePriority
 })(ProjectDetails);
