@@ -147,10 +147,12 @@ describe("<ProjectModal />", () => {
     };
     props.onSubmit.mockReturnValueOnce({});
     const {getByTestId} = render(<ProjectModal {...props} />);
+    const publicOption = getByTestId("isPrivateInput.option.0");
+    fireEvent.click(publicOption);
     const submitButton = getByTestId("projectModal.actions.primaryButton");
     fireEvent.click(submitButton);
     await waitFor(() => expect(props.onSubmit).toHaveBeenCalled());
-    expect(props.onSubmit).toHaveBeenCalledWith("testId", "test project", "this is a test.", true);
+    expect(props.onSubmit).toHaveBeenCalledWith("testId", "test project", "this is a test.", false);
   });
 
   it("should prevent the modal from autoclosing on click if there are any state changes", () => {

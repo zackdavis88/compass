@@ -18,9 +18,10 @@ const PriorityModal = (props) => {
   const [state, setState] = useState(initialState);
 
   // Tracking if any data on the form has changed.
-  const hasChanges = () => JSON.stringify(initialState) !== JSON.stringify(state);
+  const hasChanges = JSON.stringify(initialState) !== JSON.stringify(state);
 
   const _submitDisabled = () => (
+    !hasChanges ||
     !state.name || 
     !!state.nameError ||
     !!state.colorError ||
@@ -34,8 +35,12 @@ const PriorityModal = (props) => {
       
       if(state.nameError || state.colorError)
         return "please fix input errors";
+
+      if(!state.name)
+        return "missing required fields";
       
-      return "missing required fields";
+      if(!hasChanges)
+        return "there are no changes to submit";
     }
   };
 
@@ -73,7 +78,7 @@ const PriorityModal = (props) => {
     },
     dataTestId: "priorityModal",
     small: true,
-    confirmBeforeClose: hasChanges()
+    confirmBeforeClose: hasChanges
   };
 
   const inputProps = {

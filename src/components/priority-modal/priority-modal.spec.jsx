@@ -120,6 +120,7 @@ describe("<PriorityModal />", () => {
     });
     fireEvent.click(submitButton);
     await waitFor(() => expect(getByText("name has an issue")).toBeDefined());
+    expect(getByText("please fix input errors")).toBeDefined();
   });
 
   it("should set the colorError if there is a color validation error", async() => {
@@ -181,6 +182,30 @@ describe("<PriorityModal />", () => {
   });
 
   //Testing Priority Update--
+  it("should disable the submit button by default", () => {
+    props.priority = {
+      id: "testPriorityId1",
+      name: "unit test priority",
+      color: "#0194cc"
+    };
+    const {getByTestId, getByText} = render(<PriorityModal {...props}/>);
+    expect(getByTestId("priorityModal.actions.primaryButton")).toBeDisabled();
+    expect(getByText("there are no changes to submit")).toBeDefined();
+  });
+
+  it("should enable the submit button if there are any changes", () => {
+    props.priority = {
+      id: "testPriorityId1",
+      name: "unit test priority",
+      color: "#0194cc"
+    };
+    const {getByTestId} = render(<PriorityModal {...props}/>);
+    const colorInput = getByTestId("colorInput.input");
+    expect(getByTestId("priorityModal.actions.primaryButton")).toBeDisabled();
+    fireEvent.change(colorInput, {target: {value: "#ffffff"}});
+    expect(getByTestId("priorityModal.actions.primaryButton")).toBeEnabled();
+  });
+
   it("should render the 'Edit Priority' modal header when updating", () => {
     props.priority = {
       id: "testPriorityId1",
