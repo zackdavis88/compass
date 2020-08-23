@@ -97,4 +97,17 @@ describe("<InputBox />", () => {
     });
     expect(inputProps.onChange).toHaveBeenCalledWith(testValue);
   });
+  
+  it("should limit the input value if props.maxLength is provided", () => {
+    const testValue = "some text that is very long";
+    inputProps.maxLength = 10;
+    const {getByTestId} = render(<InputBox {...inputProps} />);
+    const inputElement = getByTestId("testInputBox.input");
+    fireEvent.change(inputElement, {
+      target: {
+        value: testValue
+      }
+    });
+    expect(inputProps.onChange).toHaveBeenCalledWith("some text ");
+  });
 });
