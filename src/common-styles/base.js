@@ -1,5 +1,6 @@
-import styled, { createGlobalStyle } from "styled-components";
-import { black, black33, tertiaryRed, white } from "./variables";
+import styled, { createGlobalStyle, css } from "styled-components";
+import { black, black33, tertiaryRed, white, transparent } from "./variables";
+import {calcTextColor} from "../utils";
 
 export const GlobalStyle = createGlobalStyle`
   html {
@@ -41,4 +42,16 @@ export const PageError = styled.div`
   text-align: center;
   padding: 15px;
   border-radius: 0;
+`;
+
+export const PriorityLabel = styled.div.attrs(({color}) => ({
+  style: {
+    backgroundColor: color,
+    color: calcTextColor(color)
+  }
+}))`
+  font-style: normal;
+  background-color: ${transparent};
+  padding: 0 10px;
+  border-radius: 5px;
 `;
