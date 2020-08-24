@@ -267,6 +267,7 @@ describe("<StoryDetails />", () => {
     const editAction = getByText("Edit Story");
     expect(queryByTestId("storyModal.wrapper")).toBeNull();
     store.dispatch.mockReturnValueOnce({}); // rendering this modal calls a redux action. mock that response before render.
+    store.dispatch.mockReturnValueOnce({});
     fireEvent.click(editAction);
     expect(queryByTestId("storyModal.wrapper")).toBeDefined();
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));

@@ -431,6 +431,7 @@ describe("<ProjectDetails />", () => {
     const actionsMenu = getByTestId("projectDetailsActionsMenu");
     fireEvent.click(actionsMenu);
     store.dispatch.mockReturnValueOnce({});
+    store.dispatch.mockReturnValueOnce({});
     const newStoryAction = getByText("New Story");
     expect(queryByTestId("storyModal.wrapper")).toBeNull();
     fireEvent.click(newStoryAction);

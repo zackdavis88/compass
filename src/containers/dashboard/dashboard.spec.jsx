@@ -192,6 +192,7 @@ describe("<Dashboard />", () => {
     const {getAllByTestId, queryByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     store.dispatch.mockReturnValueOnce({});
+    store.dispatch.mockReturnValueOnce({});
     const addStoryButton = getAllByTestId("action.addStory")[0];
     expect(queryByTestId("storyModal.wrapper")).toBeNull();
     fireEvent.click(addStoryButton);

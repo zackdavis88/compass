@@ -18,6 +18,13 @@ describe("<StoryModal />", () => {
           "thirdMember"
         ]
       }),
+      getPriorityNames: jest.fn().mockReturnValue({
+        message: "another test message",
+        priorities: [
+          "firstPriority",
+          "secondPriority"
+        ]
+      }),
       requestInProgress: false,
       project: {
         id: "testProjectId",
@@ -55,6 +62,7 @@ describe("<StoryModal />", () => {
 
   it("should render the LoadingSpinner component if memberNames is undefined", async() => {
     props.getMemberNames.mockReturnValueOnce({users: undefined});
+    props.getPriorityNames.mockReturnValueOnce({priorities: undefined});
     const {getByTestId, getByText} = render(<StoryModal {...props}/>);
     await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
     expect(getByTestId("storyModalLoader")).toBeDefined();
@@ -82,7 +90,6 @@ describe("<StoryModal />", () => {
     const nameInput = queryByTestId("nameInput");
     const detailsInput = queryByTestId("detailsInput");
     const ownerInput = queryByTestId("ownerInput");
-
     expect(nameInput).toBeDefined();
     expect(detailsInput).toBeDefined();
     expect(ownerInput).toBeDefined();
@@ -102,29 +109,8 @@ describe("<StoryModal />", () => {
     expect(submitButton).toBeEnabled();
   });
 
-  it("should validate that the owner input is in memberNames", async() => {
-    const {getByTestId, queryByText} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    const nameInput = getByTestId("nameInput.input");
-    const ownerInput = getByTestId("ownerInput.input");
-    const submitButton = getByTestId("storyModal.actions.primaryButton");
-    fireEvent.change(nameInput, {
-      target: {
-        value: "some name value"
-      }
-    });
-    fireEvent.change(ownerInput, {
-      target: {
-        value: "some owner value"
-      }
-    });
-    expect(queryByText("username is invalid")).toBeNull();
-    fireEvent.click(submitButton);
-    await waitFor(() => expect(queryByText("username is invalid")).toBeDefined());
-  });
-
   it("should call the onSubmit method when validation is successful", async() => {
-    const {getByTestId, queryByText} = render(<StoryModal {...props}/>);
+    const {getByTestId} = render(<StoryModal {...props}/>);
     await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
     const nameInput = getByTestId("nameInput.input");
     const ownerInput = getByTestId("ownerInput.input");
@@ -149,7 +135,7 @@ describe("<StoryModal />", () => {
       }
     });
     fireEvent.click(submitButton);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, nameVal, detailsVal, ownerVal));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, nameVal, detailsVal, ownerVal, ""));
   });
 
   it("should call the onClose method when onSubmit is successful", async() => {
@@ -267,7 +253,7 @@ describe("<StoryModal />", () => {
     fireEvent.change(ownerInput, {target: { value: ownerVal}});
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     fireEvent.click(submitButton);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.story, nameVal, detailsVal, ownerVal));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.story, nameVal, detailsVal, ownerVal, ""));
   });
 
 

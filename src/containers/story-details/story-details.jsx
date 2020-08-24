@@ -13,6 +13,7 @@ import {
 import {PageError} from "../../common-styles/base";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {getStory, deleteStory, updateStory} from "../../store/actions/story";
+import {getAllPriorityNames} from "../../store/actions/priority";
 import {showNotification} from "../../store/actions/notification";
 import {getMemberNames} from "../../store/actions/membership";
 import PageHeader from "../../components/page-header/page-header";
@@ -34,7 +35,8 @@ const StoryDetails = (props) => {
     updateStory,
     getMemberNames,
     historyPush,
-    showNotification
+    showNotification,
+    getAllPriorityNames
   } = props;
   const [pageError, setPageError] = useState(undefined);
   const [storyData, setStoryData] = useState(undefined);
@@ -143,6 +145,7 @@ const StoryDetails = (props) => {
           onSubmit={updateStory}
           requestInProgress={storyIsLoading}
           getMemberNames={getMemberNames}
+          getPriorityNames={getAllPriorityNames}
           project={story.project}
           story={story}
           refresh={_loadData}
@@ -176,7 +179,8 @@ StoryDetails.propTypes = {
   updateStory: PropTypes.func.isRequired,
   historyPush: PropTypes.func.isRequired,
   getMemberNames: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired
+  showNotification: PropTypes.func.isRequired,
+  getAllPriorityNames: PropTypes.func.isRequired
 };
 
 export default connect(state => ({
@@ -187,5 +191,6 @@ export default connect(state => ({
   updateStory,
   historyPush: push,
   getMemberNames,
-  showNotification
+  showNotification,
+  getAllPriorityNames
 })(StoryDetails);
