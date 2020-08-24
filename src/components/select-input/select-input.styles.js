@@ -15,22 +15,16 @@ import { fadeIn } from "../../common-styles/animations";
 
 export const SelectInputWrapper = styled.div`
   position: relative;
-  transition: margin 100ms linear;
-  overflow: visible;
-
-  ${({helperVisible}) => helperVisible && css`
-    margin-bottom: 35px !important;
-  `}
 
   & input {
     background-color: ${white};
     font-size: 16px;
     font-weight: normal;
     height: ${inputHeight};
-    padding-left: 20px;
+    padding-left: 13px;
     padding-right: 20px;
     color: ${black};
-    border-radius: 32px;
+    border-radius: 5px;
     border: 1px solid ${black33};
     width: 100%;
     transition: border 100ms linear, background-color 100ms linear;
@@ -73,7 +67,7 @@ export const SelectInputWrapper = styled.div`
     padding-left: 3px;
     padding-right: 3px;
     top: -13px;
-    left: 17px;
+    left: 10px;
     background-color: ${white};
     font-size: 15px;
     font-weight: bold;
@@ -86,9 +80,10 @@ export const SelectInputWrapper = styled.div`
   }
 
   & div {
+    display: inline-block;
+    position: relative;
+    margin-left: 13px;
     color: ${black};
-    position: absolute;
-    left: 20px;
     text-align: left;
     font-size: 15px;
     animation: 100ms linear 0s 1 ${fadeIn};
@@ -110,15 +105,14 @@ export const SelectInputWrapper = styled.div`
 `;
 
 export const FlyoutWrapper = styled.div`
-  position: absolute;
-  border-radius: 4px;
+  position: absolute !important;
   line-height: 1;
   border: 1px solid ${black80};
   border-top: none;
   border-radius: 0 0 5px 5px;
   top: calc(${inputHeight});
-  left: 0;
-  width: calc(100% - 40px);
+  left: -13px;
+  width: 100%;
   height: auto;
   background-color: ${white};
   padding-top: 12px;
@@ -126,7 +120,7 @@ export const FlyoutWrapper = styled.div`
   padding-left: 5px;
   padding-right: 5px;
   height: auto;
-  max-height: 200px;
+  max-height: 13em;
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 7001;
