@@ -10,7 +10,6 @@ const InputBox = (props) => {
   const wrapperProps = {
     hasError: !!props.errorText,
     hasValue,
-    helperVisible,
     helperText: props.errorText || props.helperText,
     isColorPicker
   };
@@ -22,7 +21,7 @@ const InputBox = (props) => {
     value: props.value,
     disabled: props.disabled,
     onChange: (event) => {
-      if(!isColorPicker && props.maxLength)
+      if(!(isColorPicker) && props.maxLength)
         return props.onChange(event.target.value.substring(0, props.maxLength));
 
       props.onChange(event.target.value);
