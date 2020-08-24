@@ -152,7 +152,7 @@ const StoryModal = (props) => {
     <StoryModalWrapper>
       <Modal {...modalProps}>
         {!memberNames && !priorityNames ? (
-          <LoadingSpinner alignCenter dataTestId="storyModalLoader" message="Loading available members" />
+          <LoadingSpinner alignCenter dataTestId="storyModalLoader" message="Loading available story options" />
         ) : (
           <Fragment>
             <ProjectSection>
