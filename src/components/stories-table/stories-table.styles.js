@@ -2,6 +2,7 @@ import styled, {css} from "styled-components";
 import {TableWrapper} from "../table/table.styles";
 import {PaginationWrapper} from "../pagination/pagination.styles";
 import {white, black1a} from "../../common-styles/variables";
+import {PriorityLabel} from "../../common-styles/base";
 
 export const StoriesTableWrapper = styled.div`
   position: relative;
@@ -18,5 +19,9 @@ export const StoriesTableWrapper = styled.div`
   & ${PaginationWrapper} {
     position: relative;
     margin-top: 25px;
+  }
+
+  & ${PriorityLabel} {
+    display: inline-block;
   }
 `;
