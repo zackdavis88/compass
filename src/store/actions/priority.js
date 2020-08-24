@@ -59,9 +59,9 @@ export const getPriority = (projectId, priorityId) => dispatch => {
   });
 };
 
-export const getAllPriorityNames = (projectId) => dispatch => {
+export const getAllPriorityNames = (project) => dispatch => {
   return dispatch({
     types: [PRIORITY_REQUEST_START, PRIORITY_REQUEST_SUCCESS, PRIORITY_REQUEST_FAILURE],
-    request: request.get(`/api/projects/${projectId}/priorities/all`)
+    request: request.get(`/api/projects/${project.id}/priorities/all`)
   });
 };
