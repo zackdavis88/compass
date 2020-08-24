@@ -432,6 +432,7 @@ const ProjectDetails = (props) => {
                       deletePriority: async(priority) => {
                         await deletePriority({...priority, project});
                         _reloadPriorities();
+                        _reloadStories();
                       },
                       editPriority: (priority) => setEditPriorityData(priority)
                     }}
