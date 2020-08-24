@@ -95,7 +95,7 @@ describe("Priority Reducer / Actions", () => {
   });
 
   it("should dispatch a redux API call to get all priority names", async () => {
-    store.dispatch(getAllPriorityNames("testProjectId"));
+    store.dispatch(getAllPriorityNames({id: "testProjectId"}));
     await waitFor(() => expect(store.getActions()).toHaveLength(2));
     expect(store.getActions()[0].type).toBe("PRIORITY_REQUEST_START");
     const expectedTypes = ["PRIORITY_REQUEST_SUCCESS", "PRIORITY_REQUEST_FAILURE"];
