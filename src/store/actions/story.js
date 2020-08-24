@@ -5,26 +5,29 @@ import {
   STORY_REQUEST_FAILURE
 } from "../types/story";
 
-export const createStory = (project, name, details, owner) => dispatch => {
+export const createStory = (project, name, details, owner, priority) => dispatch => {
   return dispatch({
     types: [STORY_REQUEST_START, STORY_REQUEST_SUCCESS, STORY_REQUEST_FAILURE],
     request: request.post(`/api/projects/${project.id}/stories`),
     payload: {
       name,
       details,
-      owner
+      owner,
+      priority
     }
   });
 };
 
-export const updateStory = (project, story, name, details, owner) => dispatch => {
+export const updateStory = (project, story, name, details, owner, priority) => dispatch => {
   const payload = {};
   if(name)
     payload.name = name;
   if(typeof details === "string")
     payload.details = details;
-  if(owner)
+  if(typeof owner === "string")
     payload.owner = owner;
+  if(typeof priority === "string")
+    payload.priority = priority;
   return dispatch({
     types: [STORY_REQUEST_START, STORY_REQUEST_SUCCESS, STORY_REQUEST_FAILURE],
     request: request.post(`/api/projects/${project.id}/stories/${story.id}`),
