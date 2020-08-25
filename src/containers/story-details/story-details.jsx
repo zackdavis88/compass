@@ -10,7 +10,7 @@ import {
   StoryDetailsBlock,
   SideItem
 } from "./story-details.styles";
-import {PageError} from "../../common-styles/base";
+import {PageError, PriorityLabel} from "../../common-styles/base";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {getStory, deleteStory, updateStory} from "../../store/actions/story";
 import {getAllPriorityNames} from "../../store/actions/priority";
@@ -113,6 +113,14 @@ const StoryDetails = (props) => {
                       <SideItem>
                         <span>Project</span>
                         <a href={`/projects/${story.project.id}`} onClick={(e) => {e.preventDefault(); _goToProjectDetails();}}>{story.project.name}</a>
+                      </SideItem>
+                      <SideItem>
+                        <span>Priority</span>
+                        {story.priority ? (
+                          <PriorityLabel color={story.priority.color}>{story.priority.name}</PriorityLabel>
+                        ) : (
+                          <div style={{fontStyle: "italic"}}>None</div>
+                        )}
                       </SideItem>
                       <SideItem>
                         <span>Created By</span>

@@ -24,6 +24,10 @@ describe("<StoryDetails />", () => {
       owner: {
         displayName: "testUser091123"
       },
+      priority: {
+        name: "Test Priority",
+        color: "#091cda"
+      },
       createdOn: "2020-08-01T23:27:33.147Z",
       updatedOn: "2020-08-03T23:27:33.147Z"
     }
@@ -271,5 +275,12 @@ describe("<StoryDetails />", () => {
     fireEvent.click(editAction);
     expect(queryByTestId("storyModal.wrapper")).toBeDefined();
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+  });
+
+  it("should render the priority if one is provided", async() => {
+    const {queryByText} = render(<StoryDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
+    expect(queryByText("Priority")).toBeDefined();
+    expect(queryByText("Test Priority")).toBeDefined();
   });
 });
