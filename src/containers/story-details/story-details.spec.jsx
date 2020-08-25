@@ -11,6 +11,7 @@ describe("<StoryDetails />", () => {
       id: "testStoryId",
       name: "Unit test story",
       details: "This is a unit test story.",
+      points: 7,
       project: {
         id: "testProjectId",
         name: "Unit test project",
@@ -282,5 +283,30 @@ describe("<StoryDetails />", () => {
     await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
     expect(queryByText("Priority")).toBeDefined();
     expect(queryByText("Test Priority")).toBeDefined();
+  });
+
+  it("should render the points if provided", async() => {
+    const {getByText} = render(<StoryDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
+    expect(getByText("Points")).toBeDefined();
+    expect(getByText("7")).toBeDefined();
+  });
+
+  it("should render 'None' if there are no points assigned", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({story: {...mockStoryResponse.story, points: undefined}});
+    const {getByText} = render(<StoryDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
+    expect(getByText("Points")).toBeDefined();
+    expect(getByText("None")).toBeDefined();
+  });
+
+  it("should render 'None' if there is no priority assigned", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({story: {...mockStoryResponse.story, priority: undefined}});
+    const {getByText} = render(<StoryDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
+    expect(getByText("Priority")).toBeDefined();
+    expect(getByText("None")).toBeDefined();
   });
 });

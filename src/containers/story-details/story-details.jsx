@@ -123,12 +123,20 @@ const StoryDetails = (props) => {
                         )}
                       </SideItem>
                       <SideItem>
-                        <span>Created By</span>
-                        {story.creator ? story.creator.displayName : <div style={{fontStyle: "italic"}}>Creator Not Found</div>}
+                        <span>Points</span>
+                        {story.points ? (
+                          story.points
+                        ) : (
+                          <div style={{fontStyle: "italic"}}>None</div>
+                        )}
                       </SideItem>
                       <SideItem>
                         <span>Assigned To</span>
                         {story.owner ? story.owner.displayName : <div style={{fontStyle: "italic"}}>Not Assigned</div>}
+                      </SideItem>
+                      <SideItem>
+                        <span>Created By</span>
+                        {story.creator ? story.creator.displayName : <div style={{fontStyle: "italic"}}>Creator Not Found</div>}
                       </SideItem>
                       <SideItem>
                         <span>Create Date</span>
