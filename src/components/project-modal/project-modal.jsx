@@ -97,8 +97,10 @@ const ProjectModal = (props) => {
       label: "Description",
       placeholder: "Enter a desciption",
       errorText: state.descriptionError,
+      helperText: `Characters Remaining: ${350 - state.description.length}`,
       value: state.description,
-      onChange: (value) => setState({...state, description: value, descriptionError: undefined})
+      onChange: (value) => setState({...state, description: value, descriptionError: undefined}),
+      maxLength: 350
     },
     isPrivate: {
       id: "is-private-input",

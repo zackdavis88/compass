@@ -203,4 +203,13 @@ describe("<ProjectModal />", () => {
     expect(window.confirm).toHaveBeenCalled();
     expect(props.onClose).not.toHaveBeenCalled();
   });
+
+  it("should render 'Characters Remaining' helperText for description input", () => {
+    const {getByTestId, queryByText} = render(<ProjectModal {...props}/>);
+    const descInput = getByTestId("descriptionInput.input");
+    fireEvent.change(descInput, {
+      target: {value: "somevalue"}
+    });
+    expect(queryByText("Characters Remaining: 341")).toBeDefined();
+  });
 });
