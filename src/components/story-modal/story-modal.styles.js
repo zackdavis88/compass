@@ -1,7 +1,17 @@
 import styled from "styled-components";
+import {SelectInputWrapper} from "../select-input/select-input.styles";
 
 export const StoryModalWrapper = styled.div`
   position: relative;
+
+  & #pointsInput {
+    width: 15%;
+    padding-right: 10px;
+  }
+
+  & #priorityInput-wrapper {
+    margin-bottom: 25px;
+  }
 `;
 
 export const ProjectSection = styled.div`

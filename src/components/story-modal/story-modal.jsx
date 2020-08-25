@@ -16,10 +16,12 @@ const StoryModal = (props) => {
     details: isEdit && story.details ? story.details : "",
     owner: isEdit && story.owner ? story.owner.displayName : "",
     priority: isEdit && story.priority ? story.priority.name : "",
+    points: isEdit && story.points ? String(story.points) : "",
     nameError: undefined,
     detailsError: undefined,
     ownerError: undefined,
-    priorityError: undefined
+    priorityError: undefined,
+    pointsError: undefined
   };
   const [state, setState] = useState(initialState);
   const [memberNames, setMemberNames] = useState(undefined);
@@ -47,6 +49,7 @@ const StoryModal = (props) => {
     !!state.detailsError ||
     !!state.ownerError ||
     !!state.priorityError ||
+    !!state.pointsError ||
     props.requestInProgress
   );
 
@@ -55,7 +58,7 @@ const StoryModal = (props) => {
       if(props.requestInProgress)
         return "request in progress";
       
-      if(state.nameError || state.detailsError || state.ownerError || state.priorityError)
+      if(state.nameError || state.detailsError || state.ownerError || state.priorityError || state.pointsError)
         return "please fix input errors";
 
       if(!state.name)
@@ -67,12 +70,12 @@ const StoryModal = (props) => {
   };
 
   const _onSubmit = async() => {
-    const {name, details, owner, priority} = state;
+    const {name, details, owner, priority, points} = state;
     let response;
     if(isEdit)
-      response = await props.onSubmit(props.project, story, name, details, owner, priority);
+      response = await props.onSubmit(props.project, story, name, details, owner, priority, points);
     else
-      response = await props.onSubmit(props.project, name, details, owner, priority);
+      response = await props.onSubmit(props.project, name, details, owner, priority, points);
 
     if(response.error && response.error.includes("name"))
       return setState({...state, nameError: response.error});
@@ -82,6 +85,8 @@ const StoryModal = (props) => {
       return setState({...state, ownerError: response.error});
     else if(response.error && response.error.includes("priority"))
       return setState({...state, priorityError: response.error});
+    else if(response.error && response.error.includes("points"))
+      return setState({...state, pointsError: response.error});
 
     props.onClose();
     if(props.showNotification)
@@ -121,8 +126,10 @@ const StoryModal = (props) => {
       label: "Details",
       placeholder: "Enter story details",
       errorText: state.detailsError,
+      helperText: `Characters Remaining: ${4000 - state.details.length}`,
       value: state.details,
-      onChange: (value) => setState({...state, details: value, detailsError: undefined})
+      onChange: (value) => setState({...state, details: value, detailsError: undefined}),
+      maxLength: 2000
     },
     owner: {
       id: "ownerInput",
@@ -134,6 +141,19 @@ const StoryModal = (props) => {
       onChange: (value) => setState({...state, owner: value, ownerError: undefined}),
       items: memberNames,
       errorText: state.ownerError
+    },
+    points: {
+      id: "pointsInput",
+      dataTestId: "pointsInput",
+      type: "number",
+      numMin: "0",
+      numMax: "100",
+      label: "Points",
+      placeholder: "0-100",
+      value: state.points,
+      integerRequired: true,
+      errorText: state.pointsError,
+      onChange: (value) => setState({...state, points: value, pointsError: undefined})
     },
     priority: {
       id: "priorityInput",
@@ -160,6 +180,7 @@ const StoryModal = (props) => {
               <div>{props.project.name}</div>
             </ProjectSection>
             <InputBox {...inputProps.name} />
+            <InputBox {...inputProps.points} />
             <SelectInput {...inputProps.owner} />
             {priorityNames && priorityNames.length !== 0 && (
               <SelectInput {...inputProps.priority} />

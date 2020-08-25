@@ -101,9 +101,11 @@ describe("<StoryModal />", () => {
     const nameInput = queryByTestId("nameInput");
     const detailsInput = queryByTestId("detailsInput");
     const ownerInput = queryByTestId("ownerInput");
+    const pointsInput = queryByTestId("pointsInput");
     expect(nameInput).toBeDefined();
     expect(detailsInput).toBeDefined();
     expect(ownerInput).toBeDefined();
+    expect(pointsInput).toBeDefined();
   });
 
   it("should render the priority input box if there are priorities to show", async() => {
@@ -165,7 +167,7 @@ describe("<StoryModal />", () => {
       }
     });
     fireEvent.click(submitButton);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, nameVal, detailsVal, ownerVal, ""));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, nameVal, detailsVal, ownerVal, "", ""));
   });
 
   it("should call the onClose method when onSubmit is successful", async() => {
@@ -285,6 +287,22 @@ describe("<StoryModal />", () => {
     expect(priorityInput).toHaveValue(props.story.priority.name);
   });
 
+  it("should set the points input value based on the story being updated", async() => {
+    props.story = {
+      id: "testStoryId",
+      name: "unit test story",
+      details: "these the deets.",
+      owner: {displayName: "secondMember"},
+      priority: {name: "Test Priority", color: "#310aff"},
+      points: 5
+    };
+    const {getByTestId} = render(<StoryModal {...props}/>);
+    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    const pointsInput = getByTestId("pointsInput.input");
+    expect(pointsInput).toHaveValue(props.story.points);
+  });
+
   it("should call the onSubmit method if submit is clicked when updating", async() => {
     props.story = {
       id: "testStoryId",
@@ -306,7 +324,7 @@ describe("<StoryModal />", () => {
     fireEvent.change(ownerInput, {target: { value: ownerVal}});
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     fireEvent.click(submitButton);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.story, nameVal, detailsVal, ownerVal, ""));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.story, nameVal, detailsVal, ownerVal, "", ""));
   });
 
 
@@ -365,5 +383,16 @@ describe("<StoryModal />", () => {
     fireEvent.click(cancelButton);
     expect(window.confirm).toHaveBeenCalled();
     expect(props.onClose).not.toHaveBeenCalled();
+  });
+
+  it("should render 'Characters Remaining' helperText for details", async() => {
+    const {getByTestId, queryByText} = render(<StoryModal {...props}/>);
+    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    const detailsInput = getByTestId("detailsInput.input");
+    fireEvent.change(detailsInput, {
+      target: {value: "this is a test value"}
+    });
+    expect(queryByText("Characters Remaining: 3980")).toBeDefined();
   });
 });
