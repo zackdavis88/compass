@@ -14,12 +14,6 @@ import {fadeIn} from "../../common-styles/animations";
 export const TextAreaWrapper = styled.div`
   position: relative;
   width: 100%;
-  transition: margin 100ms linear;
-  overflow: visible;
-
-  ${({helperVisible}) => helperVisible && css`
-    margin-bottom: 30px !important;
-  `}
 
   & textarea {
     background-color: ${white};
@@ -28,15 +22,15 @@ export const TextAreaWrapper = styled.div`
     max-width: 100%;
     min-width: 100%;
     min-height: ${textAreaHeight};
-    max-height: 300px;
     height: ${textAreaHeight};
+    max-height: 17em;
     border-radius: 5px;
     font-size: 16px;
     font-stretch: 100%;
     font-weight: 400;
     font-family: "Arial";
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 13px;
+    padding-right: 13px;
     padding-top: 10px;
     padding-bottom: 10px;
     border: 1px solid ${black33};
@@ -81,7 +75,7 @@ export const TextAreaWrapper = styled.div`
     padding-left: 3px;
     padding-right: 3px;
     top: -10px;
-    left: 17px;
+    left: 10px;
     background-color: ${white};
     font-size: 15px;
     font-weight: bold;
@@ -95,10 +89,11 @@ export const TextAreaWrapper = styled.div`
   }
 
   & div {
+    position: relative;
+    display: inline-block;
+    top: -0.6em;
     color: ${black};
-    position: absolute;
-    top: calc(${textAreaHeight} + 2px);
-    left: 20px;
+    margin-left: 13px;
     text-align: left;
     font-size: 15px;
     animation: 100ms linear 0s 1 ${fadeIn};

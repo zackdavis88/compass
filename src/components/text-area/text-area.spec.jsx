@@ -97,4 +97,17 @@ describe("<TextArea />", () => {
     });
     expect(props.onChange).toHaveBeenCalledWith(testValue);
   });
+
+  it("should limit the input value if props.maxLength is provided", () => {
+    const testValue = "some text that is very long";
+    props.maxLength = 3;
+    const {getByTestId} = render(<TextArea {...props} />);
+    const inputElement = getByTestId("testTextArea.input");
+    fireEvent.change(inputElement, {
+      target: {
+        value: testValue
+      }
+    });
+    expect(props.onChange).toHaveBeenCalledWith("som");
+  });
 });
