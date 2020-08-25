@@ -7,6 +7,7 @@ const InputBox = (props) => {
   const helperVisible = !!(props.helperText || props.errorText);
   const hasValue = !!props.value;
   const isColorPicker = props.type && props.type.toLowerCase() === "color";
+  const isNumberPicker = props.type && props.type.toLowerCase() === "number";
   const wrapperProps = {
     hasError: !!props.errorText,
     hasValue,
@@ -21,7 +22,23 @@ const InputBox = (props) => {
     value: props.value,
     disabled: props.disabled,
     onChange: (event) => {
-      if(!(isColorPicker) && props.maxLength)
+      if(isNumberPicker) {
+        // Let's figure out what to do with this data.
+        let value = event.target.value;
+        if(value !== "")
+          value = props.integerRequired ? parseInt(value) : value;
+        
+        // If we have a numMin value and we are under it. Lets set to numMin.
+        if(props.numMin && !isNaN(props.numMin) && Number(value) < Number(props.numMin))
+          return props.onChange(props.numMin);
+        // If we have numMax and we are over it, set the value to numMax.
+        if(props.numMax && !isNaN(props.numMax) && Number(value) > Number(props.numMax))
+          return props.onChange(props.numMax);
+        
+        return props.onChange(value);
+      }
+
+      if(!isColorPicker && props.maxLength)
         return props.onChange(event.target.value.substring(0, props.maxLength));
 
       props.onChange(event.target.value);
@@ -29,6 +46,11 @@ const InputBox = (props) => {
     onFocus: () => setIsFocused(true),
     onBlur: () => setIsFocused(false)
   };
+  // Assign numMin/numMax if we are a number type input.
+  if(isNumberPicker) {
+    inputProps.min = props.numMin;
+    inputProps.max = props.numMax;
+  }
 
   if(props.dataTestId){
     wrapperProps["data-testid"] = props.dataTestId;
@@ -63,7 +85,10 @@ InputBox.propTypes = {
   disabledTooltip: PropTypes.string,
   isRequired: PropTypes.bool,
   dataTestId: PropTypes.string,
-  maxLength: PropTypes.number
+  maxLength: PropTypes.number,
+  numMax: PropTypes.string,
+  numMin: PropTypes.string,
+  integerRequired: PropTypes.bool
 };
 
 export default InputBox;
