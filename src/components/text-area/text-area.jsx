@@ -12,25 +12,31 @@ const TextArea = (props) => {
     onChange,
     errorText,
     helperText,
-    dataTestId
+    dataTestId,
+    maxLength
   } = props;
   const [isFocused, setIsFocused] = useState(false);
   const isActive = value || isFocused;
-
   const helperVisible = !!(helperText || errorText);
   const hasValue = !!value;
 
   const wrapperProps = {
     hasError: !!errorText,
     hasValue,
-    helperVisible,
     helperText: errorText || helperText
+  };
+
+  const _onChange = (value) => {
+    if(maxLength)
+      return onChange(value.substring(0, maxLength));
+    else
+      onChange(value);
   };
 
   const inputProps = {
     id,
     disabled,
-    onChange: (event) => onChange(event.target.value),
+    onChange: (event) => _onChange(event.target.value),
     value,
     onFocus: () => setIsFocused(true),
     onBlur: () => setIsFocused(false),
@@ -64,7 +70,8 @@ TextArea.propTypes = {
   errorText: PropTypes.string,
   helperText: PropTypes.string,
   dataTestId: PropTypes.string,
-  isRequired: PropTypes.bool
+  isRequired: PropTypes.bool,
+  maxLength: PropTypes.number
 };
 
 export default TextArea;

@@ -24,8 +24,8 @@ const SelectInput = (props) => {
   const wrapperProps = {
     hasError: !!props.errorText,
     hasValue,
-    helperVisible,
-    onClick: () => !props.disabled && setShowFlyout(true)
+    onClick: () => !props.disabled && setShowFlyout(true),
+    id: `${props.id}-wrapper`
   };
 
   const inputProps = {

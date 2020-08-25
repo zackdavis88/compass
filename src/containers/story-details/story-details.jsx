@@ -10,9 +10,10 @@ import {
   StoryDetailsBlock,
   SideItem
 } from "./story-details.styles";
-import {PageError} from "../../common-styles/base";
+import {PageError, PriorityLabel} from "../../common-styles/base";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {getStory, deleteStory, updateStory} from "../../store/actions/story";
+import {getAllPriorityNames} from "../../store/actions/priority";
 import {showNotification} from "../../store/actions/notification";
 import {getMemberNames} from "../../store/actions/membership";
 import PageHeader from "../../components/page-header/page-header";
@@ -34,7 +35,8 @@ const StoryDetails = (props) => {
     updateStory,
     getMemberNames,
     historyPush,
-    showNotification
+    showNotification,
+    getAllPriorityNames
   } = props;
   const [pageError, setPageError] = useState(undefined);
   const [storyData, setStoryData] = useState(undefined);
@@ -113,12 +115,28 @@ const StoryDetails = (props) => {
                         <a href={`/projects/${story.project.id}`} onClick={(e) => {e.preventDefault(); _goToProjectDetails();}}>{story.project.name}</a>
                       </SideItem>
                       <SideItem>
-                        <span>Created By</span>
-                        {story.creator ? story.creator.displayName : <div style={{fontStyle: "italic"}}>Creator Not Found</div>}
+                        <span>Priority</span>
+                        {story.priority ? (
+                          <PriorityLabel color={story.priority.color}>{story.priority.name}</PriorityLabel>
+                        ) : (
+                          <div style={{fontStyle: "italic"}}>None</div>
+                        )}
+                      </SideItem>
+                      <SideItem>
+                        <span>Points</span>
+                        {story.points ? (
+                          story.points
+                        ) : (
+                          <div style={{fontStyle: "italic"}}>None</div>
+                        )}
                       </SideItem>
                       <SideItem>
                         <span>Assigned To</span>
                         {story.owner ? story.owner.displayName : <div style={{fontStyle: "italic"}}>Not Assigned</div>}
+                      </SideItem>
+                      <SideItem>
+                        <span>Created By</span>
+                        {story.creator ? story.creator.displayName : <div style={{fontStyle: "italic"}}>Creator Not Found</div>}
                       </SideItem>
                       <SideItem>
                         <span>Create Date</span>
@@ -143,6 +161,7 @@ const StoryDetails = (props) => {
           onSubmit={updateStory}
           requestInProgress={storyIsLoading}
           getMemberNames={getMemberNames}
+          getPriorityNames={getAllPriorityNames}
           project={story.project}
           story={story}
           refresh={_loadData}
@@ -176,7 +195,8 @@ StoryDetails.propTypes = {
   updateStory: PropTypes.func.isRequired,
   historyPush: PropTypes.func.isRequired,
   getMemberNames: PropTypes.func.isRequired,
-  showNotification: PropTypes.func.isRequired
+  showNotification: PropTypes.func.isRequired,
+  getAllPriorityNames: PropTypes.func.isRequired
 };
 
 export default connect(state => ({
@@ -187,5 +207,6 @@ export default connect(state => ({
   updateStory,
   historyPush: push,
   getMemberNames,
-  showNotification
+  showNotification,
+  getAllPriorityNames
 })(StoryDetails);

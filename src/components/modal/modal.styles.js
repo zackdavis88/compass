@@ -30,7 +30,7 @@ export const ModalWrapper = styled.div`
 export const ModalBox = styled.div`
   box-sizing: border-box;
   color: ${black};
-  position: fixed;
+  position: relative;
   z-index: 7001;
   width: 700px;
   min-width: 200px;
@@ -88,24 +88,23 @@ export const CloseButton = styled.div`
   }
 `;
 
-//TODO: Work more on modal styling. it looks/behaves just fine on my big monitors but that doesnt
-//      scale well when used on a smaller monitor like my laptop.
 export const ModalBody = styled.div`
   width: 100%;
   padding: 15px;
-  max-height: 500px;
+  height: auto;
+  max-height: 40em;
   overflow-y: auto;
 
   & ${InputBoxWrapper} {
-    margin-bottom: 25px;
+    margin-bottom: 15px;
   }
 
   & ${SelectInputWrapper} {
-    margin-bottom: 25px;
+    margin-bottom: 15px;
   }
 
   & ${TextAreaWrapper} {
-    margin-bottom: 25px;
+    margin-bottom: 15px;
   }
 `;
 

@@ -4,7 +4,8 @@ import {
   getPriorities,
   createPriority,
   updatePriority,
-  deletePriority
+  deletePriority,
+  getAllPriorityNames
 } from "../../actions/priority";
 import {mockStore} from "../../../test-utils";
 import {waitFor} from "@testing-library/react";
@@ -87,6 +88,14 @@ describe("Priority Reducer / Actions", () => {
 
   it("should dispatch a redux API call to get a priority", async () => {
     store.dispatch(getPriority("testProjectId", "testPriorityId"));
+    await waitFor(() => expect(store.getActions()).toHaveLength(2));
+    expect(store.getActions()[0].type).toBe("PRIORITY_REQUEST_START");
+    const expectedTypes = ["PRIORITY_REQUEST_SUCCESS", "PRIORITY_REQUEST_FAILURE"];
+    expect(expectedTypes.indexOf(store.getActions()[1].type)).toBeTruthy();
+  });
+
+  it("should dispatch a redux API call to get all priority names", async () => {
+    store.dispatch(getAllPriorityNames({id: "testProjectId"}));
     await waitFor(() => expect(store.getActions()).toHaveLength(2));
     expect(store.getActions()[0].type).toBe("PRIORITY_REQUEST_START");
     const expectedTypes = ["PRIORITY_REQUEST_SUCCESS", "PRIORITY_REQUEST_FAILURE"];

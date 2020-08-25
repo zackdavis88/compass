@@ -19,6 +19,7 @@ const FormWrapper = styled.div`
   padding-top: 20px;
   padding-bottom: 20px;
   min-width: 500px;
+  text-align: center;
 `;
 
 const FormSection = styled.div`

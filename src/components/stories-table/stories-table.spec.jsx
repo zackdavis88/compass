@@ -17,6 +17,10 @@ describe("<StoriesTable />", () => {
           id: "testProject1",
           name: "Test Project 1"
         },
+        priority: {
+          name: "Test Priority",
+          color: "#000000"
+        },
         createdOn: "2020-08-13T17:59:52.639Z"
       }, {
         id: "testStory2",
@@ -64,7 +68,23 @@ describe("<StoriesTable />", () => {
     expect(getByText("Name")).toBeDefined();
     expect(getByText("Project")).toBeDefined();
     expect(getByText("Owner")).toBeDefined();
-    expect(getByText("Creator")).toBeDefined();
+    expect(getByText("Priority")).toBeDefined();
+    expect(getByText("Created On")).toBeDefined();
+    expect(getByText("Actions")).toBeDefined();
+  });
+
+  it("should not render the project header if props.project is present", () => {
+    props.project = {
+      id: "testProjectId",
+      name: "Test Project"
+    };
+    const {getByTestId, getByText} = render(<StoriesTable {...props}/>);
+    expect(getByTestId("storiesTable")).toBeDefined();
+    expect(getByTestId("storiesTable.table")).toBeDefined();
+    expect(getByTestId("storiesTable.tableHead")).toBeDefined();
+    expect(getByText("Name")).toBeDefined();
+    expect(getByText("Owner")).toBeDefined();
+    expect(getByText("Priority")).toBeDefined();
     expect(getByText("Created On")).toBeDefined();
     expect(getByText("Actions")).toBeDefined();
   });
@@ -76,13 +96,14 @@ describe("<StoriesTable />", () => {
     expect(getByText("Test Story 1")).toBeDefined();
     expect(getByText("Test Project 1")).toBeDefined();;
     expect(getByText("Not Assigned")).toBeDefined();
-    expect(getAllByText("testUser1")).toHaveLength(2);
+    expect(getByText("Test Priority")).toBeDefined();
     expect(getByText("Aug 13, 2020")).toBeDefined();
 
     // Row 2 should be-
     expect(getByText("Test Story 2")).toBeDefined();
     expect(getByText("Test Project 5")).toBeDefined();
     expect(getByText("testUser344")).toBeDefined();
+    expect(getByText("No Priority")).toBeDefined();
     expect(getByText("Jan 13, 2019")).toBeDefined();
   });
 

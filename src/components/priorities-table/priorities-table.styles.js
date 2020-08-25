@@ -1,9 +1,8 @@
-import styled, {css} from "styled-components";
+import styled from "styled-components";
 import {TableWrapper} from "../table/table.styles";
 import {PaginationWrapper} from "../pagination/pagination.styles";
 import {ButtonWrapper} from "../button/button.styles";
-import {white, black1a, tertiaryBlue26} from "../../common-styles/variables";
-import {PriorityLabel} from "../../common-styles/base";
+import {white, tertiaryBlue26} from "../../common-styles/variables";
 
 export const PrioritiesTableWrapper = styled.div`
   position: relative;
@@ -17,10 +16,6 @@ export const PrioritiesTableWrapper = styled.div`
   & ${PaginationWrapper} {
     position: relative;
     margin-top: 25px;
-  }
-
-  & ${PriorityLabel} {
-    display: inline-block;
   }
 
   & #priorityInfoMessage {

@@ -14,7 +14,7 @@ import {
 import {getProject, updateProject, deleteProject} from "../../store/actions/project";
 import {getMemberships, deleteMembership, updateMembership, createMembership, getAvailableUsers, getMemberNames} from "../../store/actions/membership";
 import {getStories, deleteStory, createStory} from "../../store/actions/story";
-import {getPriorities, createPriority, deletePriority, updatePriority} from "../../store/actions/priority";
+import {getPriorities, createPriority, deletePriority, updatePriority, getAllPriorityNames} from "../../store/actions/priority";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Tabs from "../../components/tabs/tabs";
 import {PageError} from "../../common-styles/base";
@@ -60,7 +60,8 @@ const ProjectDetails = (props) => {
     getMemberNames,
     createPriority,
     deletePriority,
-    updatePriority
+    updatePriority,
+    getAllPriorityNames
   } = props;
   const query = generateObjectFromSearch(props.location.search);
   const projectId = props.match.params.projectId;
@@ -432,6 +433,7 @@ const ProjectDetails = (props) => {
                       deletePriority: async(priority) => {
                         await deletePriority({...priority, project});
                         _reloadPriorities();
+                        _reloadStories();
                       },
                       editPriority: (priority) => setEditPriorityData(priority)
                     }}
@@ -535,6 +537,7 @@ const ProjectDetails = (props) => {
             onSubmit={createStory}
             requestInProgress={storyIsLoading}
             getMemberNames={getMemberNames}
+            getPriorityNames={getAllPriorityNames}
             project={project}
             refresh={_reloadStories}
           />
@@ -584,7 +587,8 @@ ProjectDetails.propTypes = {
   getPriorities: PropTypes.func.isRequired,
   createPriority: PropTypes.func.isRequired,
   deletePriority: PropTypes.func.isRequired,
-  updatePriority: PropTypes.func.isRequired
+  updatePriority: PropTypes.func.isRequired,
+  getAllPriorityNames: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
@@ -610,5 +614,6 @@ export default connect((state) => ({
   getPriorities,
   createPriority,
   deletePriority,
-  updatePriority
+  updatePriority,
+  getAllPriorityNames
 })(ProjectDetails);

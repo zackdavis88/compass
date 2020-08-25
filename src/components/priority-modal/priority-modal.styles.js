@@ -39,6 +39,5 @@ export const PreviewSection = styled.div`
 
   & ${PriorityLabel} {
     margin-left: 10px;
-    display: inline-block;
   }
 `;

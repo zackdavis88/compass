@@ -110,4 +110,56 @@ describe("<InputBox />", () => {
     });
     expect(inputProps.onChange).toHaveBeenCalledWith("some text ");
   });
+
+  // Testing some functionality changes that are specific to input type=number
+  it("should call onChange with the number input value", () => {
+    const testValue = "1.5";
+    inputProps.type = "number";
+    const {getByTestId} = render(<InputBox {...inputProps} />);
+    fireEvent.change(getByTestId("testInputBox.input"), {
+      target: {
+        value: testValue
+      }
+    });
+    expect(inputProps.onChange).toHaveBeenCalledWith(testValue);
+  });
+
+  it("should parse the value as integer if props.integerRequired is true", () => {
+    const testValue = "8.7";
+    inputProps.type = "number";
+    inputProps.integerRequired = true;
+    const {getByTestId} = render(<InputBox {...inputProps} />);
+    fireEvent.change(getByTestId("testInputBox.input"), {
+      target: {
+        value: testValue
+      }
+    });
+    expect(inputProps.onChange).toHaveBeenCalledWith(parseInt(testValue));
+  });
+
+  it("should set the value to props.numMin if the value is lower", () => {
+    const testValue = "87.5"
+    inputProps.type = "number";
+    inputProps.numMin = "98.8"
+    const {getByTestId} = render(<InputBox {...inputProps}/>);
+    fireEvent.change(getByTestId("testInputBox.input"), {
+      target: {
+        value: testValue
+      }
+    });
+    expect(inputProps.onChange).toHaveBeenCalledWith(inputProps.numMin);
+  });
+
+  it("should set the value to props.numMax if the value is higher", () => {
+    const testValue = "87.5"
+    inputProps.type = "number";
+    inputProps.numMax = "5"
+    const {getByTestId} = render(<InputBox {...inputProps}/>);
+    fireEvent.change(getByTestId("testInputBox.input"), {
+      target: {
+        value: testValue
+      }
+    });
+    expect(inputProps.onChange).toHaveBeenCalledWith(inputProps.numMax);
+  });
 });

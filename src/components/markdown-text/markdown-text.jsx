@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 const MarkdownText = ({dataTestId, sourceData}) => {
   return (
     <MarkdownTextWrapper data-testid={dataTestId}>
-      <ReactMarkdown source={sourceData} />
+      <ReactMarkdown source={sourceData} escapeHtml={false} />
     </MarkdownTextWrapper>
   );
 };

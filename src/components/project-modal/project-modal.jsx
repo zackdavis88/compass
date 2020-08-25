@@ -5,6 +5,7 @@ import InputBox from "../input-box/input-box";
 import RadioGroup from "../radio-group/radio-group";
 import { faFolderPlus } from "@fortawesome/free-solid-svg-icons";
 import TextArea from "../text-area/text-area";
+import {ProjectModalWrapper} from "./project-modal.styles";
 
 const ProjectModal = (props) => {
   const isEdit = !!props.project;
@@ -96,8 +97,10 @@ const ProjectModal = (props) => {
       label: "Description",
       placeholder: "Enter a desciption",
       errorText: state.descriptionError,
+      helperText: `Characters Remaining: ${350 - state.description.length}`,
       value: state.description,
-      onChange: (value) => setState({...state, description: value, descriptionError: undefined})
+      onChange: (value) => setState({...state, description: value, descriptionError: undefined}),
+      maxLength: 350
     },
     isPrivate: {
       id: "is-private-input",
@@ -117,11 +120,13 @@ const ProjectModal = (props) => {
   };
 
   return (
-    <Modal {...modalProps}>
-      <InputBox {...inputProps.name} />
-      <TextArea {...inputProps.description} />
-      <RadioGroup {...inputProps.isPrivate} />
-    </Modal>
+    <ProjectModalWrapper>
+      <Modal {...modalProps}>
+        <InputBox {...inputProps.name} />
+        <RadioGroup {...inputProps.isPrivate} />
+        <TextArea {...inputProps.description} />
+      </Modal>
+    </ProjectModalWrapper>
   );
 };
 

@@ -118,11 +118,11 @@ export const StoryDetailsBlock = styled.div`
 export const SideItem = styled.div`
   position: relative;
   width: 100%;
-  height: 20%;
   overflow-x: hidden;
   overflow-y: auto;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin-bottom: 1.1em;
 
   & span{
     user-select: none;

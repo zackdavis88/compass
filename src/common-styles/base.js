@@ -54,4 +54,5 @@ export const PriorityLabel = styled.div.attrs(({color}) => ({
   background-color: ${transparent};
   padding: 0 10px;
   border-radius: 5px;
+  display: inline-block;
 `;

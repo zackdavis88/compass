@@ -7,6 +7,7 @@ import {showNotification} from "../../store/actions/notification";
 import {createProject, deleteProject} from "../../store/actions/project";
 import {createStory} from "../../store/actions/story";
 import {getAvailableUsers, createMembership, getMemberNames} from "../../store/actions/membership";
+import {getAllPriorityNames} from "../../store/actions/priority";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
@@ -39,7 +40,8 @@ const Dashboard = (props) => {
     getAvailableUsers,
     createMembership,
     getMemberNames,
-    createStory
+    createStory,
+    getAllPriorityNames
   } = props;
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [deleteProjectData, setDeleteProject] = useState({});
@@ -305,6 +307,7 @@ const Dashboard = (props) => {
               requestInProgress={storyRequestInProgress}
               showNotification={showNotification}
               getMemberNames={getMemberNames}
+              getPriorityNames={getAllPriorityNames}
               project={newStoryData.project}
               refresh={_refreshStories}
             />
@@ -329,7 +332,8 @@ Dashboard.propTypes = {
   getAvailableUsers: PropTypes.func.isRequired,
   createMembership: PropTypes.func.isRequired,
   getMemberNames: PropTypes.func.isRequired,
-  createStory: PropTypes.func.isRequired
+  createStory: PropTypes.func.isRequired,
+  getAllPriorityNames: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
@@ -348,5 +352,6 @@ export default connect((state) => ({
   getMemberNames,
   createStory,
   getDashboardProjects,
-  getDashboardStories
+  getDashboardStories,
+  getAllPriorityNames
 })(Dashboard);
