@@ -530,14 +530,6 @@ describe("<ProjectDetails />", () => {
     expect(queryByTestId("projectStoriesSearch")).toBeDefined();
   });
 
-  it("should render the priorities info message under the priorities tab", async() => {
-    const {getByText} = render(<ProjectDetails {...props}/>, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(4));
-    const prioritiesTab = getByText("Priorities");
-    fireEvent.click(prioritiesTab);
-    expect(getByText("Priorities are project specific labels that can be attached to stories.")).toBeDefined();
-  });
-
   it("should render a default message if there are no priorities", async() => {
     const {getByText} = render(<ProjectDetails {...props}/>, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(4));
@@ -565,25 +557,6 @@ describe("<ProjectDetails />", () => {
     const prioritiesTab = getByText("Priorities");
     fireEvent.click(prioritiesTab);
     expect(getByTestId("prioritiesTable")).toBeDefined();
-  });
-
-  it("should render the 'Add Priority' button", async() => {
-    const {getByText, getByTestId} = render(<ProjectDetails {...props}/>, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(4));
-    const prioritiesTab = getByText("Priorities");
-    fireEvent.click(prioritiesTab);
-    expect(getByTestId("addPriorityButton")).toBeDefined();
-  });
-
-  it("should render the priority modal if 'Add Priority' is clicked", async() => {
-    const {getByText, getByTestId, queryByTestId} = render(<ProjectDetails {...props}/>, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(4));
-    const prioritiesTab = getByText("Priorities");
-    fireEvent.click(prioritiesTab);
-    const addButton = getByTestId("addPriorityButton");
-    expect(queryByTestId("priorityModal.wrapper")).toBeNull();
-    fireEvent.click(addButton);
-    expect(queryByTestId("priorityModal.wrapper")).toBeDefined();
   });
 
   it("should render the priority modal if 'Edit Priority' is clicked", async() => {
