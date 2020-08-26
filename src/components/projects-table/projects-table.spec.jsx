@@ -26,10 +26,10 @@ describe("<ProjectsTable />", () => {
         createdOn: "2020-07-14T17:59:52.639Z"
       }],
       actions: {
-        deleteProject: jest.fn(),
         addMember: jest.fn(),
         addStory: jest.fn(),
-        viewProject: jest.fn()
+        viewProject: jest.fn(),
+        viewProjectConfigs: jest.fn()
       },
       pagination: {
         page: 1,
@@ -84,32 +84,32 @@ describe("<ProjectsTable />", () => {
 
   it("should render the action buttons for each row", () => {
     const {getAllByTestId} = render(<ProjectsTable {...props} />);
-    expect(getAllByTestId("action.deleteProject")).toHaveLength(2);
     expect(getAllByTestId("action.addStory")).toHaveLength(2);
     expect(getAllByTestId("action.addMember")).toHaveLength(2);
+    expect(getAllByTestId("action.viewProjectConfigs")).toHaveLength(2);
     expect(getAllByTestId("action.viewProject")).toHaveLength(2);
   });
 
   it("should not call an action method if clicked with insufficient permissions", () => {
     const {getAllByTestId} = render(<ProjectsTable {...props} />);
-    const deleteAction = getAllByTestId("action.deleteProject")[1];
-    fireEvent.click(deleteAction);
-    expect(props.actions.deleteProject).not.toHaveBeenCalled();
+    const addMember = getAllByTestId("action.addMember")[1];
+    fireEvent.click(addMember);
+    expect(props.actions.addMember).not.toHaveBeenCalled();
   });
 
   it("should call an action method if clicked with sufficient permissions", () => {
     const {getAllByTestId} = render(<ProjectsTable {...props} />);
-    const deleteAction = getAllByTestId("action.deleteProject")[0];
-    fireEvent.click(deleteAction);
-    expect(props.actions.deleteProject).toHaveBeenCalledWith(props.projects[0]);
+    const addMember = getAllByTestId("action.addMember")[0];
+    fireEvent.click(addMember);
+    expect(props.actions.addMember).toHaveBeenCalledWith(props.projects[0], true);
   });
 
   it("should render the action tooltips if they are allowed", () => {
     const {getAllByText} = render(<ProjectsTable {...props}/>);
-    expect(getAllByText("Delete Project")).toHaveLength(1);
     expect(getAllByText("Add Story")).toHaveLength(2);
     expect(getAllByText("Add Member")).toHaveLength(1);
     expect(getAllByText("View Project")).toHaveLength(2);
+    expect(getAllByText("Manage Configs")).toHaveLength(2);
   });
 
   it("should render the pagination component", () => {
