@@ -106,3 +106,15 @@ export const calcTextColor = (backgroundColor) => {
   else
     return "#FFFFFF";
 };
+
+export const updateQueryString = (key, value) => {
+  const newUrl = generateUrlWithQuery(key, value);
+  history.replaceState({path: newUrl}, "", newUrl);
+};
+
+export const onHeaderClick = (headerIndex) => {
+  if(headerIndex === 0)
+    return updateQueryString("activeTab", null);
+  
+  updateQueryString("activeTab", headerIndex);
+};

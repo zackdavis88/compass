@@ -29,7 +29,7 @@ import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
 import StoriesTable from "../../components/stories-table/stories-table";
 import StoryModal from "../../components/story-modal/story-modal";
-import {generateUrlWithQuery, generateObjectFromSearch, formatDate, setTitle} from "../../utils";
+import {updateQueryString, generateObjectFromSearch, formatDate, setTitle, onHeaderClick} from "../../utils";
 import SearchBar from "../../components/search-bar/search-bar";
 import MarkdownText from "../../components/markdown-text/markdown-text";
 
@@ -95,10 +95,10 @@ const ProjectDetails = (props) => {
 
     // If the initial query-string had values that changed (page > totalPages), update the query-string.
     if(query.membersPage && membershipResponse && membershipResponse.page.toString() !== query.membersPage)
-      _updateQueryString("membersPage", membershipResponse.page);
+      updateQueryString("membersPage", membershipResponse.page);
     
     if(query.storiesPage && storiesResponse && storiesResponse.page.toString() !== query.storiesPage)
-      _updateQueryString("storiesPage", storiesResponse.page);
+      updateQueryString("storiesPage", storiesResponse.page);
 
     setProjectData(projectResponse);
     setMembershipsData(membershipResponse);
@@ -139,11 +139,6 @@ const ProjectDetails = (props) => {
     _loadData();
   }, []);
 
-  const _updateQueryString = (key, value) => {
-    const newUrl = generateUrlWithQuery(key, value);
-    history.replaceState({path: newUrl}, "", newUrl);
-  }
-
   // Props that will be utilized in the membership tab's Pagination component.
   const membershipsPagination = {
     itemsPerPage: membershipsData && membershipsData.itemsPerPage,
@@ -152,7 +147,7 @@ const ProjectDetails = (props) => {
     getPage: async(page) => {
       if(page === membershipsData.page)
         return;
-      _updateQueryString("membersPage", page);
+      updateQueryString("membersPage", page);
       const response = await getMemberships(projectId, page, membershipsData.itemsPerPage, memberSearchData.searchedValue);
       if(response.error)
         return setPageError(response.error);
@@ -168,7 +163,7 @@ const ProjectDetails = (props) => {
     getPage: async(page) => {
       if(page === storiesData.page)
         return;
-      _updateQueryString("storiesPage", page);
+      updateQueryString("storiesPage", page);
       const response = await getStories(projectId, page, storiesData.itemsPerPage, storySearchData.searchedValue);
       if(response.error)
         return setPageError(response.error);
@@ -219,26 +214,26 @@ const ProjectDetails = (props) => {
       inputValue: value
     }),
     search: async(value) => {
-      _updateQueryString("memberSearch", value ? value : null);
+      updateQueryString("memberSearch", value ? value : null);
       setMemberSearchData({
         ...memberSearchData,
         searchedValue: value
       });
       const {itemsPerPage} = membershipsData;
       const membershipsResponse = await getMemberships(projectId, 1, itemsPerPage, value);
-      _updateQueryString("membersPage", 1);
+      updateQueryString("membersPage", 1);
       if(!membershipsResponse.error)
         setMembershipsData(membershipsResponse);
     },
     clear: async() => {
-      _updateQueryString("memberSearch", null);
+      updateQueryString("memberSearch", null);
       setMemberSearchData({
         inputValue: "",
         searchedValue: ""
       });
       const {itemsPerPage} = membershipsData;
       const membershipsResponse = await getMemberships(projectId, 1, itemsPerPage);
-      _updateQueryString("membersPage", 1);
+      updateQueryString("membersPage", 1);
       if(!membershipsResponse.error)
         setMembershipsData(membershipsResponse);
     }
@@ -256,36 +251,29 @@ const ProjectDetails = (props) => {
       inputValue: value
     }),
     search: async(value) => {
-      _updateQueryString("storySearch", value ? value : null);
+      updateQueryString("storySearch", value ? value : null);
       setStorySearchData({
         ...storySearchData,
         searchedValue: value
       });
       const {itemsPerPage} = storiesData;
       const storiesResponse = await getStories(projectId, 1, itemsPerPage, value);
-      _updateQueryString("storiesPage", 1);
+      updateQueryString("storiesPage", 1);
       if(!storiesResponse.error)
         setStoriesData(storiesResponse);
     },
     clear: async() => {
-      _updateQueryString("storySearch", null);
+      updateQueryString("storySearch", null);
       setStorySearchData({
         inputValue: "",
         searchedValue: ""
       });
       const {itemsPerPage} = storiesData;
       const storiesResponse = await getStories(projectId, 1, itemsPerPage);
-      _updateQueryString("storiesPage", 1);
+      updateQueryString("storiesPage", 1);
       if(!storiesResponse.error)
         setStoriesData(storiesResponse);
     }
-  };
-
-  const _onHeaderClick = (headerIndex) => {
-    if(headerIndex === 0)
-      return _updateQueryString("activeTab", null);
-    
-    _updateQueryString("activeTab", headerIndex);
   };
 
   return (
@@ -302,7 +290,7 @@ const ProjectDetails = (props) => {
             {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper) && (
               <ActionsMenu {...actionsMenuProps} />
             )}
-            <Tabs dataTestId="projectDetailsTabs" tabOverride={query.activeTab} onHeaderClick={_onHeaderClick}>
+            <Tabs dataTestId="projectDetailsTabs" tabOverride={query.activeTab} onHeaderClick={onHeaderClick}>
               <Tabs.TabHeaders>
                 <Tabs.Header>Details</Tabs.Header>
                 <Tabs.Header>Members</Tabs.Header>
