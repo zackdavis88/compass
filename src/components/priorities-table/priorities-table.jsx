@@ -62,20 +62,6 @@ const PrioritiesTable = ({priorities, userRoles, actions, pagination}) => {
 
   return (
     <PrioritiesTableWrapper isEmpty={isEmpty}>
-      {/* <div id="priorityInfoMessage">
-        <FontAwesomeIcon icon={faInfoCircle} fixedWidth />
-        Priorities are project specific labels that can be attached to stories.
-        {actionAllowed && (
-          <Button 
-            onClick={actions.createPriority}
-            label="Add Priority"
-            primary
-            small
-            startIcon={faPlus}
-            dataTestId="addPriorityButton"
-          />
-        )}
-      </div> */}
       {!isEmpty ? (
         <Fragment>
           <Table {...tableProps} />
