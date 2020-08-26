@@ -168,15 +168,6 @@ describe("<Dashboard />", () => {
     expect(getByTestId("projectsTable")).toBeDefined();
   });
 
-  it("should render the DeleteModal if the delete project action is clicked", async() => {
-    const {getAllByTestId, queryByTestId} = render(<Dashboard {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    const deleteButton = getAllByTestId("action.deleteProject")[0];
-    expect(queryByTestId("projectDeleteModal.wrapper")).toBeNull();
-    fireEvent.click(deleteButton);
-    expect(queryByTestId("projectDeleteModal.wrapper")).toBeDefined();
-  });
-
   it("should render the MembershipModal if the add member action is clicked", async() => {
     const {getAllByTestId, queryByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
@@ -210,6 +201,20 @@ describe("<Dashboard />", () => {
       payload: {
         method: "push",
         args: [`/projects/${projectsResponse.projects[0].id}`]
+      }
+    });
+  });
+
+  it("should call the push redux action when the manage configs action is clicked", async() => {
+    const {getAllByTestId} = render(<Dashboard {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    const configsButton = getAllByTestId("action.viewProjectConfigs")[0];
+    fireEvent.click(configsButton);
+    expect(store.dispatch).toHaveBeenLastCalledWith({
+      type: "@@router/CALL_HISTORY_METHOD",
+      payload: {
+        method: "push",
+        args: [`/projects/${projectsResponse.projects[0].id}/configs`]
       }
     });
   });

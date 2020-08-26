@@ -101,10 +101,10 @@ const Dashboard = (props) => {
   const projectsTableProps = {
     projects,
     actions: {
-      deleteProject: (project) => setDeleteProject(project),
       addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
       viewProject: (project) => historyPush(`/projects/${project.id}`),
-      addStory: (project) => setNewStoryData({project})
+      addStory: (project) => setNewStoryData({project}),
+      viewProjectConfigs: (project) => historyPush(`/projects/${project.id}/configs`)
     },
     pagination: {
       itemsPerPage: projectsData && projectsData.itemsPerPage,
