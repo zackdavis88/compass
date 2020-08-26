@@ -165,7 +165,7 @@ describe("<Dashboard />", () => {
   it("should render the projects table if there are projects to display", async() => {
     const {getByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(getByTestId("dashboardProjects")).toBeDefined();
+    expect(getByTestId("projectsTable")).toBeDefined();
   });
 
   it("should render the DeleteModal if the delete project action is clicked", async() => {

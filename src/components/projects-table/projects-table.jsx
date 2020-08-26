@@ -7,10 +7,10 @@ import {faArrowRight, faTrash, faBook, faUserPlus} from "@fortawesome/free-solid
 import Tooltip from "../tooltip/tooltip";
 import {formatDate, getPermissionLevel} from "../../utils";
 import {ActionsWrapper, Action, LinkAction, PaginationSection} from "../table/table.styles";
-import {DashboardProjectsTableWrapper} from "./dashboard-projects-table.styles";
+import {ProjectsTableWrapper} from "./projects-table.styles";
 import Pagination from "../pagination/pagination";
 
-const DashboardProjectsTable = ({projects, actions, pagination}) => {
+const ProjectsTable = ({projects, actions, pagination}) => {
   const isEmpty = projects.length === 0;
   const _renderActions = (row) => {
     const {deleteProject, addStory, addMember, viewProject} = actions;
@@ -46,7 +46,7 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
   };
 
   const tableProps = {
-    dataTestId: "dashboardProjects",
+    dataTestId: "projectsTable",
     headers: [{
       label: "Name",
       keyName: "name",
@@ -76,7 +76,7 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
   };
 
   const paginationProps = {
-    dataTestId: "dashboardProjectsPagination",
+    dataTestId: "projectsPagination",
     itemsPerPage: pagination && pagination.itemsPerPage,
     page: pagination && pagination.page,
     totalPages: pagination && pagination.totalPages,
@@ -84,7 +84,7 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
   };
 
   return (
-    <DashboardProjectsTableWrapper isEmpty={isEmpty}>
+    <ProjectsTableWrapper isEmpty={isEmpty}>
       {!isEmpty ? (
         <Fragment>
           <Table {...tableProps} />
@@ -97,11 +97,11 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
       ) : (
         <div>There are no projects to display</div>
       )}
-    </DashboardProjectsTableWrapper>
+    </ProjectsTableWrapper>
   );
 };
 
-DashboardProjectsTable.propTypes = {
+ProjectsTable.propTypes = {
   projects: PropTypes.array.isRequired,
   actions: PropTypes.shape({
     deleteProject: PropTypes.func.isRequired,
@@ -117,4 +117,4 @@ DashboardProjectsTable.propTypes = {
   })
 };
 
-export default DashboardProjectsTable;
+export default ProjectsTable;

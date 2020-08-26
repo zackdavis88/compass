@@ -3,7 +3,7 @@ import {TableWrapper} from "../table/table.styles";
 import {PaginationWrapper} from "../pagination/pagination.styles";
 import {white, black1a} from "../../common-styles/variables";
 
-export const DashboardProjectsTableWrapper = styled.div`
+export const ProjectsTableWrapper = styled.div`
   position: relative;
   height: 775px;
   background-color: ${black1a};

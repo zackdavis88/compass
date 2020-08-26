@@ -11,7 +11,7 @@ import {getAllPriorityNames} from "../../store/actions/priority";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
-import ProjectsTable from "../../components/dashboard-projects-table/dashboard-projects-table";
+import ProjectsTable from "../../components/projects-table/projects-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import {push} from "connected-react-router";
 import MembershipModal from "../../components/membership-modal/membership-modal";
