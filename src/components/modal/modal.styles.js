@@ -25,6 +25,7 @@ export const ModalWrapper = styled.div`
   background: ${black66};
   z-index: 7000;
   display: block;
+  overflow-y: auto;
 `;
 
 export const ModalBox = styled.div`
@@ -34,7 +35,6 @@ export const ModalBox = styled.div`
   z-index: 7001;
   width: 700px;
   min-width: 200px;
-  max-height: 60%;
   top: 20%;
   left: 50%;
   padding: 15px 15px;
