@@ -67,9 +67,14 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
         return  <div style={{fontStyle: "italic"}}>No Priority</div>
       }
     }, {
-      label: "Created On",
-      keyName: "createdOn",
-      format: (timestamp) => formatDate(timestamp)
+      label: "Points",
+      keyName: "points",
+      format: (points) => {
+        if(!points)
+          return <div style={{fontStyle: "italic"}}>None</div>
+        
+        return points;
+      }
     }, {
       label: "Actions",
       renderActions: _renderActions

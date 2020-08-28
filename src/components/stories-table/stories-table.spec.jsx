@@ -21,7 +21,8 @@ describe("<StoriesTable />", () => {
           name: "Test Priority",
           color: "#000000"
         },
-        createdOn: "2020-08-13T17:59:52.639Z"
+        createdOn: "2020-08-13T17:59:52.639Z",
+        points: 87
       }, {
         id: "testStory2",
         name: "Test Story 2",
@@ -69,7 +70,7 @@ describe("<StoriesTable />", () => {
     expect(getByText("Project")).toBeDefined();
     expect(getByText("Owner")).toBeDefined();
     expect(getByText("Priority")).toBeDefined();
-    expect(getByText("Created On")).toBeDefined();
+    expect(getByText("Points")).toBeDefined();
     expect(getByText("Actions")).toBeDefined();
   });
 
@@ -85,7 +86,7 @@ describe("<StoriesTable />", () => {
     expect(getByText("Name")).toBeDefined();
     expect(getByText("Owner")).toBeDefined();
     expect(getByText("Priority")).toBeDefined();
-    expect(getByText("Created On")).toBeDefined();
+    expect(getByText("Points")).toBeDefined();
     expect(getByText("Actions")).toBeDefined();
   });
 
@@ -97,14 +98,14 @@ describe("<StoriesTable />", () => {
     expect(getByText("Test Project 1")).toBeDefined();;
     expect(getByText("Not Assigned")).toBeDefined();
     expect(getByText("Test Priority")).toBeDefined();
-    expect(getByText("Aug 13, 2020")).toBeDefined();
+    expect(getByText("87")).toBeDefined();
 
     // Row 2 should be-
     expect(getByText("Test Story 2")).toBeDefined();
     expect(getByText("Test Project 5")).toBeDefined();
     expect(getByText("testUser344")).toBeDefined();
     expect(getByText("No Priority")).toBeDefined();
-    expect(getByText("Jan 13, 2019")).toBeDefined();
+    expect(getByText("None")).toBeDefined();
   });
 
   it("should render the action buttons for each row", () => {
