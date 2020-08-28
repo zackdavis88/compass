@@ -7,7 +7,7 @@
     "build": "webpack --env.environment=production --config webpack.config.js",
     "build-dev": "webpack --env.environment=development --config webpack.config.js",
     "start": "webpack-dev-server --env.environment=development --config webpack.config.js",
-    "test": "jest --verbose"
+    "test": "jest --watchAll --verbose"
   },
   "repository": {
     "type": "git",
