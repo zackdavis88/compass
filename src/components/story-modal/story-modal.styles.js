@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {SelectInputWrapper} from "../select-input/select-input.styles";
+import {TextAreaWrapper} from "../text-area/text-area.styles";
 
 export const StoryModalWrapper = styled.div`
   position: relative;
@@ -11,6 +11,12 @@ export const StoryModalWrapper = styled.div`
 
   & #priorityInput-wrapper {
     margin-bottom: 25px;
+  }
+
+  & ${TextAreaWrapper} {
+    & textarea {
+      height: 10em;
+    }
   }
 `;
 
