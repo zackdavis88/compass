@@ -76,6 +76,15 @@ const StoryDetails = (props) => {
   const _goToProjectDetails = () => {
     return historyPush(`/projects/${story.project.id}`);
   };
+
+  // When a User clicks a markdown checkbox, we need to update the database and also the component state.
+  const _updateMarkdownCheckbox = async(value) => {
+    const response = await props.updateStory(story.project, story, null, value);
+    if(response.error)
+      return setPageError(response.error);
+    
+    setStoryData({...storyData, story: {...storyData.story, details: value}});
+  };
   
   return (
     <StoryDetailsWrapper>
@@ -103,7 +112,7 @@ const StoryDetails = (props) => {
                       <StoryDetailsBlock>
                         <span>Full Details</span>
                         {story.details ? (
-                          <MarkdownText dataTestId="storyMarkdownText" sourceData={story.details} />
+                          <MarkdownText dataTestId="storyMarkdownText" sourceData={story.details} updateMarkdown={_updateMarkdownCheckbox} />
                         ) : (
                           <div>This story has no additional details.</div>
                         )}

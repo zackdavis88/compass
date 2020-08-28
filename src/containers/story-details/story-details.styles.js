@@ -8,6 +8,7 @@ import {
 } from "../../common-styles/variables";
 import {ActionsWrapper} from "../../components/actions-menu/actions-menu.styles";
 import {MarkdownTextWrapper} from "../../components/markdown-text/markdown-text.styles";
+import {CheckBoxSquare} from "../../components/check-box/check-box.styles";
 
 export const StoryDetailsWrapper = styled.div`
   position: relative;
@@ -92,6 +93,10 @@ export const StoryDetailsBlock = styled.div`
 
   & ${MarkdownTextWrapper} {
     font-style: normal;
+
+    & ${CheckBoxSquare} {
+      border: none;
+    }
   }
 
   & div {
