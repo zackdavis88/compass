@@ -309,4 +309,18 @@ describe("<StoryDetails />", () => {
     expect(getByText("Priority")).toBeDefined();
     expect(getByText("None")).toBeDefined();
   });
+
+  it("should call the updateStory redux action when a markdown checkbox is clicked", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({story: {...mockStoryResponse.story, details: "- [ ] A CheckBox"}});
+    const {getByTestId} = render(<StoryDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
+    let checkboxElement = getByTestId("markdownCheckbox.0.input");
+    expect(checkboxElement).not.toBeChecked();
+    store.dispatch.mockReturnValueOnce({});
+    fireEvent.click(checkboxElement);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    checkboxElement = getByTestId("markdownCheckbox.0.input"); // the Markdown library we use will rerender a brand new checkbox component...we have to requery for it.
+    expect(checkboxElement).toBeChecked();
+  });
 });
