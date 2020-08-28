@@ -14,14 +14,14 @@ import {
 import {getProject, updateProject, deleteProject} from "../../store/actions/project";
 import {getMemberships, deleteMembership, updateMembership, createMembership, getAvailableUsers, getMemberNames} from "../../store/actions/membership";
 import {getStories, deleteStory, createStory} from "../../store/actions/story";
-import {getPriorities, createPriority, deletePriority, updatePriority, getAllPriorityNames} from "../../store/actions/priority";
+import {getAllPriorityNames} from "../../store/actions/priority";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import Tabs from "../../components/tabs/tabs";
 import {PageError} from "../../common-styles/base";
 import MembershipsTable from "../../components/memberships-table/memberships-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import MembershipModal from "../../components/membership-modal/membership-modal";
-import { faTrash, faEdit, faUserTimes, faUserPlus, faBook } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faEdit, faUserTimes, faUserPlus, faBook, faCog } from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
 import {push} from "connected-react-router";
 import {showNotification} from "../../store/actions/notification";
@@ -29,11 +29,9 @@ import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
 import StoriesTable from "../../components/stories-table/stories-table";
 import StoryModal from "../../components/story-modal/story-modal";
-import {generateUrlWithQuery, generateObjectFromSearch, formatDate, setTitle} from "../../utils";
+import {updateQueryString, generateObjectFromSearch, formatDate, setTitle, onHeaderClick} from "../../utils";
 import SearchBar from "../../components/search-bar/search-bar";
 import MarkdownText from "../../components/markdown-text/markdown-text";
-import PrioritiesTable from "../../components/priorities-table/priorities-table";
-import PriorityModal from "../../components/priority-modal/priority-modal";
 
 const ProjectDetails = (props) => {
   setTitle("Project Details");
@@ -42,11 +40,9 @@ const ProjectDetails = (props) => {
     projectIsLoading,
     membershipIsLoading,
     storyIsLoading,
-    priorityIsLoading,
     getProject,
     getMemberships,
     getStories,
-    getPriorities,
     deleteMembership,
     updateMembership,
     updateProject,
@@ -58,9 +54,6 @@ const ProjectDetails = (props) => {
     deleteStory,
     createStory,
     getMemberNames,
-    createPriority,
-    deletePriority,
-    updatePriority,
     getAllPriorityNames
   } = props;
   const query = generateObjectFromSearch(props.location.search);
@@ -69,14 +62,11 @@ const ProjectDetails = (props) => {
   const [projectData, setProjectData] = useState(undefined);
   const [membershipsData, setMembershipsData] = useState(undefined);
   const [storiesData, setStoriesData] = useState(undefined);
-  const [prioritiesData, setPrioritiesData] = useState(undefined);
   const [deleteMembershipData, setDeleteMembershipData] = useState({});
   const [editMembershipData, setEditMembershipData] = useState({});
-  const [editPriorityData, setEditPriorityData] = useState({});
   const [showProjectEditModal, setShowProjectEditModal] = useState(false);
   const [showProjectDeleteModal, setShowProjectDeleteModal] = useState(false);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
-  const [showAddPriorityModal, setShowAddPriorityModal] = useState(false);
   const [deleteStoryData, setDeleteStoryData] = useState({});
   const [showStoryModal, setShowStoryModal] = useState(false);
   const [memberSearchData, setMemberSearchData] = useState({
@@ -93,7 +83,6 @@ const ProjectDetails = (props) => {
     const projectResponse = await getProject(projectId, true);
     const membershipResponse = await getMemberships(projectId, query.membersPage, null, query.memberSearch);
     const storiesResponse = await getStories(projectId, query.storiesPage, null, query.storySearch);
-    const prioritiesResponse = await getPriorities(projectId, query.prioritiesPage);
 
     if(projectResponse && projectResponse.error)
       return setPageError(projectResponse.error);
@@ -103,24 +92,17 @@ const ProjectDetails = (props) => {
 
     if(storiesResponse && storiesResponse.error)
       return setPageError(storiesResponse.error);
-    
-    if(prioritiesResponse && prioritiesResponse.error)
-      return setPageError(prioritiesResponse.error);
 
     // If the initial query-string had values that changed (page > totalPages), update the query-string.
     if(query.membersPage && membershipResponse && membershipResponse.page.toString() !== query.membersPage)
-      _updateQueryString("membersPage", membershipResponse.page);
+      updateQueryString("membersPage", membershipResponse.page);
     
     if(query.storiesPage && storiesResponse && storiesResponse.page.toString() !== query.storiesPage)
-      _updateQueryString("storiesPage", storiesResponse.page);
-
-    if(query.prioritiesPage && prioritiesResponse && prioritiesResponse.page.toString() !== query.prioritiesPage)
-      _updateQueryString("prioritiesPage", prioritiesResponse.page);
+      updateQueryString("storiesPage", storiesResponse.page);
 
     setProjectData(projectResponse);
     setMembershipsData(membershipResponse);
     setStoriesData(storiesResponse);
-    setPrioritiesData(prioritiesResponse);
   };
 
   // This is called when we delete or edit a membership.
@@ -143,15 +125,6 @@ const ProjectDetails = (props) => {
       setStoriesData(response);
     };
 
-    const _reloadPriorities = async() => {
-      const {itemsPerPage, page} = prioritiesData;
-      const response = await getPriorities(projectId, page, itemsPerPage);
-      if(response && response.error)
-        return setPageError(response.error);
-      
-      setPrioritiesData(response);
-    };
-
   // This is called when we edit project details.
   const _reloadDetails = async() => {
     const response = await getProject(projectId, true);
@@ -166,11 +139,6 @@ const ProjectDetails = (props) => {
     _loadData();
   }, []);
 
-  const _updateQueryString = (key, value) => {
-    const newUrl = generateUrlWithQuery(key, value);
-    history.replaceState({path: newUrl}, "", newUrl);
-  }
-
   // Props that will be utilized in the membership tab's Pagination component.
   const membershipsPagination = {
     itemsPerPage: membershipsData && membershipsData.itemsPerPage,
@@ -179,7 +147,7 @@ const ProjectDetails = (props) => {
     getPage: async(page) => {
       if(page === membershipsData.page)
         return;
-      _updateQueryString("membersPage", page);
+      updateQueryString("membersPage", page);
       const response = await getMemberships(projectId, page, membershipsData.itemsPerPage, memberSearchData.searchedValue);
       if(response.error)
         return setPageError(response.error);
@@ -195,28 +163,12 @@ const ProjectDetails = (props) => {
     getPage: async(page) => {
       if(page === storiesData.page)
         return;
-      _updateQueryString("storiesPage", page);
+      updateQueryString("storiesPage", page);
       const response = await getStories(projectId, page, storiesData.itemsPerPage, storySearchData.searchedValue);
       if(response.error)
         return setPageError(response.error);
       
       setStoriesData(response);
-    }
-  };
-
-  const prioritiesPagination = {
-    itemsPerPage: prioritiesData && prioritiesData.itemsPerPage,
-    page: prioritiesData && prioritiesData.page,
-    totalPages: prioritiesData && prioritiesData.totalPages,
-    getPage: async(page) => {
-      if(page === prioritiesData.page)
-        return;
-      _updateQueryString("prioritiesPage", page);
-      const response = await getPriorities(projectId, page, prioritiesData.itemsPerPage);
-      if(response.error)
-        return setPageError(response.error);
-      
-      setPrioritiesData(response);
     }
   };
   
@@ -225,11 +177,18 @@ const ProjectDetails = (props) => {
   const actionsMenuProps = {
     dataTestId: "projectDetailsActionsMenu",
     menuItems: [{
+      icon: faCog,
+      label: "Manage Configs",
+      onClick: () => historyPush(`/projects/${project.id}/configs`)
+    }]
+  };
+  if(userRoles && (userRoles.isManager || userRoles.isAdmin || userRoles.isDeveloper)) {
+    actionsMenuProps.menuItems = actionsMenuProps.menuItems.concat([{
       icon: faBook,
       label: "New Story",
       onClick: () => setShowStoryModal(true)
-    }]
-  };
+    }]);
+  }
   if(userRoles && (userRoles.isManager || userRoles.isAdmin)) {
     actionsMenuProps.menuItems = actionsMenuProps.menuItems.concat([{
       icon: faEdit,
@@ -262,26 +221,26 @@ const ProjectDetails = (props) => {
       inputValue: value
     }),
     search: async(value) => {
-      _updateQueryString("memberSearch", value ? value : null);
+      updateQueryString("memberSearch", value ? value : null);
       setMemberSearchData({
         ...memberSearchData,
         searchedValue: value
       });
       const {itemsPerPage} = membershipsData;
       const membershipsResponse = await getMemberships(projectId, 1, itemsPerPage, value);
-      _updateQueryString("membersPage", 1);
+      updateQueryString("membersPage", 1);
       if(!membershipsResponse.error)
         setMembershipsData(membershipsResponse);
     },
     clear: async() => {
-      _updateQueryString("memberSearch", null);
+      updateQueryString("memberSearch", null);
       setMemberSearchData({
         inputValue: "",
         searchedValue: ""
       });
       const {itemsPerPage} = membershipsData;
       const membershipsResponse = await getMemberships(projectId, 1, itemsPerPage);
-      _updateQueryString("membersPage", 1);
+      updateQueryString("membersPage", 1);
       if(!membershipsResponse.error)
         setMembershipsData(membershipsResponse);
     }
@@ -299,36 +258,29 @@ const ProjectDetails = (props) => {
       inputValue: value
     }),
     search: async(value) => {
-      _updateQueryString("storySearch", value ? value : null);
+      updateQueryString("storySearch", value ? value : null);
       setStorySearchData({
         ...storySearchData,
         searchedValue: value
       });
       const {itemsPerPage} = storiesData;
       const storiesResponse = await getStories(projectId, 1, itemsPerPage, value);
-      _updateQueryString("storiesPage", 1);
+      updateQueryString("storiesPage", 1);
       if(!storiesResponse.error)
         setStoriesData(storiesResponse);
     },
     clear: async() => {
-      _updateQueryString("storySearch", null);
+      updateQueryString("storySearch", null);
       setStorySearchData({
         inputValue: "",
         searchedValue: ""
       });
       const {itemsPerPage} = storiesData;
       const storiesResponse = await getStories(projectId, 1, itemsPerPage);
-      _updateQueryString("storiesPage", 1);
+      updateQueryString("storiesPage", 1);
       if(!storiesResponse.error)
         setStoriesData(storiesResponse);
     }
-  };
-
-  const _onHeaderClick = (headerIndex) => {
-    if(headerIndex === 0)
-      return _updateQueryString("activeTab", null);
-    
-    _updateQueryString("activeTab", headerIndex);
   };
 
   return (
@@ -336,21 +288,20 @@ const ProjectDetails = (props) => {
       {pageError ? (
           <PageError>{pageError}</PageError>
         ) : 
-        (!projectData || !membershipsData || !storiesData || !prioritiesData) ? (
+        (!projectData || !membershipsData || !storiesData) ? (
           <LoadingSpinner alignCenter dataTestId="projectDetailsLoader" message={`Loading project details`} />
         ) : 
         (
           <Fragment>
             <PageHeader text={`Project - ${project.name}`} dataTestId="projectDetailsHeader" textCenter/>
-            {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper) && (
+            {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper || userRoles.isViewer) && (
               <ActionsMenu {...actionsMenuProps} />
             )}
-            <Tabs dataTestId="projectDetailsTabs" tabOverride={query.activeTab} onHeaderClick={_onHeaderClick}>
+            <Tabs dataTestId="projectDetailsTabs" tabOverride={query.activeTab} onHeaderClick={onHeaderClick}>
               <Tabs.TabHeaders>
                 <Tabs.Header>Details</Tabs.Header>
                 <Tabs.Header>Members</Tabs.Header>
                 <Tabs.Header>Backlog</Tabs.Header>
-                <Tabs.Header>Priorities</Tabs.Header>
               </Tabs.TabHeaders>
               <Tabs.TabPanels>
                 <Tabs.Panel>
@@ -424,27 +375,11 @@ const ProjectDetails = (props) => {
                     pagination={storiesPagination}
                   />
                 </Tabs.Panel>
-                <Tabs.Panel>
-                  <PrioritiesTable 
-                    priorities={prioritiesData.priorities}
-                    userRoles={userRoles}
-                    actions={{
-                      createPriority: () => setShowAddPriorityModal(true),
-                      deletePriority: async(priority) => {
-                        await deletePriority({...priority, project});
-                        _reloadPriorities();
-                        _reloadStories();
-                      },
-                      editPriority: (priority) => setEditPriorityData(priority)
-                    }}
-                    pagination={prioritiesPagination}
-                  />
-                </Tabs.Panel>
               </Tabs.TabPanels>
             </Tabs>
           </Fragment>
         )}
-        {/* Modal City, pop: 9...freaking 9... */}
+        {/* Modal City, pop: 7 */}
         {deleteMembershipData.id && (
           <DeleteModal
             onClose={() => setDeleteMembershipData({})}
@@ -542,25 +477,6 @@ const ProjectDetails = (props) => {
             refresh={_reloadStories}
           />
         )}
-        {showAddPriorityModal && (
-          <PriorityModal 
-            onClose={() => setShowAddPriorityModal(false)}
-            onSubmit={createPriority}
-            requestInProgress={priorityIsLoading}
-            project={project}
-            refresh={_reloadPriorities}
-          />
-        )}
-        {editPriorityData.id && (
-          <PriorityModal
-            onClose={() => setEditPriorityData({})}
-            onSubmit={updatePriority}
-            requestInProgress={priorityIsLoading}
-            project={project}
-            priority={editPriorityData}
-            refresh={_reloadPriorities}
-          />
-        )}
     </ProjectDetailsWrapper>
   );
 };
@@ -569,7 +485,6 @@ ProjectDetails.propTypes = {
   projectIsLoading: PropTypes.bool.isRequired,
   membershipIsLoading: PropTypes.bool.isRequired,
   storyIsLoading: PropTypes.bool.isRequired,
-  priorityIsLoading: PropTypes.bool.isRequired,
   getProject: PropTypes.func.isRequired,
   getMemberships: PropTypes.func.isRequired,
   deleteMembership: PropTypes.func.isRequired,
@@ -584,18 +499,13 @@ ProjectDetails.propTypes = {
   deleteStory: PropTypes.func.isRequired,
   createStory: PropTypes.func.isRequired,
   getMemberNames: PropTypes.func.isRequired,
-  getPriorities: PropTypes.func.isRequired,
-  createPriority: PropTypes.func.isRequired,
-  deletePriority: PropTypes.func.isRequired,
-  updatePriority: PropTypes.func.isRequired,
   getAllPriorityNames: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
   projectIsLoading: state.project.isLoading,
   membershipIsLoading: state.membership.isLoading,
-  storyIsLoading: state.story.isLoading,
-  priorityIsLoading: state.priority.isLoading
+  storyIsLoading: state.story.isLoading
 }), {
   getProject,
   updateProject,
@@ -611,9 +521,5 @@ export default connect((state) => ({
   deleteStory,
   createStory,
   getMemberNames,
-  getPriorities,
-  createPriority,
-  deletePriority,
-  updatePriority,
   getAllPriorityNames
 })(ProjectDetails);

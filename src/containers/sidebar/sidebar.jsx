@@ -38,8 +38,8 @@ const Sidebar = ({isOpen, location, historyPush}) => {
           <SidebarFooter data-testid="sidebarFooter">
             <FontAwesomeIcon icon={faGithub} size="2x" fixedWidth />
             <div>
-              <span><a href="https://github.com/zackdavis88/compass">UI</a></span>
-              <span><a href="https://github.com/zackdavis88/needle">API</a></span>
+              <span><a href="https://github.com/zackdavis88/compass" target="_blank">UI</a></span>
+              <span><a href="https://github.com/zackdavis88/needle" target="_blank">API</a></span>
             </div>
           </SidebarFooter>
         </SidebarContent>

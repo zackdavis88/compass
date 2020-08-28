@@ -11,7 +11,7 @@ import {getAllPriorityNames} from "../../store/actions/priority";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
-import ProjectsTable from "../../components/dashboard-projects-table/dashboard-projects-table";
+import ProjectsTable from "../../components/projects-table/projects-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import {push} from "connected-react-router";
 import MembershipModal from "../../components/membership-modal/membership-modal";
@@ -21,7 +21,7 @@ import StoryModal from "../../components/story-modal/story-modal";
 import {getDashboardProjects, getDashboardStories} from "../../store/actions/dashboard";
 import StoriesTable from "../../components/stories-table/stories-table";
 import SearchBar from "../../components/search-bar/search-bar";
-import {generateUrlWithQuery, generateObjectFromSearch, setTitle} from "../../utils";
+import {updateQueryString, generateObjectFromSearch, setTitle, onHeaderClick} from "../../utils";
 
 const Dashboard = (props) => {
   setTitle("Dashboard");
@@ -71,10 +71,10 @@ const Dashboard = (props) => {
 
     // If the initial query-string had values that changed (page > totalPages), update the query-string.
     if(query.projectsPage && projectsResponse && projectsResponse.page.toString() !== query.projectsPage)
-      _updateQueryString("projectsPage", projectsResponse.page);
+      updateQueryString("projectsPage", projectsResponse.page);
   
     if(query.storiesPage && storiesResponse && storiesResponse.page.toString() !== query.storiesPage)
-      _updateQueryString("storiesPage", storiesResponse.page);
+      updateQueryString("storiesPage", storiesResponse.page);
   };
   useEffect(() => {
     _loadData();
@@ -86,7 +86,7 @@ const Dashboard = (props) => {
     if(!projectsResponse.error)
       setProjectsData(projectsResponse);
     
-    _updateQueryString("projectsPage", projectsResponse.page);
+    updateQueryString("projectsPage", projectsResponse.page);
   };
 
   const _refreshStories = async() => {
@@ -96,20 +96,15 @@ const Dashboard = (props) => {
       setStoriesData(storiesResponse);
   };
 
-  const _updateQueryString = (key, value) => {
-    const newUrl = generateUrlWithQuery(key, value);
-    history.replaceState({path: newUrl}, "", newUrl);
-  };
-
   const projects = projectsData && projectsData.projects;
   const stories = storiesData && storiesData.stories;
   const projectsTableProps = {
     projects,
     actions: {
-      deleteProject: (project) => setDeleteProject(project),
       addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
       viewProject: (project) => historyPush(`/projects/${project.id}`),
-      addStory: (project) => setNewStoryData({project})
+      addStory: (project) => setNewStoryData({project}),
+      viewProjectConfigs: (project) => historyPush(`/projects/${project.id}/configs`)
     },
     pagination: {
       itemsPerPage: projectsData && projectsData.itemsPerPage,
@@ -122,7 +117,7 @@ const Dashboard = (props) => {
         if(!response.error)
           setProjectsData(response);
         
-        _updateQueryString("projectsPage", page);
+        updateQueryString("projectsPage", page);
       }
     }
   };
@@ -143,7 +138,7 @@ const Dashboard = (props) => {
         if(!response.error)
           setStoriesData(response);
         
-        _updateQueryString("storiesPage", page);
+        updateQueryString("storiesPage", page);
       }
     }
   };
@@ -169,26 +164,26 @@ const Dashboard = (props) => {
       inputValue: value
     }),
     search: async(value) => {
-      _updateQueryString("projectSearch", value ? value : null);
+      updateQueryString("projectSearch", value ? value : null);
       setProjectSearchData({
         ...projectSearchData,
         searchedValue: value
       });
       const {itemsPerPage} = projectsData;
       const projectsResponse = await getDashboardProjects(1, itemsPerPage, value);
-      _updateQueryString("projectsPage", 1);
+      updateQueryString("projectsPage", 1);
       if(!projectsResponse.error)
         setProjectsData(projectsResponse);
     },
     clear: async() => {
-      _updateQueryString("projectSearch", null);
+      updateQueryString("projectSearch", null);
       setProjectSearchData({
         inputValue: "",
         searchedValue: ""
       });
       const {itemsPerPage} = projectsData;
       const projectsResponse = await getDashboardProjects(1, itemsPerPage);
-      _updateQueryString("projectsPage", 1);
+      updateQueryString("projectsPage", 1);
       if(!projectsResponse.error)
         setProjectsData(projectsResponse);
     }
@@ -206,36 +201,29 @@ const Dashboard = (props) => {
       inputValue: value
     }),
     search: async(value) => {
-      _updateQueryString("storySearch", value ? value : null);
+      updateQueryString("storySearch", value ? value : null);
       setStorySearchData({
         ...storySearchData,
         searchedValue: value
       });
       const {itemsPerPage} = storiesData;
       const storiesResponse = await getDashboardStories(1, itemsPerPage, value);
-      _updateQueryString("storiesPage", 1);
+      updateQueryString("storiesPage", 1);
       if(!storiesResponse.error)
         setStoriesData(storiesResponse);
     },
     clear: async() => {
-      _updateQueryString("storySearch", null);
+      updateQueryString("storySearch", null);
       setStorySearchData({
         inputValue: "",
         searchedValue: ""
       });
       const {itemsPerPage} = storiesData;
       const storiesResponse = await getDashboardStories(1, itemsPerPage);
-      _updateQueryString("storiesPage", 1);
+      updateQueryString("storiesPage", 1);
       if(!storiesResponse.error)
         setStoriesData(storiesResponse);
     }
-  };
-
-  const _onHeaderClick = (headerIndex) => {
-    if(headerIndex === 0)
-      return _updateQueryString("activeTab", null);
-    
-    _updateQueryString("activeTab", headerIndex);
   };
 
   return (
@@ -246,7 +234,7 @@ const Dashboard = (props) => {
         <Fragment>
           <PageHeader text="Dashboard" textCenter dataTestId="dashboardHeader" />
           <ActionsMenu {...actionsMenuProps} />
-          <Tabs dataTestId="dashboardTabs" tabOverride={query.activeTab} onHeaderClick={_onHeaderClick}>
+          <Tabs dataTestId="dashboardTabs" tabOverride={query.activeTab} onHeaderClick={onHeaderClick}>
             <Tabs.TabHeaders>
               <Tabs.Header>My Projects</Tabs.Header>
               <Tabs.Header>My Stories</Tabs.Header>

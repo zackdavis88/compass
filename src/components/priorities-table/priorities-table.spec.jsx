@@ -40,29 +40,6 @@ describe("<PrioritiesTable />", () => {
     expect(component).toBeDefined();
   });
 
-  it("should render an info message about priorities", () => {
-    const {getByText} = render(<PrioritiesTable {...props} />);
-    expect(getByText("Priorities are project specific labels that can be attached to stories.")).toBeDefined();
-  });
-
-  it("should render an Add Priority button for managers and admins", () => {
-    const {getByTestId} = render(<PrioritiesTable {...props} />);
-    expect(getByTestId("addPriorityButton")).toBeDefined();
-  });
-
-  it("should not render the button for developers and viewers", () => {
-    props.userRoles = {isDeveloper: true, isViewer: true};
-    const {queryByTestId} = render(<PrioritiesTable {...props} />);
-    expect(queryByTestId("addPriorityButton")).toBeNull();
-  });
-
-  it("should call props.actions.createPriority when Add Priority is clicked", () => {
-    const {getByTestId} = render(<PrioritiesTable {...props} />);
-    const addButton = getByTestId("addPriorityButton");
-    fireEvent.click(addButton);
-    expect(props.actions.createPriority).toHaveBeenCalled();
-  });
-
   it("should render a message if there are no priorities to display", () => {
     props.priorities = [];
     const {getByText} = render(<PrioritiesTable {...props} />);

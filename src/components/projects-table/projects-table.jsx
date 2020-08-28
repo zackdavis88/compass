@@ -3,17 +3,17 @@ import PropTypes from "prop-types";
 import Table from "../table/table";
 import {TableValue} from "../table/table.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faArrowRight, faTrash, faBook, faUserPlus} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faTrash, faBook, faUserPlus, faCog} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../tooltip/tooltip";
 import {formatDate, getPermissionLevel} from "../../utils";
 import {ActionsWrapper, Action, LinkAction, PaginationSection} from "../table/table.styles";
-import {DashboardProjectsTableWrapper} from "./dashboard-projects-table.styles";
+import {ProjectsTableWrapper} from "./projects-table.styles";
 import Pagination from "../pagination/pagination";
 
-const DashboardProjectsTable = ({projects, actions, pagination}) => {
+const ProjectsTable = ({projects, actions, pagination}) => {
   const isEmpty = projects.length === 0;
   const _renderActions = (row) => {
-    const {deleteProject, addStory, addMember, viewProject} = actions;
+    const {addStory, addMember, viewProject, viewProjectConfigs} = actions;
     const {isAdmin, isManager, isDeveloper, isViewer} = row.roles;
     const adminAllowed = isAdmin;
     const managerAllowed = (isAdmin || isManager);
@@ -21,10 +21,6 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
     const viewerAllowed = (isAdmin || isManager || isDeveloper || isViewer);
     return (
       <ActionsWrapper>
-        <Action data-testid="action.deleteProject" highlightAction={adminAllowed} onClick={() => adminAllowed && deleteProject(row)}>
-          <FontAwesomeIcon icon={faTrash} fixedWidth />
-          {adminAllowed && <Tooltip text={"Delete Project"} />}
-        </Action>
         <Action data-testid="action.addMember" highlightAction={managerAllowed} onClick={() => managerAllowed && addMember(row, adminAllowed)}>
           <FontAwesomeIcon icon={faUserPlus} fixedWidth />
           {managerAllowed && <Tooltip text={"Add Member"} />}
@@ -33,7 +29,15 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
           <FontAwesomeIcon icon={faBook} fixedWidth />
           {developerAllowed && <Tooltip text={"Add Story"} />}
         </Action>
-        <LinkAction 
+        <LinkAction
+        data-testid="action.viewProjectConfigs" 
+        highlightAction={viewerAllowed} 
+        href={`/projects/${row.id}/configs`} 
+        onClick={(e) => {e.preventDefault(); if(viewerAllowed) return viewProjectConfigs(row)}}>
+          <FontAwesomeIcon icon={faCog} fixedWidth />
+          {viewerAllowed && <Tooltip text={"Manage Configs"} />}
+        </LinkAction>
+        <LinkAction
         data-testid="action.viewProject" 
         highlightAction={viewerAllowed} 
         href={`/projects/${row.id}`} 
@@ -46,7 +50,7 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
   };
 
   const tableProps = {
-    dataTestId: "dashboardProjects",
+    dataTestId: "projectsTable",
     headers: [{
       label: "Name",
       keyName: "name",
@@ -76,7 +80,7 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
   };
 
   const paginationProps = {
-    dataTestId: "dashboardProjectsPagination",
+    dataTestId: "projectsPagination",
     itemsPerPage: pagination && pagination.itemsPerPage,
     page: pagination && pagination.page,
     totalPages: pagination && pagination.totalPages,
@@ -84,7 +88,7 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
   };
 
   return (
-    <DashboardProjectsTableWrapper isEmpty={isEmpty}>
+    <ProjectsTableWrapper isEmpty={isEmpty}>
       {!isEmpty ? (
         <Fragment>
           <Table {...tableProps} />
@@ -97,17 +101,17 @@ const DashboardProjectsTable = ({projects, actions, pagination}) => {
       ) : (
         <div>There are no projects to display</div>
       )}
-    </DashboardProjectsTableWrapper>
+    </ProjectsTableWrapper>
   );
 };
 
-DashboardProjectsTable.propTypes = {
+ProjectsTable.propTypes = {
   projects: PropTypes.array.isRequired,
   actions: PropTypes.shape({
-    deleteProject: PropTypes.func.isRequired,
     addMember: PropTypes.func.isRequired,
     addStory: PropTypes.func.isRequired,
-    viewProject: PropTypes.func.isRequired
+    viewProject: PropTypes.func.isRequired,
+    viewProjectConfigs: PropTypes.func.isRequired
   }).isRequired,
   pagination: PropTypes.shape({
     page: PropTypes.number.isRequired,
@@ -117,4 +121,4 @@ DashboardProjectsTable.propTypes = {
   })
 };
 
-export default DashboardProjectsTable;
+export default ProjectsTable;

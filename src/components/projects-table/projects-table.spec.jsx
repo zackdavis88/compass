@@ -1,9 +1,9 @@
 import React from "react";
-import DashboardProjectsTable from "./dashboard-projects-table";
+import ProjectsTable from "./projects-table";
 import { render } from "../../test-utils";
 import {fireEvent} from "@testing-library/react";
 
-describe("<DashboardProjectsTable />", () => {
+describe("<ProjectsTable />", () => {
   let props;
   beforeEach(() => {
     props = {
@@ -26,10 +26,10 @@ describe("<DashboardProjectsTable />", () => {
         createdOn: "2020-07-14T17:59:52.639Z"
       }],
       actions: {
-        deleteProject: jest.fn(),
         addMember: jest.fn(),
         addStory: jest.fn(),
-        viewProject: jest.fn()
+        viewProject: jest.fn(),
+        viewProjectConfigs: jest.fn()
       },
       pagination: {
         page: 1,
@@ -41,21 +41,21 @@ describe("<DashboardProjectsTable />", () => {
   });
 
   it("should mount the component", () => {
-    const component = render(<DashboardProjectsTable {...props} />);
+    const component = render(<ProjectsTable {...props} />);
     expect(component).toBeDefined();
   });
 
   it("should render a message if there are no projects to display", () => {
     props.projects = [];
-    const {getByText} = render(<DashboardProjectsTable {...props} />);
+    const {getByText} = render(<ProjectsTable {...props} />);
     expect(getByText("There are no projects to display")).toBeDefined();
   });
 
   it("should render the expected headers", () => {
-    const {getByTestId, getByText} = render(<DashboardProjectsTable {...props}/>);
-    expect(getByTestId("dashboardProjects")).toBeDefined();
-    expect(getByTestId("dashboardProjects.table")).toBeDefined();
-    expect(getByTestId("dashboardProjects.tableHead")).toBeDefined();
+    const {getByTestId, getByText} = render(<ProjectsTable {...props}/>);
+    expect(getByTestId("projectsTable")).toBeDefined();
+    expect(getByTestId("projectsTable.table")).toBeDefined();
+    expect(getByTestId("projectsTable.tableHead")).toBeDefined();
     expect(getByText("Name")).toBeDefined();
     expect(getByText("Unique ID")).toBeDefined();
     expect(getByText("Visibility")).toBeDefined();
@@ -65,8 +65,8 @@ describe("<DashboardProjectsTable />", () => {
   });
 
   it("should render the project data for each header", () => {
-    const {getByTestId, getByText} = render(<DashboardProjectsTable {...props} />);
-    expect(getByTestId("dashboardProjects.tableBody")).toBeDefined();
+    const {getByTestId, getByText} = render(<ProjectsTable {...props} />);
+    expect(getByTestId("projectsTable.tableBody")).toBeDefined();
     // Row 1 should be-
     expect(getByText("Test Project 1")).toBeDefined();
     expect(getByText("test-id-1")).toBeDefined();;
@@ -83,43 +83,43 @@ describe("<DashboardProjectsTable />", () => {
   });
 
   it("should render the action buttons for each row", () => {
-    const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
-    expect(getAllByTestId("action.deleteProject")).toHaveLength(2);
+    const {getAllByTestId} = render(<ProjectsTable {...props} />);
     expect(getAllByTestId("action.addStory")).toHaveLength(2);
     expect(getAllByTestId("action.addMember")).toHaveLength(2);
+    expect(getAllByTestId("action.viewProjectConfigs")).toHaveLength(2);
     expect(getAllByTestId("action.viewProject")).toHaveLength(2);
   });
 
   it("should not call an action method if clicked with insufficient permissions", () => {
-    const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
-    const deleteAction = getAllByTestId("action.deleteProject")[1];
-    fireEvent.click(deleteAction);
-    expect(props.actions.deleteProject).not.toHaveBeenCalled();
+    const {getAllByTestId} = render(<ProjectsTable {...props} />);
+    const addMember = getAllByTestId("action.addMember")[1];
+    fireEvent.click(addMember);
+    expect(props.actions.addMember).not.toHaveBeenCalled();
   });
 
   it("should call an action method if clicked with sufficient permissions", () => {
-    const {getAllByTestId} = render(<DashboardProjectsTable {...props} />);
-    const deleteAction = getAllByTestId("action.deleteProject")[0];
-    fireEvent.click(deleteAction);
-    expect(props.actions.deleteProject).toHaveBeenCalledWith(props.projects[0]);
+    const {getAllByTestId} = render(<ProjectsTable {...props} />);
+    const addMember = getAllByTestId("action.addMember")[0];
+    fireEvent.click(addMember);
+    expect(props.actions.addMember).toHaveBeenCalledWith(props.projects[0], true);
   });
 
   it("should render the action tooltips if they are allowed", () => {
-    const {getAllByText} = render(<DashboardProjectsTable {...props}/>);
-    expect(getAllByText("Delete Project")).toHaveLength(1);
+    const {getAllByText} = render(<ProjectsTable {...props}/>);
     expect(getAllByText("Add Story")).toHaveLength(2);
     expect(getAllByText("Add Member")).toHaveLength(1);
     expect(getAllByText("View Project")).toHaveLength(2);
+    expect(getAllByText("Manage Configs")).toHaveLength(2);
   });
 
   it("should render the pagination component", () => {
-    const {getByTestId} = render(<DashboardProjectsTable {...props}/>);
-    expect(getByTestId("dashboardProjectsPagination")).toBeDefined();
+    const {getByTestId} = render(<ProjectsTable {...props}/>);
+    expect(getByTestId("projectsPagination")).toBeDefined();
   });
 
   it("should call the getPage method when paginating", () => {
-    const {getByTestId} = render(<DashboardProjectsTable {...props}/>);
-    const nextPage = getByTestId("dashboardProjectsPagination.next");
+    const {getByTestId} = render(<ProjectsTable {...props}/>);
+    const nextPage = getByTestId("projectsPagination.next");
     fireEvent.click(nextPage);
     expect(props.pagination.getPage).toHaveBeenCalledWith(2);
   });
