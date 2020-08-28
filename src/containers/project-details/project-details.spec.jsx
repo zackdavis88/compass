@@ -311,15 +311,37 @@ describe("<ProjectDetails />", () => {
     expect(getByText("Actions")).toBeDefined();
   });
 
-  it("should not render the actions menu component for viewers", async() => {
+  it("should not render the actions menu component for users with no permissions", async() => {
     store.dispatch = jest.fn();
-    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isAdmin: false, isViewer: true}}));
+    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: null}));
     store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
     store.dispatch.mockReturnValueOnce(mockStoriesResponse);
     const {queryByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(queryByTestId("projectDetailsActionsMenu")).toBeNull();
     expect(queryByText("Actions")).toBeNull();
+  });
+
+  it("should render the `Manage Configs` action if the user has viewer permissions", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce(Object.assign({}, mockProjectResponse, {userRoles: {isViewer: true}}));
+    store.dispatch.mockReturnValueOnce(mockMembershipsResponse);
+    store.dispatch.mockReturnValueOnce(mockStoriesResponse);
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
+    expect(getByText("Manage Configs")).toBeDefined();
+  });
+
+  it("should dispatch a redux push action when `Manage Configs` is clicked", async() => {
+    const {getByText, getByTestId} = render(<ProjectDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const actionsMenu = getByTestId("projectDetailsActionsMenu");
+    fireEvent.click(actionsMenu);
+    const configsActions = getByText("Manage Configs");
+    fireEvent.click(configsActions);
+    expect(store.dispatch).toHaveBeenCalledTimes(4);
   });
   
   it("should render the 'Delete Project' action if the user has admin permissions", async() => {

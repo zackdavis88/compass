@@ -21,7 +21,7 @@ import {PageError} from "../../common-styles/base";
 import MembershipsTable from "../../components/memberships-table/memberships-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import MembershipModal from "../../components/membership-modal/membership-modal";
-import { faTrash, faEdit, faUserTimes, faUserPlus, faBook } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faEdit, faUserTimes, faUserPlus, faBook, faCog } from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
 import {push} from "connected-react-router";
 import {showNotification} from "../../store/actions/notification";
@@ -177,11 +177,18 @@ const ProjectDetails = (props) => {
   const actionsMenuProps = {
     dataTestId: "projectDetailsActionsMenu",
     menuItems: [{
+      icon: faCog,
+      label: "Manage Configs",
+      onClick: () => historyPush(`/projects/${project.id}/configs`)
+    }]
+  };
+  if(userRoles && (userRoles.isManager || userRoles.isAdmin || userRoles.isDeveloper)) {
+    actionsMenuProps.menuItems = actionsMenuProps.menuItems.concat([{
       icon: faBook,
       label: "New Story",
       onClick: () => setShowStoryModal(true)
-    }]
-  };
+    }]);
+  }
   if(userRoles && (userRoles.isManager || userRoles.isAdmin)) {
     actionsMenuProps.menuItems = actionsMenuProps.menuItems.concat([{
       icon: faEdit,
@@ -287,7 +294,7 @@ const ProjectDetails = (props) => {
         (
           <Fragment>
             <PageHeader text={`Project - ${project.name}`} dataTestId="projectDetailsHeader" textCenter/>
-            {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper) && (
+            {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper || userRoles.isViewer) && (
               <ActionsMenu {...actionsMenuProps} />
             )}
             <Tabs dataTestId="projectDetailsTabs" tabOverride={query.activeTab} onHeaderClick={onHeaderClick}>
