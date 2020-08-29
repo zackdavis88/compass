@@ -9,9 +9,8 @@ import {getPriorities, createPriority, deletePriority, updatePriority} from "../
 import {getAllStatus, createStatus, deleteStatus, updateStatus} from "../../store/actions/status";
 import {getProject} from "../../store/actions/project";
 import Tabs from "../../components/tabs/tabs";
-import PrioritiesTable from "../../components/priorities-table/priorities-table";
 import PageHeader from "../../components/page-header/page-header";
-// import PriorityModal from "../../components/priority-modal/priority-modal";
+import ProjectConfigsTable from "../../components/project-configs-table/project-configs-table";
 import ProjectConfigModal from "../../components/project-config-modal/project-config-modal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faInfoCircle, faPlus} from "@fortawesome/free-solid-svg-icons";
@@ -126,16 +125,16 @@ const ProjectConfigs = (props) => {
             </Tabs.TabHeaders>
             <Tabs.TabPanels>
               <Tabs.Panel>
-                <PrioritiesTable
-                  priorities={priorities}
+                <ProjectConfigsTable
+                  projectConfigs={priorities}
+                  configType="priority"
                   userRoles={userRoles}
                   actions={{
-                    createPriority: () => setShowAddPriorityModal(true),
-                    deletePriority: async(priority) => {
+                    deleteConfig: async(priority) => {
                       await props.deletePriority({...priority, project});
                       _reloadPriorities();
                     },
-                    editPriority: (priority) => setEditPriorityData(priority)
+                    editConfig: (priority) => setEditPriorityData(priority)
                   }}
                   pagination={{
                     itemsPerPage: prioritiesData && prioritiesData.itemsPerPage,
@@ -155,10 +154,33 @@ const ProjectConfigs = (props) => {
                 />
               </Tabs.Panel>
               <Tabs.Panel>
-                {/*
-                TODO: Make a status table.
-                 <StatusTable/> 
-                */}
+                <ProjectConfigsTable
+                  projectConfigs={allStatus}
+                  configType="status"
+                  userRoles={userRoles}
+                  actions={{
+                    deleteConfig: async(status) => {
+                      await props.deleteStatus({...status, project});
+                      _reloadStatus();
+                    },
+                    editConfig: (status) => setEditStatusData(status)
+                  }}
+                  pagination={{
+                    itemsPerPage: statusData && statusData.itemsPerPage,
+                    page: statusData && statusData.page,
+                    totalPages: statusData && statusData.totalPages,
+                    getPage: async(page) => {
+                      if(page === statusData.page)
+                        return;
+                      updateQueryString("statusPage", page);
+                      const response = await props.getAllStatus(projectId, page, statusData.itemsPerPage);
+                      if(response.error)
+                        return setPageError(response.error);
+                      
+                      setStatusData(response);
+                    }
+                  }}
+                />
               </Tabs.Panel>
             </Tabs.TabPanels>
           </Tabs>
@@ -174,6 +196,16 @@ const ProjectConfigs = (props) => {
           configType="priority"
         />
       )}
+      {showAddStatusModal && (
+        <ProjectConfigModal 
+          onClose={() => setShowAddStatusModal(false)}
+          onSubmit={props.createStatus}
+          requestInProgress={props.statusIsLoading}
+          project={project}
+          refresh={_reloadStatus}
+          configType="status"
+        />
+      )}
       {editPriorityData.id && (
         <ProjectConfigModal
           onClose={() => setEditPriorityData({})}
@@ -183,6 +215,17 @@ const ProjectConfigs = (props) => {
           projectConfig={editPriorityData}
           refresh={_reloadPriorities}
           configType="priority"
+        />
+      )}
+      {editStatusData.id && (
+        <ProjectConfigModal
+          onClose={() => setEditStatusData({})}
+          onSubmit={props.updateStatus}
+          requestInProgress={props.statusIsLoading}
+          project={project}
+          projectConfig={editStatusData}
+          refresh={_reloadStatus}
+          configType="status"
         />
       )}
     </ProjectConfigsWrapper>
@@ -204,7 +247,8 @@ ProjectConfigs.propTypes = {
 };
 
 export default connect((state) => ({
-  priorityIsLoading: state.priority.isLoading
+  priorityIsLoading: state.priority.isLoading,
+  statusIsLoading: state.status.isLoading
 }), {
   getPriorities,
   createPriority,

@@ -57,7 +57,8 @@ describe("<ProjectConfigs />", () => {
       }
     };
     store = mockStore({
-      priority: {isLoading: false}
+      priority: {isLoading: false},
+      status: {isLoading: false}
     });
 
     store.dispatch = jest.fn();
@@ -151,7 +152,16 @@ describe("<ProjectConfigs />", () => {
     expect(queryByText("Add Priority")).toBeDefined();
   });
 
-  it("should render the PriorityModal on add priority action click", async() => {
+  it("should render an action menu item to Add Status", async() => {
+    const {queryByText, getByTestId} = render(<ProjectConfigs {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const actionsMenu = getByTestId("projectConfigsActionsMenu");
+    expect(queryByText("Add Status")).toBeNull();
+    fireEvent.click(actionsMenu);
+    expect(queryByText("Add Status")).toBeDefined();
+  });
+
+  it("should render the ProjectConfigModal on add priority action click", async() => {
     const {getByText, getByTestId, queryByTestId} = render(<ProjectConfigs {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(queryByTestId("projectConfigsActionsMenu")).toBeDefined();
@@ -161,6 +171,20 @@ describe("<ProjectConfigs />", () => {
     expect(queryByTestId("projectConfigModal.wrapper")).toBeNull();
     fireEvent.click(actionItem);
     expect(queryByTestId("projectConfigModal.wrapper")).toBeDefined();
+    expect(getByText("Add Priority")).toBeDefined();
+  });
+
+  it("should render the ProjectConfigModal on add status action click", async() => {
+    const {getByText, getByTestId, queryByTestId} = render(<ProjectConfigs {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    expect(queryByTestId("projectConfigsActionsMenu")).toBeDefined();
+    const actionsMenu = getByTestId("projectConfigsActionsMenu");
+    fireEvent.click(actionsMenu);
+    const actionItem = getByText("Add Status");
+    expect(queryByTestId("projectConfigModal.wrapper")).toBeNull();
+    fireEvent.click(actionItem);
+    expect(queryByTestId("projectConfigModal.wrapper")).toBeDefined();
+    expect(getByText("Add Status")).toBeDefined();
   });
 
   it("should render the Tabs component and expected headers", async() => {
@@ -168,6 +192,7 @@ describe("<ProjectConfigs />", () => {
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     expect(getByTestId("projectConfigsTabs")).toBeDefined();
     expect(queryByText("Priorities")).toBeDefined();
+    expect(queryByText("Status")).toBeDefined();
   });
 
   it("should render a message if a project has no priorities", async() => {
@@ -180,30 +205,77 @@ describe("<ProjectConfigs />", () => {
     expect(getByText("This project currently has no priorities.")).toBeDefined();
   });
 
+  it("should render a message if a project has no status", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce(projectsResponse);
+    store.dispatch.mockReturnValueOnce(prioritiesResponse);
+    store.dispatch.mockReturnValueOnce({...statusResponse, status: []});
+    const {getByText} = render(<ProjectConfigs {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const statusTab = getByText("Status");
+    fireEvent.click(statusTab);
+    expect(getByText("This project currently has no status.")).toBeDefined();
+  });
+
   it("should render a priorities table with expected headers", async() => {
     const {getByText, getAllByText, getByTestId} = render(<ProjectConfigs {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
-    expect(getByTestId("prioritiesTable.table")).toBeDefined();
-    expect(getByTestId("prioritiesTable.tableHead")).toBeDefined();
+    expect(getByTestId("projectConfigsTable.table")).toBeDefined();
+    expect(getByTestId("projectConfigsTable.tableHead")).toBeDefined();
     expect(getByText("Priority")).toBeDefined();
     expect(getByText("Unique ID")).toBeDefined();
     expect(getByText("Created On")).toBeDefined();
     expect(getAllByText("Actions")).toHaveLength(2);
   });
 
-  it("should render the PriorityModal when the edit priority table action is clicked", async() => {
+  it("should render a status table with expected headers", async() => {
+    const {getByText, getAllByText, getByTestId} = render(<ProjectConfigs {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const statusTab = getByText("Status");
+    fireEvent.click(statusTab);
+    expect(getByTestId("projectConfigsTable.table")).toBeDefined();
+    expect(getByTestId("projectConfigsTable.tableHead")).toBeDefined();
+    expect(getAllByText("Status")).toHaveLength(2);
+    expect(getByText("Unique ID")).toBeDefined();
+    expect(getByText("Created On")).toBeDefined();
+    expect(getAllByText("Actions")).toHaveLength(2);
+  });
+
+  it("should render the ProjectConfigModal when the edit priority table action is clicked", async() => {
     const {getAllByTestId, queryByTestId} = render(<ProjectConfigs {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
-    const editAction = getAllByTestId("action.editPriority")[0];
+    const editAction = getAllByTestId("action.editConfig")[0];
     expect(queryByTestId("projectConfigModal.wrapper")).toBeNull();
     fireEvent.click(editAction);
     expect(queryByTestId("projectConfigModal.wrapper")).toBeDefined();
   });
 
+  it("should render the ProjectConfigModal when the edit status table action is clicked", async() => {
+    const {getByText, getAllByText, getAllByTestId, queryByTestId} = render(<ProjectConfigs {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const statusTab = getByText("Status");
+    fireEvent.click(statusTab);
+    const editAction = getAllByTestId("action.editConfig")[0];
+    expect(queryByTestId("projectConfigModal.wrapper")).toBeNull();
+    fireEvent.click(editAction);
+    expect(queryByTestId("projectConfigModal.wrapper")).toBeDefined();
+    expect(getAllByText("Edit Status")).toHaveLength(3); // 2 of these are tooltips on the DOM. 1 is the modal header.
+  });
+
   it("should call the deletePriority redux action when the delete priority table action is clicked", async() => {
     const {getAllByTestId} = render(<ProjectConfigs {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
-    const deleteAction = getAllByTestId("action.deletePriority")[0];
+    const deleteAction = getAllByTestId("action.deleteConfig")[0];
+    fireEvent.click(deleteAction);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(4));
+  });
+
+  it("should call the deleteStatus redux action when the delete status table action is clicked", async() => {
+    const {getByText, getAllByTestId} = render(<ProjectConfigs {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    const statusTab = getByText("Status");
+    fireEvent.click(statusTab);
+    const deleteAction = getAllByTestId("action.deleteConfig")[0];
     fireEvent.click(deleteAction);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(4));
   });
