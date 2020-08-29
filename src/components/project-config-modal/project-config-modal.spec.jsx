@@ -76,14 +76,22 @@ describe("<ProjectConfigModal />", () => {
     const {queryByTestId} = render(<ProjectConfigModal {...props}/>);
     const nameInput = queryByTestId("nameInput");
     const colorInput = queryByTestId("colorInput");
+    const transparentInput = queryByTestId("transparentInput");
     expect(nameInput).toBeDefined();
     expect(colorInput).toBeDefined();
+    expect(transparentInput).toBeDefined();
   });
 
   it("should set the colorInput default value to #FFFFFF", () => {
-    const {queryByTestId} = render(<ProjectConfigModal {...props}/>);
-    const colorInput = queryByTestId("colorInput.input");
+    const {getByTestId} = render(<ProjectConfigModal {...props}/>);
+    const colorInput = getByTestId("colorInput.input");
     expect(colorInput).toHaveValue("#ffffff");
+  });
+
+  it("should default transparent input to false", () => {
+    const {getByTestId} = render(<ProjectConfigModal {...props}/>);
+    const transparentInput = getByTestId("transparentInput.input");
+    expect(transparentInput).not.toBeChecked();
   });
 
   it("should render preview text if there is name input", () => {
@@ -114,7 +122,7 @@ describe("<ProjectConfigModal />", () => {
       target: {value: "some name input"}
     });
     fireEvent.click(submitButton);
-    expect(props.onSubmit).toHaveBeenCalledWith(props.project, "some name input", "#FFFFFF");
+    expect(props.onSubmit).toHaveBeenCalledWith(props.project, "some name input", "#FFFFFF", false);
   });
 
   it("should set the nameError if there is a name validation error", async() => {
@@ -158,7 +166,7 @@ describe("<ProjectConfigModal />", () => {
       target: {value: "#a82c9b"}
     });
     fireEvent.click(submitButton);
-    expect(props.onSubmit).toHaveBeenCalledWith(props.project, "Test Priority", "#a82c9b");
+    expect(props.onSubmit).toHaveBeenCalledWith(props.project, "Test Priority", "#a82c9b", false);
     await waitFor(() => expect(props.onClose).toHaveBeenCalled());
   });
 
@@ -245,6 +253,18 @@ describe("<ProjectConfigModal />", () => {
     expect(colorInput).toHaveValue(props.projectConfig.color);
   });
 
+  it("should set the transparent input value based on the priority being updated", () => {
+    props.projectConfig = {
+      id: "testPriorityId1",
+      name: "unit test priority",
+      color: "#0194cc",
+      transparent: true
+    };
+    const {getByTestId} = render(<ProjectConfigModal {...props}/>);
+    const transparentInput = getByTestId("transparentInput.input");
+    expect(transparentInput).toBeChecked();
+  });
+
   it("should call the onSubmit method if submit is clicked when updating", async() => {
     props.projectConfig = {
       id: "testPriorityId1",
@@ -260,7 +280,7 @@ describe("<ProjectConfigModal />", () => {
     fireEvent.change(colorInput, {target: { value: colorVal}});
     const submitButton = getByTestId("projectConfigModal.actions.primaryButton");
     fireEvent.click(submitButton);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.projectConfig, nameVal, colorVal));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.projectConfig, nameVal, colorVal, false));
   });
 
 
