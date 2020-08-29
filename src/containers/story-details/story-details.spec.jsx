@@ -29,6 +29,10 @@ describe("<StoryDetails />", () => {
         name: "Test Priority",
         color: "#091cda"
       },
+      status: {
+        name: "Test Status",
+        color: "#000000"
+      },
       createdOn: "2020-08-01T23:27:33.147Z",
       updatedOn: "2020-08-03T23:27:33.147Z"
     }
@@ -273,6 +277,7 @@ describe("<StoryDetails />", () => {
     expect(queryByTestId("storyModal.wrapper")).toBeNull();
     store.dispatch.mockReturnValueOnce({}); // rendering this modal calls a redux action. mock that response before render.
     store.dispatch.mockReturnValueOnce({});
+    store.dispatch.mockReturnValueOnce({});
     fireEvent.click(editAction);
     expect(queryByTestId("storyModal.wrapper")).toBeDefined();
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
@@ -283,6 +288,13 @@ describe("<StoryDetails />", () => {
     await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
     expect(queryByText("Priority")).toBeDefined();
     expect(queryByText("Test Priority")).toBeDefined();
+  });
+
+  it("should render the status if one is provided", async() => {
+    const {queryByText} = render(<StoryDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
+    expect(queryByText("Status")).toBeDefined();
+    expect(queryByText("Test Status")).toBeDefined();
   });
 
   it("should render the points if provided", async() => {
@@ -307,6 +319,15 @@ describe("<StoryDetails />", () => {
     const {getByText} = render(<StoryDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
     expect(getByText("Priority")).toBeDefined();
+    expect(getByText("None")).toBeDefined();
+  });
+
+  it("should render 'None' if there is no status assigned", async() => {
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({story: {...mockStoryResponse.story, status: undefined}});
+    const {getByText} = render(<StoryDetails {...props} />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
+    expect(getByText("Status")).toBeDefined();
     expect(getByText("None")).toBeDefined();
   });
 

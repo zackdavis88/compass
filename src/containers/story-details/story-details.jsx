@@ -25,6 +25,7 @@ import DeleteModal from "../../components/delete-modal/delete-modal";
 import StoryModal from "../../components/story-modal/story-modal";
 import {push} from "connected-react-router";
 import MarkdownText from "../../components/markdown-text/markdown-text";
+import { getAllStatusNames } from "../../store/actions/status";
 
 const StoryDetails = (props) => {
   setTitle("Story Details");
@@ -36,7 +37,8 @@ const StoryDetails = (props) => {
     getMemberNames,
     historyPush,
     showNotification,
-    getAllPriorityNames
+    getAllPriorityNames,
+    getAllStatusNames
   } = props;
   const [pageError, setPageError] = useState(undefined);
   const [storyData, setStoryData] = useState(undefined);
@@ -132,6 +134,14 @@ const StoryDetails = (props) => {
                         )}
                       </SideItem>
                       <SideItem>
+                        <span>Status</span>
+                        {story.status ? (
+                          <ProjectConfigLabel color={story.status.color} transparent={story.status.transparent}>{story.status.name}</ProjectConfigLabel>
+                        ) : (
+                          <div style={{fontStyle: "italic"}}>None</div>
+                        )}
+                      </SideItem>
+                      <SideItem>
                         <span>Points</span>
                         {story.points ? (
                           story.points
@@ -152,7 +162,7 @@ const StoryDetails = (props) => {
                         {formatDate(story.createdOn)}
                       </SideItem>
                       {story.updatedOn && (
-                        <SideItem>
+                        <SideItem style={{marginBottom: "0"}}>
                           <span>Last Modified</span>
                           {formatDate(story.updatedOn)}
                         </SideItem>
@@ -170,6 +180,7 @@ const StoryDetails = (props) => {
           onSubmit={updateStory}
           requestInProgress={storyIsLoading}
           getMemberNames={getMemberNames}
+          getStatusNames={getAllStatusNames}
           getPriorityNames={getAllPriorityNames}
           project={story.project}
           story={story}
@@ -205,7 +216,8 @@ StoryDetails.propTypes = {
   historyPush: PropTypes.func.isRequired,
   getMemberNames: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
-  getAllPriorityNames: PropTypes.func.isRequired
+  getAllPriorityNames: PropTypes.func.isRequired,
+  getAllStatusNames: PropTypes.func.isRequired
 };
 
 export default connect(state => ({
@@ -217,5 +229,6 @@ export default connect(state => ({
   historyPush: push,
   getMemberNames,
   showNotification,
-  getAllPriorityNames
+  getAllPriorityNames,
+  getAllStatusNames
 })(StoryDetails);
