@@ -5,23 +5,26 @@ import {
   STATUS_REQUEST_FAILURE
 } from "../types/status";
 
-export const createStatus = (project, name, color) => dispatch => {
+export const createStatus = (project, name, color, transparent) => dispatch => {
   return dispatch({
     types: [STATUS_REQUEST_START, STATUS_REQUEST_SUCCESS, STATUS_REQUEST_FAILURE],
     request: request.post(`/api/projects/${project.id}/status`),
     payload: {
       name,
-      color
+      color,
+      transparent
     }
   });
 };
 
-export const updateStatus = (project, status, name, color) => dispatch => {
+export const updateStatus = (project, status, name, color, transparent) => dispatch => {
   const payload = {};
   if(name)
     payload.name = name;
   if(color)
     payload.color = color;
+  if(typeof transparent === "boolean")
+    payload.transparent = transparent;
   return dispatch({
     types: [STATUS_REQUEST_START, STATUS_REQUEST_SUCCESS, STATUS_REQUEST_FAILURE],
     request: request.post(`/api/projects/${project.id}/status/${status.id}`),

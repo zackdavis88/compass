@@ -5,23 +5,26 @@ import {
   PRIORITY_REQUEST_FAILURE
 } from "../types/priority";
 
-export const createPriority = (project, name, color) => dispatch => {
+export const createPriority = (project, name, color, transparent) => dispatch => {
   return dispatch({
     types: [PRIORITY_REQUEST_START, PRIORITY_REQUEST_SUCCESS, PRIORITY_REQUEST_FAILURE],
     request: request.post(`/api/projects/${project.id}/priorities`),
     payload: {
       name,
-      color
+      color,
+      transparent
     }
   });
 };
 
-export const updatePriority = (project, priority, name, color) => dispatch => {
+export const updatePriority = (project, priority, name, color, transparent) => dispatch => {
   const payload = {};
   if(name)
     payload.name = name;
   if(color)
     payload.color = color;
+  if(typeof transparent === "boolean")
+    payload.transparent = transparent;
   return dispatch({
     types: [PRIORITY_REQUEST_START, PRIORITY_REQUEST_SUCCESS, PRIORITY_REQUEST_FAILURE],
     request: request.post(`/api/projects/${project.id}/priorities/${priority.id}`),
