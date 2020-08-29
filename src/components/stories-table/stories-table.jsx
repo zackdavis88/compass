@@ -62,7 +62,7 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
       keyName: "priority",
       format: (priority) => {
         if(priority)
-          return <ProjectConfigLabel color={priority.color}>{priority.name}</ProjectConfigLabel>
+          return <ProjectConfigLabel color={priority.color} transparent={priority.transparent}>{priority.name}</ProjectConfigLabel>
         
         return  <div style={{fontStyle: "italic"}}>No Priority</div>
       }

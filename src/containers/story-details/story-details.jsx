@@ -126,7 +126,7 @@ const StoryDetails = (props) => {
                       <SideItem>
                         <span>Priority</span>
                         {story.priority ? (
-                          <ProjectConfigLabel color={story.priority.color}>{story.priority.name}</ProjectConfigLabel>
+                          <ProjectConfigLabel color={story.priority.color} transparent={story.priority.transparent}>{story.priority.name}</ProjectConfigLabel>
                         ) : (
                           <div style={{fontStyle: "italic"}}>None</div>
                         )}
