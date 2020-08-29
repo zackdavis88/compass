@@ -1,17 +1,17 @@
 import React, {useState} from "react";
 import PropTypes from "prop-types";
-import {PriorityModalWrapper, ProjectSection, PreviewSection} from "./priority-modal.styles";
+import {ProjectConfigModalWrapper, ProjectSection, PreviewSection} from "./project-config-modal.styles";
 import Modal from "../modal/modal";
 import { faEdit, faPlus } from "@fortawesome/free-solid-svg-icons";
 import InputBox from "../input-box/input-box";
-import {PriorityLabel} from "../../common-styles/base";
+import {ProjectConfigLabel} from "../../common-styles/base";
 
-const PriorityModal = (props) => {
-  const priority = props.priority;
-  const isEdit = !!priority;
+const ProjectConfigModal = (props) => {
+  const projectConfig = props.projectConfig;
+  const isEdit = !!projectConfig;
   const initialState = {
-    name: isEdit ? priority.name : "",
-    color: isEdit && priority.color ? priority.color : "#FFFFFF",
+    name: isEdit ? projectConfig.name : "",
+    color: isEdit && projectConfig.color ? projectConfig.color : "#FFFFFF",
     nameError: undefined,
     colorError: undefined
   };
@@ -48,7 +48,7 @@ const PriorityModal = (props) => {
     const {name, color} = state;
     let response;
     if(isEdit)
-      response = await props.onSubmit(props.project, priority, name, color);
+      response = await props.onSubmit(props.project, projectConfig, name, color);
     else
       response = await props.onSubmit(props.project, name, color);
 
@@ -67,6 +67,12 @@ const PriorityModal = (props) => {
       props.refresh();
   };
 
+  const _generateModalHeader = () => {
+    let configType = props.configType.toLowerCase();
+    configType = configType.charAt(0).toUpperCase() + configType.slice(1);
+    return isEdit ? `Edit ${configType}` : `Add ${configType}`;
+  };
+
   const modalProps = {
     onClose: props.onClose,
     onSubmit: _onSubmit,
@@ -74,9 +80,9 @@ const PriorityModal = (props) => {
     submitTooltip: _submitTooltip(),
     header: {
       startIcon: isEdit ? faEdit : faPlus,
-      text: isEdit ? "Edit Priority" : "Add Priority"
+      text: _generateModalHeader()
     },
-    dataTestId: "priorityModal",
+    dataTestId: "projectConfigModal",
     small: true,
     confirmBeforeClose: hasChanges
   };
@@ -86,7 +92,7 @@ const PriorityModal = (props) => {
       id: "nameInput",
       dataTestId: "nameInput",
       label: "Name",
-      placeholder: "Enter a priority name",
+      placeholder: `Enter a ${props.configType.toLowerCase()} name`,
       errorText: state.nameError,
       value: state.name,
       maxLength: 26,
@@ -106,7 +112,7 @@ const PriorityModal = (props) => {
   };
 
   return (
-    <PriorityModalWrapper>
+    <ProjectConfigModalWrapper>
       <Modal {...modalProps}>
         <ProjectSection>
           <span>Project:</span>
@@ -115,17 +121,17 @@ const PriorityModal = (props) => {
         <PreviewSection>
           <span>Preview:</span>
           {state.name ? (
-            <PriorityLabel color={state.color}>{state.name}</PriorityLabel>
+            <ProjectConfigLabel color={state.color}>{state.name}</ProjectConfigLabel>
           ): "Enter a name for preview"}
         </PreviewSection>
         <InputBox {...inputProps.name} />
         <InputBox {...inputProps.color} />
       </Modal>
-    </PriorityModalWrapper>
+    </ProjectConfigModalWrapper>
   );
 };
 
-PriorityModal.propTypes =  {
+ProjectConfigModal.propTypes =  {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   showNotification: PropTypes.func,
@@ -134,8 +140,10 @@ PriorityModal.propTypes =  {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired,
-  priority: PropTypes.object,
+  projectConfig: PropTypes.object,
+  configType: PropTypes.string.isRequired,
+  status: PropTypes.object,
   refresh: PropTypes.func
 };
 
-export default PriorityModal;
+export default ProjectConfigModal;
