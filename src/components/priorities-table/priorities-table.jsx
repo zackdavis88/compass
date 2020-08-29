@@ -9,7 +9,7 @@ import {ActionsWrapper, Action, PaginationSection} from "../table/table.styles";
 import {PrioritiesTableWrapper} from "./priorities-table.styles";
 import Pagination from "../pagination/pagination";
 import Button from "../button/button";
-import {PriorityLabel} from "../../common-styles/base";
+import {ProjectConfigLabel} from "../../common-styles/base";
 
 const PrioritiesTable = ({priorities, userRoles, actions, pagination}) => {
   const isEmpty = priorities.length === 0;
@@ -37,7 +37,7 @@ const PrioritiesTable = ({priorities, userRoles, actions, pagination}) => {
     headers: [{
       label: "Priority",
       keyName: "name",
-      format: (name, {color}) => <PriorityLabel color={color}>{name}</PriorityLabel>
+      format: (name, {color}) => <ProjectConfigLabel color={color}>{name}</ProjectConfigLabel>
     }, {
       label: "Unique ID",
       keyName: "id"

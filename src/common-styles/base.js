@@ -44,7 +44,7 @@ export const PageError = styled.div`
   border-radius: 0;
 `;
 
-export const PriorityLabel = styled.div.attrs(({color}) => ({
+export const ProjectConfigLabel = styled.div.attrs(({color}) => ({
   style: {
     backgroundColor: color,
     color: calcTextColor(color)
