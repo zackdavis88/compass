@@ -54,6 +54,12 @@ describe("<ProjectConfigModal />", () => {
     expect(getByText("Add Priority")).toBeDefined();
   });
 
+  it("should render the 'Add Status' modal header when creating a new status config", () => {
+    props.configType = "status";
+    const {getByText} = render(<ProjectConfigModal {...props}/>);
+    expect(getByText("Add Status")).toBeDefined();
+  });
+
   it("should render the project name", () => {
     const {getByText} = render(<ProjectConfigModal {...props} />);
     expect(getByText("Project:")).toBeDefined();
