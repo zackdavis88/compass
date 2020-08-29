@@ -9,7 +9,7 @@ import {formatDate} from "../../utils";
 import {ActionsWrapper, Action, LinkAction, PaginationSection} from "../table/table.styles";
 import {StoriesTableWrapper} from "./stories-table.styles";
 import Pagination from "../pagination/pagination";
-import {PriorityLabel} from "../../common-styles/base";
+import {ProjectConfigLabel} from "../../common-styles/base";
 
 const StoriesTable = ({stories, project, actions, pagination}) => {
   const isEmpty = stories.length === 0;
@@ -62,14 +62,19 @@ const StoriesTable = ({stories, project, actions, pagination}) => {
       keyName: "priority",
       format: (priority) => {
         if(priority)
-          return <PriorityLabel color={priority.color}>{priority.name}</PriorityLabel>
+          return <ProjectConfigLabel color={priority.color}>{priority.name}</ProjectConfigLabel>
         
         return  <div style={{fontStyle: "italic"}}>No Priority</div>
       }
     }, {
-      label: "Created On",
-      keyName: "createdOn",
-      format: (timestamp) => formatDate(timestamp)
+      label: "Points",
+      keyName: "points",
+      format: (points) => {
+        if(!points)
+          return <div style={{fontStyle: "italic"}}>None</div>
+        
+        return points;
+      }
     }, {
       label: "Actions",
       renderActions: _renderActions

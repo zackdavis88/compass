@@ -9,6 +9,7 @@ import project from "./project/project";
 import membership from "./membership/membership";
 import story from "./story/story";
 import priority from "./priority/priority";
+import status from "./status/status";
 
 const createRootReducer = (history) => combineReducers({
   router: connectRouter(history),
@@ -20,7 +21,8 @@ const createRootReducer = (history) => combineReducers({
   project,
   membership,
   story,
-  priority
+  priority,
+  status
 });
 
 export default createRootReducer;

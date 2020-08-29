@@ -10,7 +10,7 @@ import {
   StoryDetailsBlock,
   SideItem
 } from "./story-details.styles";
-import {PageError, PriorityLabel} from "../../common-styles/base";
+import {PageError, ProjectConfigLabel} from "../../common-styles/base";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {getStory, deleteStory, updateStory} from "../../store/actions/story";
 import {getAllPriorityNames} from "../../store/actions/priority";
@@ -126,7 +126,7 @@ const StoryDetails = (props) => {
                       <SideItem>
                         <span>Priority</span>
                         {story.priority ? (
-                          <PriorityLabel color={story.priority.color}>{story.priority.name}</PriorityLabel>
+                          <ProjectConfigLabel color={story.priority.color}>{story.priority.name}</ProjectConfigLabel>
                         ) : (
                           <div style={{fontStyle: "italic"}}>None</div>
                         )}

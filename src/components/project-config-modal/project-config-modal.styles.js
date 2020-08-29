@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import {PriorityLabel} from "../../common-styles/base";
+import {ProjectConfigLabel} from "../../common-styles/base";
 
-export const PriorityModalWrapper = styled.div`
+export const ProjectConfigModalWrapper = styled.div`
   position: relative;
 
   & #colorInput {
@@ -37,7 +37,7 @@ export const PreviewSection = styled.div`
     margin-right: 5px;
   }
 
-  & ${PriorityLabel} {
+  & ${ProjectConfigLabel} {
     margin-left: 10px;
   }
 `;

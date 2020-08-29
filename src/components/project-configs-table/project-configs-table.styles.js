@@ -4,7 +4,7 @@ import {PaginationWrapper} from "../pagination/pagination.styles";
 import {ButtonWrapper} from "../button/button.styles";
 import {white, tertiaryBlue26} from "../../common-styles/variables";
 
-export const PrioritiesTableWrapper = styled.div`
+export const ProjectConfigsTableWrapper = styled.div`
   position: relative;
   height: 775px;
   background-color: ${white};

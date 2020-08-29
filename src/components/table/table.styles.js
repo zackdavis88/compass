@@ -93,7 +93,7 @@ export const TableWrapper = styled.div`
     font-size: 18px;
 
     & th {
-      width: 10%;
+      width: 5%;
       border-bottom: 1px solid ${black};
       text-align: left;
     }
