@@ -4,8 +4,18 @@ import {ProjectConfigLabel} from "../../common-styles/base";
 export const ProjectConfigModalWrapper = styled.div`
   position: relative;
 
+  & #colorInput-wrapper {
+    display: inline-block;
+  }
+
   & #colorInput {
     width: 75px;
+  }
+
+  & #transparentInput {
+    display: inline-block;
+    top: -5px;
+    margin-left: 25px;
   }
 `;
 

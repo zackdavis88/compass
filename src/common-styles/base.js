@@ -44,10 +44,10 @@ export const PageError = styled.div`
   border-radius: 0;
 `;
 
-export const ProjectConfigLabel = styled.div.attrs(({color}) => ({
+export const ProjectConfigLabel = styled.div.attrs(({color, transparent}) => ({
   style: {
-    backgroundColor: color,
-    color: calcTextColor(color)
+    backgroundColor: transparent ? "#00000000" : color,
+    color: transparent ? "#000000" : calcTextColor(color)
   }
 }))`
   font-style: normal;

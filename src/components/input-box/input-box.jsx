@@ -12,7 +12,8 @@ const InputBox = (props) => {
     hasError: !!props.errorText,
     hasValue,
     helperText: props.errorText || props.helperText,
-    isColorPicker
+    isColorPicker,
+    id: `${props.id}-wrapper`
   };
 
   const inputProps = {

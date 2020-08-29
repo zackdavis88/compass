@@ -4,6 +4,7 @@ import {ProjectConfigModalWrapper, ProjectSection, PreviewSection} from "./proje
 import Modal from "../modal/modal";
 import { faEdit, faPlus } from "@fortawesome/free-solid-svg-icons";
 import InputBox from "../input-box/input-box";
+import CheckBox from "../check-box/check-box";
 import {ProjectConfigLabel} from "../../common-styles/base";
 
 const ProjectConfigModal = (props) => {
@@ -12,6 +13,7 @@ const ProjectConfigModal = (props) => {
   const initialState = {
     name: isEdit ? projectConfig.name : "",
     color: isEdit && projectConfig.color ? projectConfig.color : "#FFFFFF",
+    transparent: isEdit ? !!projectConfig.transparent : false,
     nameError: undefined,
     colorError: undefined
   };
@@ -45,12 +47,12 @@ const ProjectConfigModal = (props) => {
   };
 
   const _onSubmit = async() => {
-    const {name, color} = state;
+    const {name, color, transparent} = state;
     let response;
     if(isEdit)
-      response = await props.onSubmit(props.project, projectConfig, name, color);
+      response = await props.onSubmit(props.project, projectConfig, name, color, transparent);
     else
-      response = await props.onSubmit(props.project, name, color);
+      response = await props.onSubmit(props.project, name, color, transparent);
 
     if(response.error && response.error.includes("name"))
       return setState({...state, nameError: response.error});
@@ -108,6 +110,15 @@ const ProjectConfigModal = (props) => {
       errorText: state.colorError,
       value: state.color,
       onChange: (value) => setState({...state, color: value, colorError: undefined})
+    },
+    transparent: {
+      id: "transparentInput",
+      dataTestId: "transparentInput",
+      label: "No Background Color",
+      checked: state.transparent,
+      onChange: () => {
+        setState({...state, transparent: !state.transparent});
+      }
     }
   };
 
@@ -121,11 +132,12 @@ const ProjectConfigModal = (props) => {
         <PreviewSection>
           <span>Preview:</span>
           {state.name ? (
-            <ProjectConfigLabel color={state.color}>{state.name}</ProjectConfigLabel>
+            <ProjectConfigLabel color={state.color} transparent={state.transparent}>{state.name}</ProjectConfigLabel>
           ): "Enter a name for preview"}
         </PreviewSection>
         <InputBox {...inputProps.name} />
         <InputBox {...inputProps.color} />
+        <CheckBox {...inputProps.transparent} />
       </Modal>
     </ProjectConfigModalWrapper>
   );

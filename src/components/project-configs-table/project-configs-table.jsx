@@ -57,7 +57,7 @@ const ProjectConfigsTable = ({projectConfigs, configType, userRoles, actions, pa
     headers: [{
       label: configName,
       keyName: "name",
-      format: (name, {color}) => <ProjectConfigLabel color={color}>{name}</ProjectConfigLabel>
+      format: (name, {color, transparent}) => <ProjectConfigLabel color={color} transparent={transparent}>{name}</ProjectConfigLabel>
     }, {
       label: "Unique ID",
       keyName: "id"
