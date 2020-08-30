@@ -25,6 +25,13 @@ describe("<StoryModal />", () => {
           "secondPriority"
         ]
       }),
+      getStatusNames: jest.fn().mockReturnValue({
+        message: "another another test message",
+        status: [
+          "firstStatus",
+          "secondStatus"
+        ]
+      }),
       requestInProgress: false,
       project: {
         id: "testProjectId",
@@ -49,18 +56,21 @@ describe("<StoryModal />", () => {
     await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
   });
 
+  it("should call getStatusNames on mount", async() => {
+    render(<StoryModal {...props}/>);
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
+  });
+
   it("should disable the submit button by default when creating a new story", async() => {
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const submit = getByTestId("storyModal.actions.primaryButton");
     expect(submit).toBeDisabled();
   });
 
   it("should render a tooltip when submit is disabled due to missing input", async() => {
     const {getByTestId, getByText} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     expect(submitButton).toBeDisabled();
     fireEvent.mouseOver(submitButton);
@@ -71,8 +81,7 @@ describe("<StoryModal />", () => {
     props.getMemberNames.mockReturnValueOnce({users: undefined});
     props.getPriorityNames.mockReturnValueOnce({priorities: undefined});
     const {getByTestId, getByText} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     expect(getByTestId("storyModalLoader")).toBeDefined();
     expect(getByText("Loading available story options")).toBeDefined();
   });
@@ -80,8 +89,7 @@ describe("<StoryModal />", () => {
   it("should render a tooltip when submit is disabled to due pending API request", async() => {
     props.requestInProgress = true;
     const {getByTestId, getByText} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     fireEvent.mouseOver(submitButton);
     expect(getByText("request in progress")).toBeDefined();
@@ -89,15 +97,13 @@ describe("<StoryModal />", () => {
 
   it("should render the 'New Story' modal header when creating a new story", async() => {
     const {getByText} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     expect(getByText("New Story")).toBeDefined();
   });
 
   it("should render the expected inputs", async() => {
     const {queryByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const nameInput = queryByTestId("nameInput");
     const detailsInput = queryByTestId("detailsInput");
     const ownerInput = queryByTestId("ownerInput");
@@ -110,25 +116,37 @@ describe("<StoryModal />", () => {
 
   it("should render the priority input box if there are priorities to show", async() => {
     const {queryByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const priorityInput = queryByTestId("priorityInput");
     expect(priorityInput).toBeDefined();
+  });
+
+  it("should render the status input box if there are status to show", async() => {
+    const {queryByTestId} = render(<StoryModal {...props}/>);
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
+    const statusInput = queryByTestId("statusInput");
+    expect(statusInput).toBeDefined();
   });
 
   it("should not render the priority input box if there are no project priorities", async() => {
     props.getPriorityNames = jest.fn().mockReturnValueOnce({priorities: []})
     const {queryByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const priorityInput = queryByTestId("priorityInput");
     expect(priorityInput).toBeNull();
   });
 
+  it("should not render the status input box if there are no status priorities", async() => {
+    props.getStatusNames = jest.fn().mockReturnValueOnce({status: []})
+    const {queryByTestId} = render(<StoryModal {...props}/>);
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
+    const statusInput = queryByTestId("statusInput");
+    expect(statusInput).toBeNull();
+  });
+
   it("should enable the submit button if there is name input", async() => {
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const nameInput = getByTestId("nameInput.input");
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     expect(submitButton).toBeDisabled();
@@ -142,8 +160,7 @@ describe("<StoryModal />", () => {
 
   it("should call the onSubmit method when validation is successful", async() => {
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const nameInput = getByTestId("nameInput.input");
     const ownerInput = getByTestId("ownerInput.input");
     const detailsInput = getByTestId("detailsInput.input");
@@ -167,13 +184,12 @@ describe("<StoryModal />", () => {
       }
     });
     fireEvent.click(submitButton);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, nameVal, detailsVal, ownerVal, "", ""));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, nameVal, detailsVal, ownerVal, "", "", ""));
   });
 
   it("should call the onClose method when onSubmit is successful", async() => {
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const nameInput = getByTestId("nameInput.input");
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     fireEvent.change(nameInput, {
@@ -187,8 +203,7 @@ describe("<StoryModal />", () => {
 
   it("should call the showNotification method, if provided, when onSubmit is successful", async() => {
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const nameInput = getByTestId("nameInput.input");
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     fireEvent.change(nameInput, {
@@ -203,8 +218,7 @@ describe("<StoryModal />", () => {
   it("should call the refresh method, if provided, when onSubmit is successful", async() => {
     props.refresh = jest.fn();
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const nameInput = getByTestId("nameInput.input");
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     fireEvent.change(nameInput, {
@@ -225,8 +239,7 @@ describe("<StoryModal />", () => {
       owner: {displayName: "secondMember"}
     };
     const {getByText} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     expect(getByText("Edit Story")).toBeDefined();
   });
 
@@ -238,8 +251,7 @@ describe("<StoryModal />", () => {
       owner: {displayName: "secondMember"}
     };
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const nameInput = getByTestId("nameInput.input");
     expect(nameInput).toHaveValue(props.story.name);
   });
@@ -252,8 +264,7 @@ describe("<StoryModal />", () => {
       owner: {displayName: "secondMember"}
     };
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const ownerInput = getByTestId("ownerInput.input");
     expect(ownerInput).toHaveValue(props.story.owner.displayName);
   });
@@ -266,8 +277,7 @@ describe("<StoryModal />", () => {
       owner: {displayName: "secondMember"}
     };
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const detailsInput = getByTestId("detailsInput.input");
     expect(detailsInput).toHaveValue(props.story.details);
   });
@@ -281,8 +291,7 @@ describe("<StoryModal />", () => {
       priority: {name: "Test Priority", color: "#310aff"}
     };
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const priorityInput = getByTestId("priorityInput.input");
     expect(priorityInput).toHaveValue(props.story.priority.name);
   });
@@ -297,8 +306,7 @@ describe("<StoryModal />", () => {
       points: 5
     };
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const pointsInput = getByTestId("pointsInput.input");
     expect(pointsInput).toHaveValue(props.story.points);
   });
@@ -311,8 +319,7 @@ describe("<StoryModal />", () => {
       owner: {displayName: "secondMember"}
     };
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const nameInput = getByTestId("nameInput.input");
     const detailsInput = getByTestId("detailsInput.input");
     const ownerInput = getByTestId("ownerInput.input");
@@ -324,14 +331,13 @@ describe("<StoryModal />", () => {
     fireEvent.change(ownerInput, {target: { value: ownerVal}});
     const submitButton = getByTestId("storyModal.actions.primaryButton");
     fireEvent.click(submitButton);
-    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.story, nameVal, detailsVal, ownerVal, "", ""));
+    await waitFor(() => expect(props.onSubmit).toHaveBeenCalledWith(props.project, props.story, nameVal, detailsVal, ownerVal, "", "", ""));
   });
 
 
   it("should prevent the modal from autoclosing on click if there are any state changes", async() => {
     const {getByTestId} = render(<StoryModal {...props} />);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const modalBackground = getByTestId("storyModal.wrapper");
     const nameInput = getByTestId("nameInput.input");
     fireEvent.change(nameInput, {
@@ -344,8 +350,7 @@ describe("<StoryModal />", () => {
   it("should show a confirm prompt if cancel is clicked and there are state changes", async() => {
     window.confirm = jest.fn();
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const cancelButton = getByTestId("storyModal.actions.secondaryButton");
     const nameInput = getByTestId("nameInput.input");
     fireEvent.change(nameInput, {
@@ -358,8 +363,7 @@ describe("<StoryModal />", () => {
   it("should call onClose if confirm prompt returns true", async() => {
     window.confirm = jest.fn().mockReturnValueOnce(true);
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const cancelButton = getByTestId("storyModal.actions.secondaryButton");
     const nameInput = getByTestId("nameInput.input");
     fireEvent.change(nameInput, {
@@ -373,8 +377,7 @@ describe("<StoryModal />", () => {
   it("should not call onClose if confirm prompt returns false", async() => {
     window.confirm = jest.fn().mockReturnValueOnce(false);
     const {getByTestId} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const cancelButton = getByTestId("storyModal.actions.secondaryButton");
     const nameInput = getByTestId("nameInput.input");
     fireEvent.change(nameInput, {
@@ -387,8 +390,7 @@ describe("<StoryModal />", () => {
 
   it("should render 'Characters Remaining' helperText for details", async() => {
     const {getByTestId, queryByText} = render(<StoryModal {...props}/>);
-    await waitFor(() => expect(props.getMemberNames).toHaveBeenCalledWith(props.project));
-    await waitFor(() => expect(props.getPriorityNames).toHaveBeenCalledWith(props.project));
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
     const detailsInput = getByTestId("detailsInput.input");
     fireEvent.change(detailsInput, {
       target: {value: "this is a test value"}
