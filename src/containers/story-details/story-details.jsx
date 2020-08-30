@@ -110,6 +110,11 @@ const StoryDetails = (props) => {
                   <DetailsSection>
                     <DetailsBlock inlineLeft width="80%">
                       <StoryID>{story.id}</StoryID>
+                      {story.status && (
+                        <ProjectConfigLabel color={story.status.color} transparent={story.status.transparent}>
+                          {story.status.name}
+                        </ProjectConfigLabel>
+                      )}
                       <StoryName>{story.name}</StoryName>
                       <StoryDetailsBlock>
                         <span>Full Details</span>
@@ -133,14 +138,14 @@ const StoryDetails = (props) => {
                           <div style={{fontStyle: "italic"}}>None</div>
                         )}
                       </SideItem>
-                      <SideItem>
+                      {/* <SideItem>
                         <span>Status</span>
                         {story.status ? (
                           <ProjectConfigLabel color={story.status.color} transparent={story.status.transparent}>{story.status.name}</ProjectConfigLabel>
                         ) : (
                           <div style={{fontStyle: "italic"}}>None</div>
                         )}
-                      </SideItem>
+                      </SideItem> */}
                       <SideItem>
                         <span>Points</span>
                         {story.points ? (

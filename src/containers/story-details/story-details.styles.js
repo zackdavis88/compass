@@ -70,6 +70,7 @@ export const DetailsBlock = styled.div`
 `;
 
 export const StoryID = styled.small`
+  display: block;
   color: ${black80};
   letter-spacing: 1px;
   margin-bottom: 5px;

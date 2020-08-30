@@ -293,7 +293,6 @@ describe("<StoryDetails />", () => {
   it("should render the status if one is provided", async() => {
     const {queryByText} = render(<StoryDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
-    expect(queryByText("Status")).toBeDefined();
     expect(queryByText("Test Status")).toBeDefined();
   });
 
@@ -319,15 +318,6 @@ describe("<StoryDetails />", () => {
     const {getByText} = render(<StoryDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
     expect(getByText("Priority")).toBeDefined();
-    expect(getByText("None")).toBeDefined();
-  });
-
-  it("should render 'None' if there is no status assigned", async() => {
-    store.dispatch = jest.fn();
-    store.dispatch.mockReturnValueOnce({story: {...mockStoryResponse.story, status: undefined}});
-    const {getByText} = render(<StoryDetails {...props} />, store);
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalled());
-    expect(getByText("Status")).toBeDefined();
     expect(getByText("None")).toBeDefined();
   });
 
