@@ -22,7 +22,7 @@ const MarkdownText = ({dataTestId, sourceData, updateMarkdown}) => {
       };
       return (
         <li key={props.index}>
-          <CheckBox label={label} checked={checked} onChange={_onChange} dataTestId={`markdownCheckbox.${props.index}`} />
+          <CheckBox label={label} checked={checked} onChange={_onChange} dataTestId={`markdownCheckbox.${props.index}`} strikeText/>
         </li>
       );
     }

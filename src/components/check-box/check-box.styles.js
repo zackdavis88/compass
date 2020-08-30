@@ -31,7 +31,9 @@ export const CheckBoxWrapper = styled.label`
   cursor: pointer;
   font-size: 18px;
   user-select: none;
-
+  ${({strikeText}) => strikeText && css`
+    text-decoration: line-through;
+  `}
   & input {
     position: absolute;
     opacity: 0;
