@@ -138,14 +138,6 @@ const StoryDetails = (props) => {
                           <div style={{fontStyle: "italic"}}>None</div>
                         )}
                       </SideItem>
-                      {/* <SideItem>
-                        <span>Status</span>
-                        {story.status ? (
-                          <ProjectConfigLabel color={story.status.color} transparent={story.status.transparent}>{story.status.name}</ProjectConfigLabel>
-                        ) : (
-                          <div style={{fontStyle: "italic"}}>None</div>
-                        )}
-                      </SideItem> */}
                       <SideItem>
                         <span>Points</span>
                         {story.points ? (
