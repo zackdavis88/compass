@@ -32,6 +32,7 @@ import StoryModal from "../../components/story-modal/story-modal";
 import {updateQueryString, generateObjectFromSearch, formatDate, setTitle, onHeaderClick} from "../../utils";
 import SearchBar from "../../components/search-bar/search-bar";
 import MarkdownText from "../../components/markdown-text/markdown-text";
+import { getAllStatusNames } from "../../store/actions/status";
 
 const ProjectDetails = (props) => {
   setTitle("Project Details");
@@ -54,7 +55,8 @@ const ProjectDetails = (props) => {
     deleteStory,
     createStory,
     getMemberNames,
-    getAllPriorityNames
+    getAllPriorityNames,
+    getAllStatusNames
   } = props;
   const query = generateObjectFromSearch(props.location.search);
   const projectId = props.match.params.projectId;
@@ -473,6 +475,7 @@ const ProjectDetails = (props) => {
             requestInProgress={storyIsLoading}
             getMemberNames={getMemberNames}
             getPriorityNames={getAllPriorityNames}
+            getStatusNames={getAllStatusNames}
             project={project}
             refresh={_reloadStories}
           />
@@ -499,7 +502,8 @@ ProjectDetails.propTypes = {
   deleteStory: PropTypes.func.isRequired,
   createStory: PropTypes.func.isRequired,
   getMemberNames: PropTypes.func.isRequired,
-  getAllPriorityNames: PropTypes.func.isRequired
+  getAllPriorityNames: PropTypes.func.isRequired,
+  getAllStatusNames: PropTypes.func.isRequired
 };
 
 export default connect((state) => ({
@@ -521,5 +525,6 @@ export default connect((state) => ({
   deleteStory,
   createStory,
   getMemberNames,
-  getAllPriorityNames
+  getAllPriorityNames,
+  getAllStatusNames
 })(ProjectDetails);

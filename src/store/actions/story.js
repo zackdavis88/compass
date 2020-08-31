@@ -5,7 +5,7 @@ import {
   STORY_REQUEST_FAILURE
 } from "../types/story";
 
-export const createStory = (project, name, details, owner, priority, points) => dispatch => {
+export const createStory = (project, name, details, owner, priority, points, status) => dispatch => {
   return dispatch({
     types: [STORY_REQUEST_START, STORY_REQUEST_SUCCESS, STORY_REQUEST_FAILURE],
     request: request.post(`/api/projects/${project.id}/stories`),
@@ -14,12 +14,13 @@ export const createStory = (project, name, details, owner, priority, points) => 
       details,
       owner,
       priority,
+      status,
       points: points ? Number(points) : undefined
     }
   });
 };
 
-export const updateStory = (project, story, name, details, owner, priority, points) => dispatch => {
+export const updateStory = (project, story, name, details, owner, priority, points, status) => dispatch => {
   const payload = {};
   if(name)
     payload.name = name;
@@ -29,6 +30,8 @@ export const updateStory = (project, story, name, details, owner, priority, poin
     payload.owner = owner;
   if(typeof priority === "string")
     payload.priority = priority;
+  if(typeof status === "string")
+    payload.status = status;
   if(points)
     payload.points = Number(points); // If points is truthy then send it in the payload
   else

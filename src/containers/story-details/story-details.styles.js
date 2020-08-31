@@ -62,8 +62,7 @@ export const DetailsBlock = styled.div`
     border-left: none;
     border-radius: 0 5px 5px 0;
     right: 0;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 20px 10px;
   `}
   ${({textCenter}) => textCenter && css`
     text-align: center;
@@ -71,6 +70,7 @@ export const DetailsBlock = styled.div`
 `;
 
 export const StoryID = styled.small`
+  display: block;
   color: ${black80};
   letter-spacing: 1px;
   margin-bottom: 5px;

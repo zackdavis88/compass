@@ -31,7 +31,9 @@ export const CheckBoxWrapper = styled.label`
   cursor: pointer;
   font-size: 18px;
   user-select: none;
-
+  ${({strikeText}) => strikeText && css`
+    text-decoration: line-through;
+  `}
   & input {
     position: absolute;
     opacity: 0;
@@ -63,23 +65,23 @@ export const CheckBoxWrapper = styled.label`
   }
 
   ${({disabled}) => disabled && css`
-  cursor: not-allowed;
-  color: ${black99};
-
-  & input {
     cursor: not-allowed;
-  }
+    color: ${black99};
 
-  &:hover input ~ ${CheckBoxSquare} {
-    background-color: ${black33};
-  }
+    & input {
+      cursor: not-allowed;
+    }
 
-  & input:checked ~ ${CheckBoxSquare}{
-    background-color: ${black33};
-  }
+    &:hover input ~ ${CheckBoxSquare} {
+      background-color: ${black33};
+    }
 
-  & ${CheckBoxSquare} {
-    background-color: ${black33};
-  }
-`}
+    & input:checked ~ ${CheckBoxSquare}{
+      background-color: ${black33};
+    }
+
+    & ${CheckBoxSquare} {
+      background-color: ${black33};
+    }
+  `}
 `;

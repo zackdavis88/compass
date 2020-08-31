@@ -432,11 +432,12 @@ describe("<ProjectDetails />", () => {
     fireEvent.click(actionsMenu);
     store.dispatch.mockReturnValueOnce({});
     store.dispatch.mockReturnValueOnce({});
+    store.dispatch.mockReturnValueOnce({});
     const newStoryAction = getByText("New Story");
     expect(queryByTestId("storyModal.wrapper")).toBeNull();
     fireEvent.click(newStoryAction);
     expect(queryByTestId("storyModal.wrapper")).toBeDefined();
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(5));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(6));
   });
 
   it("should render the add member modal when 'Add Member' is clicked", async() => {

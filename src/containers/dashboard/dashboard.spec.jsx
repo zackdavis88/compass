@@ -184,11 +184,12 @@ describe("<Dashboard />", () => {
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     store.dispatch.mockReturnValueOnce({});
     store.dispatch.mockReturnValueOnce({});
+    store.dispatch.mockReturnValueOnce({});
     const addStoryButton = getAllByTestId("action.addStory")[0];
     expect(queryByTestId("storyModal.wrapper")).toBeNull();
     fireEvent.click(addStoryButton);
     expect(queryByTestId("storyModal.wrapper")).toBeDefined();
-    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(5));
   });
 
   it("should call the push redux action when the view project action is clicked", async() => {

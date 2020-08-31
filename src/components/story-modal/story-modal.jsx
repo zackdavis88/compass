@@ -16,16 +16,19 @@ const StoryModal = (props) => {
     details: isEdit && story.details ? story.details : "",
     owner: isEdit && story.owner ? story.owner.displayName : "",
     priority: isEdit && story.priority ? story.priority.name : "",
+    status: isEdit && story.status ? story.status.name : "",
     points: isEdit && story.points ? String(story.points) : "",
     nameError: undefined,
     detailsError: undefined,
     ownerError: undefined,
     priorityError: undefined,
+    statusError: undefined,
     pointsError: undefined
   };
   const [state, setState] = useState(initialState);
   const [memberNames, setMemberNames] = useState(undefined);
   const [priorityNames, setPriorityNames] = useState(undefined);
+  const [statusNames, setStatusNames] = useState(undefined);
 
   // Tracking if any data on the form has changed.
   const hasChanges = JSON.stringify(initialState) !== JSON.stringify(state);
@@ -33,9 +36,11 @@ const StoryModal = (props) => {
   const _loadData = async() => {
     const memberNamesResponse = await props.getMemberNames(props.project);
     const priorityNamesResponse = await props.getPriorityNames(props.project);
+    const statusNamesResponse = await props.getStatusNames(props.project);
 
     setMemberNames(memberNamesResponse.users);
     setPriorityNames(priorityNamesResponse.priorities);
+    setStatusNames(statusNamesResponse.status);
   };
 
   useEffect(() => {
@@ -49,6 +54,7 @@ const StoryModal = (props) => {
     !!state.detailsError ||
     !!state.ownerError ||
     !!state.priorityError ||
+    !!state.statusError ||
     !!state.pointsError ||
     props.requestInProgress
   );
@@ -70,12 +76,12 @@ const StoryModal = (props) => {
   };
 
   const _onSubmit = async() => {
-    const {name, details, owner, priority, points} = state;
+    const {name, details, owner, priority, points, status} = state;
     let response;
     if(isEdit)
-      response = await props.onSubmit(props.project, story, name, details, owner, priority, points);
+      response = await props.onSubmit(props.project, story, name, details, owner, priority, points, status);
     else
-      response = await props.onSubmit(props.project, name, details, owner, priority, points);
+      response = await props.onSubmit(props.project, name, details, owner, priority, points, status);
 
     if(response.error && response.error.includes("name"))
       return setState({...state, nameError: response.error});
@@ -87,6 +93,8 @@ const StoryModal = (props) => {
       return setState({...state, priorityError: response.error});
     else if(response.error && response.error.includes("points"))
       return setState({...state, pointsError: response.error});
+    else if(response.error && response.error.includes("status"))
+      return setState({...state, statusError: response.error});
 
     props.onClose();
     if(props.showNotification)
@@ -165,6 +173,17 @@ const StoryModal = (props) => {
       onChange: (value) => setState({...state, priority: value, priorityError: undefined}),
       items: priorityNames,
       errorText: state.priorityError
+    },
+    status: {
+      id: "statusInput",
+      dataTestId: "statusInput",
+      label: "Status",
+      placeholder: "Select a status",
+      focusedPlaceholder: "Start typing to filter options",
+      value: state.status,
+      onChange: (value) => setState({...state, status: value, statusError: undefined}),
+      items: statusNames,
+      errorText: state.statusError
     }
   };
 
@@ -185,6 +204,9 @@ const StoryModal = (props) => {
             {priorityNames && priorityNames.length !== 0 && (
               <SelectInput {...inputProps.priority} />
             )}
+            {statusNames && statusNames.length !== 0 && (
+              <SelectInput {...inputProps.status} />
+            )}
             <TextArea {...inputProps.details} />
           </Fragment>
         )}
@@ -200,6 +222,7 @@ StoryModal.propTypes =  {
   requestInProgress: PropTypes.bool.isRequired,
   getMemberNames: PropTypes.func.isRequired,
   getPriorityNames: PropTypes.func.isRequired,
+  getStatusNames: PropTypes.func.isRequired,
   project: PropTypes.shape({
     id: PropTypes.string.isRequired,
   }).isRequired,
