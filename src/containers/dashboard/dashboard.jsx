@@ -12,7 +12,7 @@ import {getAllStatusNames} from "../../store/actions/status";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
-import ProjectsTable from "../../components/projects-table/projects-table";
+// import ProjectsTable from "../../components/projects-table/projects-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import {push} from "connected-react-router";
 import MembershipModal from "../../components/membership-modal/membership-modal";
@@ -23,6 +23,7 @@ import {getDashboardProjects, getDashboardStories} from "../../store/actions/das
 import StoriesTable from "../../components/stories-table/stories-table";
 import SearchBar from "../../components/search-bar/search-bar";
 import {updateQueryString, generateObjectFromSearch, setTitle, onHeaderClick} from "../../utils";
+import ProjectCollapsibleList from "../../components/project-collapsible-list/project-collapsible-list";
 
 const Dashboard = (props) => {
   setTitle("Dashboard");
@@ -100,29 +101,29 @@ const Dashboard = (props) => {
 
   const projects = projectsData && projectsData.projects;
   const stories = storiesData && storiesData.stories;
-  const projectsTableProps = {
-    projects,
-    actions: {
-      addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
-      viewProject: (project) => historyPush(`/projects/${project.id}`),
-      addStory: (project) => setNewStoryData({project}),
-      viewProjectConfigs: (project) => historyPush(`/projects/${project.id}/configs`)
-    },
-    pagination: {
-      itemsPerPage: projectsData && projectsData.itemsPerPage,
-      page: projectsData && projectsData.page,
-      totalPages: projectsData && projectsData.totalPages,
-      getPage: async(page) => {
-        if(page === projectsData.page)
-          return;
-        const response = await getDashboardProjects(page, projectsData.itemsPerPage, projectSearchData.searchedValue);
-        if(!response.error)
-          setProjectsData(response);
+  // const projectsTableProps = {
+  //   projects,
+  //   actions: {
+  //     addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
+  //     viewProject: (project) => historyPush(`/projects/${project.id}`),
+  //     addStory: (project) => setNewStoryData({project}),
+  //     viewProjectConfigs: (project) => historyPush(`/projects/${project.id}/configs`)
+  //   },
+  //   pagination: {
+  //     itemsPerPage: projectsData && projectsData.itemsPerPage,
+  //     page: projectsData && projectsData.page,
+  //     totalPages: projectsData && projectsData.totalPages,
+      // getPage: async(page) => {
+      //   if(page === projectsData.page)
+      //     return;
+      //   const response = await getDashboardProjects(page, projectsData.itemsPerPage, projectSearchData.searchedValue);
+      //   if(!response.error)
+      //     setProjectsData(response);
         
-        updateQueryString("projectsPage", page);
-      }
-    }
-  };
+      //   updateQueryString("projectsPage", page);
+      // }
+  //   }
+  // };
 
   const storiesTableProps = {
     stories,
@@ -244,7 +245,23 @@ const Dashboard = (props) => {
             <Tabs.TabPanels>
               <Tabs.Panel>
                 <SearchBar {...projectsSearchBarProps}/>
-                <ProjectsTable {...projectsTableProps} />
+                <ProjectCollapsibleList
+                  projects={projects}
+                  pagination={{
+                    itemsPerPage: projectsData.itemsPerPage,
+                    page: projectsData.page,
+                    totalPages: projectsData.totalPages,
+                    getPage: async(page) => {
+                      if(page === projectsData.page)
+                        return;
+                      const response = await getDashboardProjects(page, projectsData.itemsPerPage, projectSearchData.searchedValue);
+                      if(!response.error)
+                        setProjectsData(response);
+                      
+                      updateQueryString("projectsPage", page);
+                    }
+                  }}
+                />
               </Tabs.Panel>
               <Tabs.Panel>
                 <SearchBar {...storiesSearchBarProps}/>
