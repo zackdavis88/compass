@@ -126,6 +126,14 @@ export const CollapsiblePanelWrapper = styled.div`
     & ${PanelHeader} > ${Action}.highlightAction {
       color: ${black};
     }
+
+    & ${PanelHeader} > ${ActionsWrapper} > ${Action}.highlightAction {
+      color: ${black};
+    }
+
+    & ${PanelHeader} > ${ActionsWrapper} > ${LinkAction}.highlightAction {
+      color: ${black};
+    }
   `}
 
   ${({isActive, contentHeight}) => isActive && contentHeight && css`
