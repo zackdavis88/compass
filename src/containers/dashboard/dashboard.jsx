@@ -12,7 +12,6 @@ import {getAllStatusNames} from "../../store/actions/status";
 import LoadingSpinner from "../../components/loading-spinner/loading-spinner";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import ProjectModal from "../../components/project-modal/project-modal";
-// import ProjectsTable from "../../components/projects-table/projects-table";
 import DeleteModal from "../../components/delete-modal/delete-modal";
 import {push} from "connected-react-router";
 import MembershipModal from "../../components/membership-modal/membership-modal";
@@ -101,29 +100,6 @@ const Dashboard = (props) => {
 
   const projects = projectsData && projectsData.projects;
   const stories = storiesData && storiesData.stories;
-  // const projectsTableProps = {
-  //   projects,
-  //   actions: {
-  //     addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
-  //     viewProject: (project) => historyPush(`/projects/${project.id}`),
-  //     addStory: (project) => setNewStoryData({project}),
-  //     viewProjectConfigs: (project) => historyPush(`/projects/${project.id}/configs`)
-  //   },
-  //   pagination: {
-  //     itemsPerPage: projectsData && projectsData.itemsPerPage,
-  //     page: projectsData && projectsData.page,
-  //     totalPages: projectsData && projectsData.totalPages,
-      // getPage: async(page) => {
-      //   if(page === projectsData.page)
-      //     return;
-      //   const response = await getDashboardProjects(page, projectsData.itemsPerPage, projectSearchData.searchedValue);
-      //   if(!response.error)
-      //     setProjectsData(response);
-        
-      //   updateQueryString("projectsPage", page);
-      // }
-  //   }
-  // };
 
   const storiesTableProps = {
     stories,
@@ -246,7 +222,14 @@ const Dashboard = (props) => {
               <Tabs.Panel>
                 <SearchBar {...projectsSearchBarProps}/>
                 <ProjectCollapsibleList
+                  dataTestId="projectsList"
                   projects={projects}
+                  actions={{
+                    addMember: (project, adminAllowed) => setMembershipData({project, adminAllowed}),
+                    viewDetails: (project) => historyPush(`/projects/${project.id}`),
+                    addStory: (project) => setNewStoryData({project}),
+                    viewConfigs: (project) => historyPush(`/projects/${project.id}/configs`)
+                  }}
                   pagination={{
                     itemsPerPage: projectsData.itemsPerPage,
                     page: projectsData.page,

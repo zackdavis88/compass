@@ -69,9 +69,10 @@ const ProjectCollapsibleList = ({projects, actions, pagination, dataTestId}) => 
       </Fragment>
     )
   };
+  const wrapperProps = dataTestId ? {"data-testid": dataTestId} : {};
 
   return (
-    <ProjectCollapsibleListWrapper>
+    <ProjectCollapsibleListWrapper {...wrapperProps}>
       {projects && projects.length ? projects.map((project, index) => (
         <CollapsiblePanel
           key={index} 
