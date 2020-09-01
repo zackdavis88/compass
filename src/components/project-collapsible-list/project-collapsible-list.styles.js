@@ -4,7 +4,7 @@ import {CollapsiblePanelWrapper, PanelContent} from "../collapsible-panel/collap
 export const ProjectCollapsibleListWrapper = styled.div`
   position: relative;
   display: block;
-  min-height: 730px;
+  min-height: 775px;
 
   & ${CollapsiblePanelWrapper} {
     margin-bottom: 0.5em;
