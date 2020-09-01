@@ -3,21 +3,62 @@ import PropTypes from "prop-types";
 import {
   CollapsiblePanelWrapper,
   PanelHeader,
-  PanelContent
+  PanelContent,
+  Action,
+  ActionsWrapper
 } from "./collapsible-panel.styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
+import {faChevronUp} from "@fortawesome/free-solid-svg-icons";
 
 const CollapsiblePanel = (props) => {
   const contentElement = useRef(null);
   const contentHeight = contentElement.current && contentElement.current.scrollHeight;
+  const expandCollapseAction = useRef(null);
+
+  const _onClick = () => {
+    const classList = expandCollapseAction.current.classList;
+    const newValue = !props.isActive;
+    props.onHeaderClick(newValue);
+    // We got set to active. Remove the rotateUp class and attach rotateDown.
+    if(newValue) {
+      classList.remove("rotateUp");
+      void expandCollapseAction.current.offsetWidth; // REQUIRED black-magic to get the animations to retrigger every click.
+      classList.add("rotateDown");
+    }
+    else {
+      classList.remove("rotateDown");
+      void expandCollapseAction.current.offsetWidth;
+      classList.add("rotateUp");
+    }
+  };
+
+  const wrapperProps = {isActive: props.isActive, contentHeight};
+  const headerProps = {type: "button", onClick: _onClick};
+  const contentProps = {ref: contentElement};
+  const expandCollapseProps = {ref: expandCollapseAction, className: "collapsibleExpandAction highlightAction"};
+  const actionsProps = {};
+  if(props.dataTestId) {
+    wrapperProps["data-testid"] = props.dataTestId;
+    headerProps["data-testid"] = `${props.dataTestId}.header`;
+    contentProps["data-testid"] = `${props.dataTestId}.contentPanel`;
+    expandCollapseProps["data-testid"] = `${props.dataTestId}.toggleAction`;
+    actionsProps["data-testid"] = `${props.dataTestId}.actionsWrapper`;
+  }
+
   return (
-    <CollapsiblePanelWrapper isActive={props.isActive} contentHeight={contentHeight}>
-      <PanelHeader type="button" onClick={() => props.onHeaderClick(!props.isActive)}>
-        {props.headerText}
-        <FontAwesomeIcon icon={props.isActive ? faMinus : faPlus} fixedWidth />
+    <CollapsiblePanelWrapper {...wrapperProps}>
+      <PanelHeader {...headerProps}>
+        <div>{props.headerText}</div>
+        <Action {...expandCollapseProps}>
+          <FontAwesomeIcon icon={faChevronUp} fixedWidth />
+        </Action>
+        {props.actions && (
+          <ActionsWrapper {...actionsProps}>
+            {props.actions}
+          </ActionsWrapper>
+        )}
       </PanelHeader>
-      <PanelContent ref={contentElement}>
+      <PanelContent {...contentProps}>
         {props.children}
       </PanelContent>
     </CollapsiblePanelWrapper>
@@ -27,7 +68,9 @@ const CollapsiblePanel = (props) => {
 CollapsiblePanel.propTypes = {
   isActive: PropTypes.bool.isRequired,
   onHeaderClick: PropTypes.func.isRequired,
-  headerText: PropTypes.string.isRequired
+  headerText: PropTypes.string.isRequired,
+  actions: PropTypes.element,
+  dataTestId: PropTypes.string
 };
 
 export default CollapsiblePanel;

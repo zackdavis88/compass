@@ -1,12 +1,61 @@
 import styled, {css} from "styled-components";
 import {
   transparent, 
-  black, 
+  black,
+  black33,
   black80,
   tertiaryBlue26,
   tertiaryBlue50,
   secondaryBlue1a
 } from "../../common-styles/variables";
+import {TooltipWrapper} from "../tooltip/tooltip.styles";
+import {rotate180} from "../../common-styles/animations";
+
+export const Action = styled.div`
+  position: relative;
+  user-select: none;
+  line-height: 0;
+  cursor: not-allowed;
+  color: ${black33};
+  transition: color 100ms linear;
+
+  &:hover ${TooltipWrapper} {
+    font-size: 16px;
+    visibility: visible;
+    opacity: 1;
+    left: -50px;
+    bottom: -33px;
+    padding: 5px;
+  }
+`;
+
+export const LinkAction = styled.a`
+  text-decoration: none;
+  position: relative;
+  user-select: none;
+  line-height: 0;
+  cursor: not-allowed;
+  color: ${black33};
+  transition: color 100ms linear;
+
+  &:hover ${TooltipWrapper} {
+    font-size: 16px;
+    visibility: visible;
+    opacity: 1;
+    left: -50px;
+    bottom: -33px;
+    padding: 5px;
+  }
+`;
+
+export const ActionsWrapper = styled.div`
+  float: right;
+  margin-right: 15px;
+  ${Action}, ${LinkAction} {
+    display: inline-block;
+    margin-left: 5px;
+  }
+`;
 
 export const PanelHeader = styled.button`
   background-color: ${secondaryBlue1a};
@@ -23,9 +72,32 @@ export const PanelHeader = styled.button`
   &:hover {
     background-color: ${tertiaryBlue26};
   }
-
-  & > svg {
+  & > div:first-of-type {
+    display: inline-block;
+    max-width: 85%;
+    padding-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  & > .collapsibleExpandAction {
     float: right;
+  }
+  &:hover ${Action}.highlightAction {
+    color: ${black};
+    cursor: pointer;
+  }
+  &:hover ${LinkAction}.highlightAction {
+    color: ${black};
+    cursor: pointer;
+  }
+
+  & .collapsibleExpandAction.rotateDown {
+    animation: ${rotate180} 175ms linear 0s 1;
+    animation-fill-mode: forwards;
+  }
+  & .collapsibleExpandAction.rotateUp {
+    animation: ${rotate180} 175ms linear 0s 1;
+    animation-direction: reverse;
   }
 `;
 
@@ -37,7 +109,7 @@ export const PanelContent = styled.div`
   padding: 0;
   border: 1px solid ${transparent};
   border-radius: 0 0 5px 5px;
-  transition: max-height 100ms linear, border-color 100ms linear;
+  transition: max-height 150ms linear, border-color 100ms linear;
 `;
 
 export const CollapsiblePanelWrapper = styled.div`
@@ -49,6 +121,10 @@ export const CollapsiblePanelWrapper = styled.div`
     & ${PanelHeader} {
       background-color: ${tertiaryBlue50};
       border-radius: 5px 5px 0 0;
+    }
+
+    & ${PanelHeader} > ${Action}.highlightAction {
+      color: ${black};
     }
   `}
 
