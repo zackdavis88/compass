@@ -41,3 +41,12 @@ export const fullRotate = keyframes`
     transform: rotate(360deg);
   }
 `;
+
+export const rotate180 = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+`;

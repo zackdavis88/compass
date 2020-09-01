@@ -162,10 +162,10 @@ describe("<Dashboard />", () => {
     expect(getByText("There are no projects to display")).toBeDefined();
   });
 
-  it("should render the projects table if there are projects to display", async() => {
+  it("should render the projects list if there are projects to display", async() => {
     const {getByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
-    expect(getByTestId("projectsTable")).toBeDefined();
+    expect(getByTestId("projectsList")).toBeDefined();
   });
 
   it("should render the MembershipModal if the add member action is clicked", async() => {
