@@ -60,7 +60,7 @@ const StoryCollapsibleList = ({stories, actions, pagination, dataTestId, project
     return (
       <Fragment>
         {deleteStory && (
-          <Action data-testid="action.deleteStory" className={actionAllowed ? "highlightAction" : ""} onClick={() => actionAllowed && deleteStory(story)}>
+          <Action data-testid="action.deleteStory" className={actionAllowed ? "highlightAction" : ""} onClick={(e) => {e.stopPropagation();if(actionAllowed) return deleteStory(story)}}>
             <FontAwesomeIcon icon={faTrash} fixedWidth />
             {actionAllowed && <Tooltip text={"Delete Story"} />}
           </Action>
