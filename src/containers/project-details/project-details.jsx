@@ -27,12 +27,12 @@ import {push} from "connected-react-router";
 import {showNotification} from "../../store/actions/notification";
 import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
-import StoriesTable from "../../components/stories-table/stories-table";
 import StoryModal from "../../components/story-modal/story-modal";
 import {updateQueryString, generateObjectFromSearch, formatDate, setTitle, onHeaderClick} from "../../utils";
 import SearchBar from "../../components/search-bar/search-bar";
 import MarkdownText from "../../components/markdown-text/markdown-text";
 import { getAllStatusNames } from "../../store/actions/status";
+import StoryCollapsibleList from "../../components/story-collapsible-list/story-collapsible-list";
 
 const ProjectDetails = (props) => {
   setTitle("Project Details");
@@ -158,21 +158,21 @@ const ProjectDetails = (props) => {
     }
   };
 
-  const storiesPagination = {
-    itemsPerPage: storiesData && storiesData.itemsPerPage,
-    page: storiesData && storiesData.page,
-    totalPages: storiesData && storiesData.totalPages,
-    getPage: async(page) => {
-      if(page === storiesData.page)
-        return;
-      updateQueryString("storiesPage", page);
-      const response = await getStories(projectId, page, storiesData.itemsPerPage, storySearchData.searchedValue);
-      if(response.error)
-        return setPageError(response.error);
+  // const storiesPagination = {
+  //   itemsPerPage: storiesData && storiesData.itemsPerPage,
+  //   page: storiesData && storiesData.page,
+  //   totalPages: storiesData && storiesData.totalPages,
+    // getPage: async(page) => {
+    //   if(page === storiesData.page)
+    //     return;
+    //   updateQueryString("storiesPage", page);
+    //   const response = await getStories(projectId, page, storiesData.itemsPerPage, storySearchData.searchedValue);
+    //   if(response.error)
+    //     return setPageError(response.error);
       
-      setStoriesData(response);
-    }
-  };
+    //   setStoriesData(response);
+    // }
+  // };
   
   const project = projectData && projectData.project;
   const userRoles = projectData && projectData.userRoles;
@@ -363,7 +363,8 @@ const ProjectDetails = (props) => {
                   {userRoles && (userRoles.isAdmin || userRoles.isManager || userRoles.isDeveloper || userRoles.isViewer) && (
                     <SearchBar {...storiesSearchBarProps} />
                   )}
-                  <StoriesTable
+                  <StoryCollapsibleList 
+                    dataTestId="storiesList"
                     stories={storiesData.stories}
                     project={{
                       id: project.id,
@@ -372,9 +373,23 @@ const ProjectDetails = (props) => {
                     }}
                     actions={{
                       deleteStory: (story) => setDeleteStoryData(story),
-                      viewStory: (story) => historyPush(`/projects/${project.id}/stories/${story.id}`)
+                      viewDetails: (story) => historyPush(`/projects/${project.id}/stories/${story.id}`)
                     }}
-                    pagination={storiesPagination}
+                    pagination={{
+                      itemsPerPage: storiesData.itemsPerPage,
+                      page: storiesData.page,
+                      totalPages: storiesData.totalPages,
+                      getPage: async(page) => {
+                        if(page === storiesData.page)
+                          return;
+                        updateQueryString("storiesPage", page);
+                        const response = await getStories(projectId, page, storiesData.itemsPerPage, storySearchData.searchedValue);
+                        if(response.error)
+                          return setPageError(response.error);
+                        
+                        setStoriesData(response);
+                      }
+                    }}
                   />
                 </Tabs.Panel>
               </Tabs.TabPanels>
