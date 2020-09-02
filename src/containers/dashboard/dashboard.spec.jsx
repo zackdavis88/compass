@@ -231,13 +231,13 @@ describe("<Dashboard />", () => {
     expect(getByText("There are no stories to display")).toBeDefined();
   });
 
-  it("should render the StoriesTable when the Stories tab is clicked", async() => {
+  it("should render the stories list if there are stories to display", async() => {
     const {getByText, queryByTestId} = render(<Dashboard {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
     const storiesTab = getByText("My Stories");
-    expect(queryByTestId("storiesTable")).toBeNull();
+    expect(queryByTestId("storiesList")).toBeNull();
     fireEvent.click(storiesTab);
-    expect(queryByTestId("storiesTable")).toBeDefined();
+    expect(queryByTestId("storiesList")).toBeDefined();
   });
 
   it("should call the push redux action when the view story action is clicked", async() => {
