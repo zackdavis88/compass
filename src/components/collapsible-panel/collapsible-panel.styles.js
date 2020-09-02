@@ -10,6 +10,7 @@ import {
 } from "../../common-styles/variables";
 import {TooltipWrapper} from "../tooltip/tooltip.styles";
 import {rotate180} from "../../common-styles/animations";
+import {ProjectConfigLabel} from "../../common-styles/base";
 
 export const Action = styled.div`
   position: relative;
@@ -57,7 +58,27 @@ export const ActionsWrapper = styled.div`
   }
 `;
 
+export const DecorationsWrapper = styled.div`
+  position: absolute;
+  font-size: 14px;
+  bottom: 10px;
+  user-select: none;
+  transition: opacity 100ms linear;
+  
+  & > ${ProjectConfigLabel} {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-right: 10px;
+    user-select: none;
+  }
+
+  & > span {
+    margin-right: 15px;
+  }
+`;
+
 export const PanelHeader = styled.button`
+  position: relative;
   background-color: ${secondaryBlue1a};
   color: ${black};
   cursor: pointer;
@@ -73,11 +94,13 @@ export const PanelHeader = styled.button`
     background-color: ${tertiaryBlue26};
   }
   & > div:first-of-type {
+    position: relative;
     display: inline-block;
     max-width: 85%;
     padding-right: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: top 175ms linear;
   }
   & > .collapsibleExpandAction {
     float: right;
@@ -116,6 +139,11 @@ export const CollapsiblePanelWrapper = styled.div`
   position: relative;
   display: block;
   user-select: text;
+  ${({hasDecorations}) => hasDecorations && css`
+    & ${PanelHeader} > div:first-of-type {
+      top: -10px;
+    }
+  `}
 
   ${({isActive}) => isActive && css`
     & ${PanelHeader} {
@@ -133,6 +161,16 @@ export const CollapsiblePanelWrapper = styled.div`
 
     & ${PanelHeader} > ${ActionsWrapper} > ${LinkAction}.highlightAction {
       color: ${black};
+    }
+
+    & ${DecorationsWrapper} {
+      opacity: 0;
+    }
+  `}
+
+  ${({isActive, hasDecorations}) => isActive && hasDecorations && css`
+    & ${PanelHeader} > div:first-of-type {
+      top: 0;
     }
   `}
 

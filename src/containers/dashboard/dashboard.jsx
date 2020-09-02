@@ -19,10 +19,10 @@ import ActionsMenu from "../../components/actions-menu/actions-menu";
 import PageHeader from "../../components/page-header/page-header";
 import StoryModal from "../../components/story-modal/story-modal";
 import {getDashboardProjects, getDashboardStories} from "../../store/actions/dashboard";
-import StoriesTable from "../../components/stories-table/stories-table";
 import SearchBar from "../../components/search-bar/search-bar";
 import {updateQueryString, generateObjectFromSearch, setTitle, onHeaderClick} from "../../utils";
 import ProjectCollapsibleList from "../../components/project-collapsible-list/project-collapsible-list";
+import StoryCollapsibleList from "../../components/story-collapsible-list/story-collapsible-list";
 
 const Dashboard = (props) => {
   setTitle("Dashboard");
@@ -100,28 +100,6 @@ const Dashboard = (props) => {
 
   const projects = projectsData && projectsData.projects;
   const stories = storiesData && storiesData.stories;
-
-  const storiesTableProps = {
-    stories,
-    actions: {
-      viewStory: (story) => historyPush(`/projects/${story.project.id}/stories/${story.id}`)
-    },
-    pagination: {
-      itemsPerPage: storiesData && storiesData.itemsPerPage,
-      page: storiesData && storiesData.page,
-      totalPages: storiesData && storiesData.totalPages,
-      getPage: async(page) => {
-        if(page === storiesData.page)
-          return;
-        const response = await getDashboardStories(page, storiesData.itemsPerPage, storySearchData.searchedValue);
-        if(!response.error)
-          setStoriesData(response);
-        
-        updateQueryString("storiesPage", page);
-      }
-    }
-  };
-
   const actionsMenuProps = {
     dataTestId: "dashboardActionsMenu",
     menuItems: [{
@@ -248,7 +226,27 @@ const Dashboard = (props) => {
               </Tabs.Panel>
               <Tabs.Panel>
                 <SearchBar {...storiesSearchBarProps}/>
-                <StoriesTable {...storiesTableProps} />
+                <StoryCollapsibleList
+                  dataTestId="storiesList"
+                  stories={stories}
+                  actions={{
+                    viewDetails: (story) => historyPush(`/projects/${story.project.id}/stories/${story.id}`)
+                  }}
+                  pagination={{
+                    itemsPerPage: storiesData.itemsPerPage,
+                    page: storiesData.page,
+                    totalPages: storiesData.totalPages,
+                    getPage: async(page) => {
+                      if(page === storiesData.page)
+                        return;
+                      const response = await getDashboardStories(page, storiesData.itemsPerPage, storySearchData.searchedValue);
+                      if(!response.error)
+                        setStoriesData(response);
+                      
+                      updateQueryString("storiesPage", page);
+                    }
+                  }}
+                />
               </Tabs.Panel>
             </Tabs.TabPanels>
           </Tabs>

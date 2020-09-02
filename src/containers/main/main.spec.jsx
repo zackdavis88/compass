@@ -74,6 +74,31 @@ describe("<Main />", () => {
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(1));
   });
 
+  it("should validate a token and redirect to dashboard if the desired location was the login page", async() => {
+    localStorage.setItem("token", "unit_test_stored_token");
+    store = mockStore({
+      router: {
+        location: {
+          pathname: "/"
+        }
+      },
+      auth: {
+        token: ""
+      }
+    });
+    store.dispatch = jest.fn();
+    store.dispatch.mockReturnValueOnce({});
+    render(<Main />, store);
+    await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(2));
+    expect(store.dispatch).toHaveBeenLastCalledWith({
+      type: '@@router/CALL_HISTORY_METHOD', 
+      payload: {
+        method: "push",
+        args: ["/dashboard"]
+      }
+    });
+  });
+
   it("should remove a storedToken and redirect to LoginPage if validation fails", async() => {
     localStorage.setItem("token", "unit_test_stored_token");
     store.dispatch.mockReturnValueOnce({error: "something went wrong"});

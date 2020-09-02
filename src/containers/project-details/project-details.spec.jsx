@@ -464,13 +464,13 @@ describe("<ProjectDetails />", () => {
     expect(queryByText("This project has no stories")).toBeDefined();
   });
 
-  it("should render a the stories table is the backlog tab is clicked", async() => {
+  it("should render the stories collapsible list if the backlog tab is clicked", async() => {
     const {getByText, queryByTestId} = render(<ProjectDetails {...props} />, store);
     await waitFor(() => expect(store.dispatch).toHaveBeenCalledTimes(3));
     const backlogTab = getByText("Backlog");
-    expect(queryByTestId("storiesTable")).toBeNull();
+    expect(queryByTestId("storiesList")).toBeNull();
     fireEvent.click(backlogTab);
-    expect(queryByTestId("storiesTable")).toBeDefined();
+    expect(queryByTestId("storiesList")).toBeDefined();
   });
 
   it("should show the delete story modal if the action is clicked with sufficient permission", async() => {

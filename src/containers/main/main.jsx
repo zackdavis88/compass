@@ -14,6 +14,10 @@ const Main = (props) => {
     const response = await validateToken(token);
     if(!response || response.error)
       historyPush("/");
+    
+    if(location.pathname === "/")
+      historyPush("/dashboard");
+
     setRenderContent(true);
   };
 
