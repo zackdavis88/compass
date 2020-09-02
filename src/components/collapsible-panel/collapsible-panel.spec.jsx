@@ -92,4 +92,21 @@ describe("<CollapsiblePanel />", () => {
     expect(queryByTestId(`${props.dataTestId}.actionsWrapper`)).toBeDefined();
     expect(getByText("test action")).toBeDefined();
   });
+
+  it("should not render the DecorationsWrapper if props.decorations is not present", () => {
+    const {queryByTestId} = render(component);
+    expect(queryByTestId(`${props.dataTestId}.decorationsWrapper`)).toBeNull();
+  });
+
+  it("should render the DecorationsWrapper if props.decorations is present", () => {
+    props.decorations = <div>sample decoration</div>
+    component = (
+      <CollapsiblePanel {...props} >
+        unit test sample text
+      </CollapsiblePanel>
+    );
+    const {queryByTestId, getByText} = render(component);
+    expect(queryByTestId(`${props.dataTestId}.decorationsWrapper`)).toBeDefined();
+    expect(getByText("sample decoration")).toBeDefined();
+  });
 });
