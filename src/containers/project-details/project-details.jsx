@@ -157,22 +157,6 @@ const ProjectDetails = (props) => {
       setMembershipsData(response);
     }
   };
-
-  // const storiesPagination = {
-  //   itemsPerPage: storiesData && storiesData.itemsPerPage,
-  //   page: storiesData && storiesData.page,
-  //   totalPages: storiesData && storiesData.totalPages,
-    // getPage: async(page) => {
-    //   if(page === storiesData.page)
-    //     return;
-    //   updateQueryString("storiesPage", page);
-    //   const response = await getStories(projectId, page, storiesData.itemsPerPage, storySearchData.searchedValue);
-    //   if(response.error)
-    //     return setPageError(response.error);
-      
-    //   setStoriesData(response);
-    // }
-  // };
   
   const project = projectData && projectData.project;
   const userRoles = projectData && projectData.userRoles;
