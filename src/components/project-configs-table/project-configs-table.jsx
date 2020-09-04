@@ -59,6 +59,18 @@ const ProjectConfigsTable = ({projectConfigs, configType, userRoles, actions, pa
       keyName: "name",
       format: (name, {color, transparent}) => <ProjectConfigLabel color={color} transparent={transparent}>{name}</ProjectConfigLabel>
     }, {
+      label: "Color",
+      keyName: "color",
+      format: (color, {transparent}) => {
+        if(transparent)
+          return <div style={{fontStyle: "italic"}}>Transparent</div>;
+        
+        if(color)
+          return color.toUpperCase();
+        
+        return <div style={{fontStyle: "italic"}}>None</div>;
+      }
+    }, {
       label: "Unique ID",
       keyName: "id"
     }, {

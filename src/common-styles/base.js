@@ -47,7 +47,7 @@ export const PageError = styled.div`
 export const ProjectConfigLabel = styled.div.attrs(({color, transparent}) => ({
   style: {
     backgroundColor: transparent ? "#00000000" : color,
-    color: transparent ? "#000000" : calcTextColor(color)
+    color: (transparent || !color) ? "#000000" : calcTextColor(color)
   }
 }))`
   font-style: normal;
