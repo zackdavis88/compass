@@ -59,6 +59,7 @@ describe("<ProjectConfigsTable />", () => {
     expect(getByTestId("projectConfigsTable.table")).toBeDefined();
     expect(getByTestId("projectConfigsTable.tableHead")).toBeDefined();
     expect(getByText("Priority")).toBeDefined();
+    expect(getByText("Color")).toBeDefined();
     expect(getByText("Unique ID")).toBeDefined();
     expect(getByText("Created On")).toBeDefined();
     expect(getByText("Actions")).toBeDefined();
@@ -71,23 +72,37 @@ describe("<ProjectConfigsTable />", () => {
     expect(getByTestId("projectConfigsTable.table")).toBeDefined();
     expect(getByTestId("projectConfigsTable.tableHead")).toBeDefined();
     expect(getByText("Status")).toBeDefined();
+    expect(getByText("Color")).toBeDefined();
     expect(getByText("Unique ID")).toBeDefined();
     expect(getByText("Created On")).toBeDefined();
     expect(getByText("Actions")).toBeDefined();
   });
 
   it("should render the config data for each header", () => {
+    props.projectConfigs[1].transparent = true;
     const {getByTestId, getByText} = render(<ProjectConfigsTable {...props} />);
     expect(getByTestId("projectConfigsTable.tableBody")).toBeDefined();
     // Row 1 should be-
     expect(getByText("Test Config 1")).toBeDefined();
+    expect(getByText("#8AC19B")).toBeDefined();
     expect(getByText("testConfigId1")).toBeDefined();;
     expect(getByText("Aug 10, 2020")).toBeDefined();
 
     // Row 2 should be-
     expect(getByText("Test Config 2")).toBeDefined();
+    expect(getByText("Transparent")).toBeDefined();
     expect(getByText("testConfigId2")).toBeDefined();
     expect(getByText("Aug 23, 2020")).toBeDefined();
+  });
+
+  it("should render 'None' for color if there is no color or transparency values", () => {
+    props.projectConfigs[0].color = undefined;
+    const {getByTestId, getByText} = render(<ProjectConfigsTable {...props} />);
+    expect(getByTestId("projectConfigsTable.tableBody")).toBeDefined();
+    expect(getByText("Test Config 1")).toBeDefined();
+    expect(getByText("None")).toBeDefined();
+    expect(getByText("testConfigId1")).toBeDefined();;
+    expect(getByText("Aug 10, 2020")).toBeDefined();
   });
 
   it("should render the action buttons for each row", () => {

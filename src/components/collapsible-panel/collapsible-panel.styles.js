@@ -101,6 +101,7 @@ export const PanelHeader = styled.button`
     overflow: hidden;
     text-overflow: ellipsis;
     transition: top 175ms linear;
+    font-weight: bold;
   }
   & > .collapsibleExpandAction {
     float: right;
