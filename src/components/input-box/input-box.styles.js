@@ -5,6 +5,7 @@ import {
   black,
   black33,
   black80,
+  blackb0,
   black0d,
   black05,
   inputHeight
@@ -43,6 +44,7 @@ export const InputBoxWrapper = styled.div`
 
   & input::placeholder {
     user-select: none;
+    color: ${blackb0};
   }
 
   & input:focus {

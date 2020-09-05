@@ -4,7 +4,8 @@ import {
   black33, 
   black80, 
   black05, 
-  black0d, 
+  black0d,
+  blackb0,
   white, 
   primaryRed, 
   textAreaHeight
@@ -43,6 +44,7 @@ export const TextAreaWrapper = styled.div`
 
   & textarea::placeholder {
     user-select: none;
+    color: ${blackb0};
   }
 
   & textarea:focus {

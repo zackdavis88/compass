@@ -4,6 +4,7 @@ import {
   black33,
   black05,
   black80,
+  blackb0,
   white,
   inputHeight,
   transparent
@@ -31,6 +32,7 @@ export const SearchBarWrapper = styled.div`
 
   & input::placeholder {
     user-select: none;
+    color: ${blackb0};
   }
 
   & input:focus {

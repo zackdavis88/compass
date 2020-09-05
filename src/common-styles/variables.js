@@ -17,6 +17,7 @@ export const black33 = "#21212133";
 export const black66 = "#21212166";
 export const black80 = "#21212180";
 export const black99 = "#21212199";
+export const blackb0 = "#212121B0";
 export const blackd5 = "#212121D5";
 
 export const brandBlue = "#154b71";
