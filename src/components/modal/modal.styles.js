@@ -3,7 +3,9 @@ import { white, black, black26, black33, black66, black99, transparent } from ".
 import { InputBoxWrapper } from "../input-box/input-box.styles";
 import { SelectInputWrapper } from "../select-input/select-input.styles";
 import { TextAreaWrapper } from "../text-area/text-area.styles";
+import { SelectBoxWrapper } from "../select-box/select-box.styles";
 import { ButtonWrapper } from "../button/button.styles";
+
 const scaleIn = keyframes`
   0% {
     transform: translate(-50%) scale(0);
@@ -103,7 +105,7 @@ export const ModalBody = styled.div`
     margin-bottom: 15px;
   }
 
-  & ${TextAreaWrapper} {
+  & ${SelectBoxWrapper} {
     margin-bottom: 15px;
   }
 `;
