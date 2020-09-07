@@ -290,10 +290,24 @@ describe("<StoryModal />", () => {
       owner: {displayName: "secondMember"},
       priority: {name: "Test Priority", color: "#310aff"}
     };
-    const {getByTestId} = render(<StoryModal {...props}/>);
+    const {getByTestId, getByText} = render(<StoryModal {...props}/>);
     await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
-    const priorityInput = getByTestId("priorityInput.input");
-    expect(priorityInput).toHaveValue(props.story.priority.name);
+    expect(getByTestId("priorityInput")).toBeDefined();
+    expect(getByText("Test Priority")).toBeDefined();
+  });
+
+  it("should set the status input value based on the story being updated", async() => {
+    props.story = {
+      id: "testStoryId",
+      name: "unit test story",
+      details: "these the deets.",
+      owner: {displayName: "secondMember"},
+      status: {name: "Test Status", color: "#000000"}
+    };
+    const {getByTestId, getByText} = render(<StoryModal {...props}/>);
+    await waitFor(() => expect(props.getStatusNames).toHaveBeenCalledWith(props.project));
+    expect(getByTestId("priorityInput")).toBeDefined();
+    expect(getByText("Test Status")).toBeDefined();
   });
 
   it("should set the points input value based on the story being updated", async() => {
