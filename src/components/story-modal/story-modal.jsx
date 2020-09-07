@@ -7,6 +7,7 @@ import { faBook, faEdit } from "@fortawesome/free-solid-svg-icons";
 import InputBox from "../input-box/input-box";
 import SelectInput from "../select-input/select-input";
 import TextArea from "../text-area/text-area";
+import SelectBox from "../select-box/select-box";
 
 const StoryModal = (props) => {
   const story = props.story;
@@ -21,8 +22,6 @@ const StoryModal = (props) => {
     nameError: undefined,
     detailsError: undefined,
     ownerError: undefined,
-    priorityError: undefined,
-    statusError: undefined,
     pointsError: undefined
   };
   const [state, setState] = useState(initialState);
@@ -53,8 +52,6 @@ const StoryModal = (props) => {
     !!state.nameError ||
     !!state.detailsError ||
     !!state.ownerError ||
-    !!state.priorityError ||
-    !!state.statusError ||
     !!state.pointsError ||
     props.requestInProgress
   );
@@ -64,7 +61,7 @@ const StoryModal = (props) => {
       if(props.requestInProgress)
         return "request in progress";
       
-      if(state.nameError || state.detailsError || state.ownerError || state.priorityError || state.pointsError)
+      if(state.nameError || state.detailsError || state.ownerError || state.pointsError)
         return "please fix input errors";
 
       if(!state.name)
@@ -89,12 +86,8 @@ const StoryModal = (props) => {
       return setState({...state, detailsError: response.error});
     else if(response.error && response.error.includes("owner"))
       return setState({...state, ownerError: response.error});
-    else if(response.error && response.error.includes("priority"))
-      return setState({...state, priorityError: response.error});
     else if(response.error && response.error.includes("points"))
       return setState({...state, pointsError: response.error});
-    else if(response.error && response.error.includes("status"))
-      return setState({...state, statusError: response.error});
 
     props.onClose();
     if(props.showNotification)
@@ -164,33 +157,29 @@ const StoryModal = (props) => {
       onChange: (value) => setState({...state, points: value, pointsError: undefined})
     },
     priority: {
-      id: "priorityInput",
       dataTestId: "priorityInput",
       label: "Priority",
       placeholder: "Select a priority",
-      focusedPlaceholder: "Start typing to filter options",
-      value: state.priority,
-      onChange: (value) => setState({...state, priority: value, priorityError: undefined}),
-      items: priorityNames,
-      errorText: state.priorityError
+      selectedValue: state.priority,
+      options: priorityNames,
+      onChange: (value) => setState({...state, priority: value}),
+      clearValue: () => setState({...state, priority: ""})
     },
     status: {
-      id: "statusInput",
       dataTestId: "statusInput",
       label: "Status",
       placeholder: "Select a status",
-      focusedPlaceholder: "Start typing to filter options",
-      value: state.status,
-      onChange: (value) => setState({...state, status: value, statusError: undefined}),
-      items: statusNames,
-      errorText: state.statusError
+      selectedValue: state.status,
+      options: statusNames,
+      onChange: (value) => setState({...state, status: value}),
+      clearValue: () => setState({...state, status: ""})
     }
   };
 
   return (
     <StoryModalWrapper>
       <Modal {...modalProps}>
-        {!memberNames && !priorityNames ? (
+        {!memberNames || !priorityNames || !statusNames ? (
           <LoadingSpinner alignCenter dataTestId="storyModalLoader" message="Loading available story options" />
         ) : (
           <Fragment>
@@ -202,10 +191,10 @@ const StoryModal = (props) => {
             <InputBox {...inputProps.points} />
             <SelectInput {...inputProps.owner} />
             {priorityNames && priorityNames.length !== 0 && (
-              <SelectInput {...inputProps.priority} />
+              <SelectBox {...inputProps.priority}/>
             )}
             {statusNames && statusNames.length !== 0 && (
-              <SelectInput {...inputProps.status} />
+              <SelectBox {...inputProps.status} />
             )}
             <TextArea {...inputProps.details} />
           </Fragment>

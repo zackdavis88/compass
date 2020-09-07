@@ -8,6 +8,7 @@ import {
   black33,
   black80,
   black0d,
+  blackb0,
   black05,
   inputHeight
 } from "../../common-styles/variables";
@@ -35,6 +36,7 @@ export const SelectInputWrapper = styled.div`
 
   & input::placeholder {
     user-select: none;
+    color: ${blackb0};
   }
 
   & input:focus {
@@ -123,7 +125,7 @@ export const FlyoutWrapper = styled.div`
   max-height: 13em;
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 7001;
+  z-index: 7002;
 `;
 
 export const FlyoutItem = styled.li`
