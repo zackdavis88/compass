@@ -27,8 +27,22 @@ export const GlobalStyle = createGlobalStyle`
     }
   }
 
+  #viewportError {
+    display: none;
+  }
+
   *:focus {
     outline: none;
+  }
+
+  @media screen and (max-width: 999px) {
+    #appWrapper {
+      display: none;
+    }
+
+    #viewportError {
+      display: block;
+    }
   }
 `;
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment} from "react";
 import { GlobalStyle } from "./common-styles/base";
 import Navbar from "./containers/navbar/navbar";
 import Notification from "./containers/notification/notification";
@@ -12,21 +12,28 @@ import allRoutes from "./routes";
 
 const CompassApp = () => {
   return (
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <GlobalStyle />
-        <Navbar />
-        <Sidebar />
-        <Notification />
-        <Main>
-          <Switch>
-            {allRoutes.map((routeProps, index) => (
-              <Route key={index} {...routeProps} />
-            ))}
-          </Switch>
-        </Main>
-      </ConnectedRouter>
-    </Provider>
+    <Fragment>
+      <div id="appWrapper">
+        <Provider store={store}>
+          <ConnectedRouter history={history}>
+            <GlobalStyle />
+            <Navbar />
+            <Sidebar />
+            <Notification />
+            <Main>
+              <Switch>
+                {allRoutes.map((routeProps, index) => (
+                  <Route key={index} {...routeProps} />
+                ))}
+              </Switch>
+            </Main>
+          </ConnectedRouter>
+        </Provider>
+      </div>
+      <div id="viewportError">
+        Unsupported Viewport. The Compass application requires a minimum width of 1000 pixels.
+      </div>
+    </Fragment>
   );
 };
 
