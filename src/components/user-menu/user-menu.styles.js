@@ -24,7 +24,7 @@ export const FlyoutWrapper = styled.div`
   line-height: 1;
   border: 1px solid ${black};
   top: 50px;
-  left: -120px;
+  right: 10px;
   width: 175px;
   min-width: 175px;
   height: auto;

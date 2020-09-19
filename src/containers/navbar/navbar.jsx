@@ -11,7 +11,8 @@ import { changePassword } from "../../store/actions/user";
 import { showNotification } from "../../store/actions/notification";
 import ChangePasswordModal from "../../components/change-password-modal/change-password-modal";
 import {push} from "connected-react-router";
-
+// TODO: Lets prevent anything from happening if we are on /dashboard and click the nav link for dashboard.
+// TODO: maybe we can show the background for the nav item if we are actively on dashboard. Would be visually helpful I think...play with it.
 const Navbar = (props) => {
   const [showModal, setShowModal] = useState(false);
 
