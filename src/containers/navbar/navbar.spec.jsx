@@ -2,7 +2,6 @@ import React from "react";
 import Navbar from "./navbar";
 import { render, mockStore } from "../../test-utils";
 import { fireEvent, waitFor } from "@testing-library/react";
-import { toggleSidebar } from "../../store/actions/sidebar";
 
 describe("<Navbar />", () => {
   let store;
@@ -41,12 +40,12 @@ describe("<Navbar />", () => {
     expect(getByTestId("brandIcon")).toBeDefined();
   });
 
-  it("should render the sidebar toggle button if userInfo is present", () => {
-    const {getByTestId} = render(<Navbar />, store);
-    expect(getByTestId("sidebarBtn")).toBeDefined();
+  it("should render the Dashboard link if userInfo is present", () => {
+    const {getByText} = render(<Navbar />, store);
+    expect(getByText("Dashboard")).toBeDefined();
   });
 
-  it("should not render the sidebar toggle button if userInfo is missing", () => {
+  it("should not render the Dashboard link if userInfo is missing", () => {
     store = mockStore({
       sidebar: {
         isOpen: false
@@ -56,15 +55,21 @@ describe("<Navbar />", () => {
         isLoading: false
       }
     });
-    const {queryByTestId} = render(<Navbar />, store);
-    expect(queryByTestId("sidebarBtn")).toBeNull();
+    const {queryByText} = render(<Navbar />, store);
+    expect(queryByText("Dashboard")).toBeNull();
   });
 
-  it("should dispatch a redux action to toggle sidebar on SidebarToggleButton click", () => {
-    const {getByTestId} = render(<Navbar />, store);
-    const sidebarBtn = getByTestId("sidebarBtn");
-    fireEvent.click(sidebarBtn);
-    expect(store.dispatch).toHaveBeenCalledWith(toggleSidebar());
+  it("should dispatch a redux push action when the Dashboard link is clicked", () => {
+    const {getByText} = render(<Navbar />, store);
+    const dashboardLink = getByText("Dashboard");
+    fireEvent.click(dashboardLink);
+    expect(store.dispatch).toHaveBeenCalledWith({
+      payload: {
+        args: ["/dashboard"],
+        method: "push"
+      },
+      type: "@@router/CALL_HISTORY_METHOD"
+    });
   });
 
   it("should not render the user menu until a user has signed in", () => {

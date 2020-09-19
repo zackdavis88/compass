@@ -37,33 +37,34 @@ export const NavbarBrand = styled.div`
   }
 `;
 
-export const SidebarToggleButton = styled.div`
+export const NavbarLinks = styled.div`
   position: absolute;
   left: 25px;
-  top: 20px;
-  line-height: 0;
-  padding: 10px;
-  user-select: none;
-  cursor: pointer;
-  border: 1px solid ${transparent};
-  border-radius: 32px;
-  background-color: ${transparent};
+  height: ${navbarHeight};
   z-index: 5001;
+`;
+
+export const LinkItem = styled.a`
+  position: relative;
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 18px;
+  user-select: none;
+  line-height: ${navbarHeight};
   transition: background-color 100ms linear;
 
   &:hover {
     background-color: ${white20};
   }
-
-  &:active {
-    background-color: ${white40};
+  &:link {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: pointer;
   }
-
-  ${({isActive}) => isActive && css`
-    background-color: ${white40};
-    
-    &:hover {
-      background-color: ${white40};
-    }
-  `}
+  &:visited {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
 `;

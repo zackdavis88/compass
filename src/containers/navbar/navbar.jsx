@@ -1,9 +1,8 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import UserMenu from "../../components/user-menu/user-menu";
-import { NavbarWrapper, NavbarBrand, SidebarToggleButton } from "./navbar.styles";
+import { NavbarWrapper, NavbarBrand, NavbarLinks, LinkItem } from "./navbar.styles";
 import { faCompass } from "@fortawesome/free-regular-svg-icons";
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { toggleSidebar, closeSidebar } from "../../store/actions/sidebar";
@@ -11,7 +10,9 @@ import { logout } from "../../store/actions/auth";
 import { changePassword } from "../../store/actions/user";
 import { showNotification } from "../../store/actions/notification";
 import ChangePasswordModal from "../../components/change-password-modal/change-password-modal";
+import {push} from "connected-react-router";
 
+// TODO: UserMenu needs style updates so that it is centered the same way as Dashboard link. also flyout hover needs 5px radius.
 const Navbar = (props) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -37,9 +38,9 @@ const Navbar = (props) => {
     <Fragment>
       <NavbarWrapper>
         {props.userInfo && (
-          <SidebarToggleButton data-testid="sidebarBtn" isActive={props.sidebarIsOpen} onClick={props.toggleSidebar}>
-            <FontAwesomeIcon icon={props.sidebarIsOpen ? faTimes : faBars} fixedWidth />
-          </SidebarToggleButton>
+          <NavbarLinks>
+            <LinkItem href="/dashboard" onClick={(e)=>{e.preventDefault();props.historyPush("/dashboard")}}>Dashboard</LinkItem>
+          </NavbarLinks>
         )}
         <NavbarBrand>
           <FontAwesomeIcon data-testid="brandIcon" icon={faCompass} fixedWidth />
@@ -72,5 +73,6 @@ export default connect((state) => ({
   logout,
   changePassword,
   showNotification,
-  closeSidebar
+  closeSidebar,
+  historyPush: push
 })(Navbar);
