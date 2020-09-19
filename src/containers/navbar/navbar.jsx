@@ -12,7 +12,6 @@ import { showNotification } from "../../store/actions/notification";
 import ChangePasswordModal from "../../components/change-password-modal/change-password-modal";
 import {push} from "connected-react-router";
 
-// TODO: UserMenu needs style updates so that it is centered the same way as Dashboard link. also flyout hover needs 5px radius.
 const Navbar = (props) => {
   const [showModal, setShowModal] = useState(false);
 
