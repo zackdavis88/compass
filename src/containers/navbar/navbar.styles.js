@@ -67,4 +67,8 @@ export const LinkItem = styled.a`
     color: inherit;
     cursor: pointer;
   }
+
+  &.navlink-active {
+    background-color: ${white20};
+  }
 `;

@@ -11,8 +11,7 @@ import { changePassword } from "../../store/actions/user";
 import { showNotification } from "../../store/actions/notification";
 import ChangePasswordModal from "../../components/change-password-modal/change-password-modal";
 import {push} from "connected-react-router";
-// TODO: Lets prevent anything from happening if we are on /dashboard and click the nav link for dashboard.
-// TODO: maybe we can show the background for the nav item if we are actively on dashboard. Would be visually helpful I think...play with it.
+// TODO: Add sidebar footer info to the UserMenu. This may or may not workout..play with it and see.
 const Navbar = (props) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -34,12 +33,22 @@ const Navbar = (props) => {
     showChangePasswordModal: () => setShowModal(true)
   };
 
+  const dashboardLinkProps = {
+    href: "/dashboard",
+    onClick: (e) => {
+      e.preventDefault();
+      if(props.location.pathname !== "/dashboard")
+        return props.historyPush("/dashboard")
+    },
+    className: props.location.pathname === "/dashboard" ? "navlink-active" : ""
+  }
+
   return (
     <Fragment>
       <NavbarWrapper>
         {props.userInfo && (
           <NavbarLinks>
-            <LinkItem href="/dashboard" onClick={(e)=>{e.preventDefault();props.historyPush("/dashboard")}}>Dashboard</LinkItem>
+            <LinkItem {...dashboardLinkProps}>Dashboard</LinkItem>
           </NavbarLinks>
         )}
         <NavbarBrand>
@@ -61,13 +70,15 @@ Navbar.propTypes = {
   showNotification: PropTypes.func.isRequired,
   userRequestInProgress: PropTypes.bool.isRequired,
   closeSidebar: PropTypes.func.isRequired,
-  userInfo: PropTypes.object
+  userInfo: PropTypes.object,
+  location: PropTypes.object.isRequired
 };
 
 export default connect((state) => ({
   sidebarIsOpen: state.sidebar.isOpen,
   userInfo: state.auth.user,
-  userRequestInProgress: state.user.isLoading
+  userRequestInProgress: state.user.isLoading,
+  location: state.router.location
 }), {
   toggleSidebar,
   logout,

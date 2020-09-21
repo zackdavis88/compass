@@ -7,6 +7,11 @@ describe("<Navbar />", () => {
   let store;
   beforeEach(() => {
     store = mockStore({
+      router: {
+        location: {
+          pathname: "/"
+        }
+      },
       sidebar: {
         isOpen: false
       },
@@ -47,6 +52,11 @@ describe("<Navbar />", () => {
 
   it("should not render the Dashboard link if userInfo is missing", () => {
     store = mockStore({
+      router: {
+        location: {
+          pathname: "/"
+        }
+      },
       sidebar: {
         isOpen: false
       },
@@ -72,12 +82,55 @@ describe("<Navbar />", () => {
     });
   });
 
+  it("should not dispatch a redux push action when the Dashboard link is clicked and the location is /dashboard", () => {
+    store = mockStore({
+      router: {location: {pathname: "/dashboard"}
+      },
+      sidebar: {isOpen: false},
+      auth: {
+        user: {
+          username: "testuser",
+          displayName: "testUser"
+        }
+      },
+      user: {isLoading: false}
+    });
+    store.dispatch = jest.fn();
+    const {getByText} = render(<Navbar />, store);
+    const dashboardLink = getByText("Dashboard");
+    fireEvent.click(dashboardLink);
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it("should attach the navlink-active class when the location is /dashboard", () => {
+    store = mockStore({
+      router: {location: {pathname: "/dashboard"}
+      },
+      sidebar: {isOpen: false},
+      auth: {
+        user: {
+          username: "testuser",
+          displayName: "testUser"
+        }
+      },
+      user: {isLoading: false}
+    });
+    const {getByText} = render(<Navbar />, store);
+    const dashboardLink = getByText("Dashboard");
+    expect(dashboardLink.className).toContain("navlink-active");
+  });
+
   it("should not render the user menu until a user has signed in", () => {
     store = mockStore({
       sidebar: {isOpen: false},
       auth: {},
       user: {
         isLoading: false
+      },
+      router: {
+        location: {
+          pathname: "/"
+        }
       }
     });
     const {queryByTestId} = render(<Navbar />, store);
