@@ -1,9 +1,8 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import UserMenu from "../../components/user-menu/user-menu";
-import { NavbarWrapper, NavbarBrand, SidebarToggleButton } from "./navbar.styles";
+import { NavbarWrapper, NavbarBrand, NavbarLinks, LinkItem } from "./navbar.styles";
 import { faCompass } from "@fortawesome/free-regular-svg-icons";
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { toggleSidebar, closeSidebar } from "../../store/actions/sidebar";
@@ -11,6 +10,7 @@ import { logout } from "../../store/actions/auth";
 import { changePassword } from "../../store/actions/user";
 import { showNotification } from "../../store/actions/notification";
 import ChangePasswordModal from "../../components/change-password-modal/change-password-modal";
+import {push} from "connected-react-router";
 
 const Navbar = (props) => {
   const [showModal, setShowModal] = useState(false);
@@ -33,13 +33,23 @@ const Navbar = (props) => {
     showChangePasswordModal: () => setShowModal(true)
   };
 
+  const dashboardLinkProps = {
+    href: "/dashboard",
+    onClick: (e) => {
+      e.preventDefault();
+      if(props.location.pathname !== "/dashboard")
+        return props.historyPush("/dashboard")
+    },
+    className: props.location.pathname === "/dashboard" ? "navlink-active" : ""
+  }
+
   return (
     <Fragment>
       <NavbarWrapper>
         {props.userInfo && (
-          <SidebarToggleButton data-testid="sidebarBtn" isActive={props.sidebarIsOpen} onClick={props.toggleSidebar}>
-            <FontAwesomeIcon icon={props.sidebarIsOpen ? faTimes : faBars} fixedWidth />
-          </SidebarToggleButton>
+          <NavbarLinks>
+            <LinkItem {...dashboardLinkProps}>Dashboard</LinkItem>
+          </NavbarLinks>
         )}
         <NavbarBrand>
           <FontAwesomeIcon data-testid="brandIcon" icon={faCompass} fixedWidth />
@@ -60,17 +70,20 @@ Navbar.propTypes = {
   showNotification: PropTypes.func.isRequired,
   userRequestInProgress: PropTypes.bool.isRequired,
   closeSidebar: PropTypes.func.isRequired,
-  userInfo: PropTypes.object
+  userInfo: PropTypes.object,
+  location: PropTypes.object.isRequired
 };
 
 export default connect((state) => ({
   sidebarIsOpen: state.sidebar.isOpen,
   userInfo: state.auth.user,
-  userRequestInProgress: state.user.isLoading
+  userRequestInProgress: state.user.isLoading,
+  location: state.router.location
 }), {
   toggleSidebar,
   logout,
   changePassword,
   showNotification,
-  closeSidebar
+  closeSidebar,
+  historyPush: push
 })(Navbar);

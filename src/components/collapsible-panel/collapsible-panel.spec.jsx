@@ -37,7 +37,7 @@ describe("<CollapsiblePanel />", () => {
     const contentPanel = getByTestId("unitTestCollapsiblePanel.contentPanel")
     expect(contentPanel).toBeDefined();
     const contentPanelStyles = window.getComputedStyle(contentPanel);
-    expect(contentPanelStyles.maxHeight).toEqual("0");
+    expect(contentPanelStyles.maxHeight).toEqual("");
   });
 
   it("should render the panel content when isActive is true", () => {

@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { white, black, black1a, black26 } from "../../common-styles/variables";
+import { white, black, black1a, black26, navbarHeight } from "../../common-styles/variables";
 import { fadeIn } from "../../common-styles/animations";
 
 export const UserMenuWrapper = styled.div`
   position: absolute;
-  top: 25px;
+  top: 0;
   right: 25px;
+  height: ${navbarHeight};
 
   & span {
     cursor: pointer;
@@ -13,6 +14,7 @@ export const UserMenuWrapper = styled.div`
     font-size: 18px;
     text-overflow: ellipsis;
     user-select: none;
+    line-height: ${navbarHeight};
   }
 `;
 
@@ -21,8 +23,8 @@ export const FlyoutWrapper = styled.div`
   border-radius: 4px;
   line-height: 1;
   border: 1px solid ${black};
-  top: 27px;
-  left: -120px;
+  top: 50px;
+  right: 10px;
   width: 175px;
   min-width: 175px;
   height: auto;
@@ -39,9 +41,9 @@ export const FlyoutMenuItem = styled.li`
   user-select: none;
   cursor: pointer;
   padding: 8px;
-  border-radius: 32px;
+  border-radius: 5px;
   border: 1px solid ${white};
-  transition: background-color 125ms linear;
+  transition: background-color 100ms linear;
 
   &:hover {
     background-color: ${black1a};
