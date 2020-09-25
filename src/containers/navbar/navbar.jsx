@@ -11,7 +11,7 @@ import { changePassword } from "../../store/actions/user";
 import { showNotification } from "../../store/actions/notification";
 import ChangePasswordModal from "../../components/change-password-modal/change-password-modal";
 import {push} from "connected-react-router";
-// TODO: Add sidebar footer info to the UserMenu. This may or may not workout..play with it and see.
+
 const Navbar = (props) => {
   const [showModal, setShowModal] = useState(false);
 
