@@ -9,6 +9,7 @@ import { ConnectedRouter } from "connected-react-router";
 import store, { history } from "./store/store";
 import { Switch, Route } from "react-router-dom";
 import allRoutes from "./routes";
+import Footer from "./components/footer/footer";
 
 const CompassApp = () => {
   return (
@@ -27,6 +28,7 @@ const CompassApp = () => {
                 ))}
               </Switch>
             </Main>
+            <Footer />
           </ConnectedRouter>
         </Provider>
       </div>
