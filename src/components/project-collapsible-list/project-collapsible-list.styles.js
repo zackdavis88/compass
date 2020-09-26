@@ -28,7 +28,8 @@ export const ProjectCollapsibleListWrapper = styled.div`
 
   & .paginationSection {
     position: absolute;
-    bottom: -2.5em;
+    margin-bottom: 20px;
+    bottom: -4.5em;
     width: 100%;
     text-align: center;
   }
