@@ -27,6 +27,11 @@ export const GlobalStyle = createGlobalStyle`
     }
   }
 
+  #appWrapper {
+    width: 100%;
+    height: 100%;
+  }
+
   #viewportError {
     display: none;
   }
