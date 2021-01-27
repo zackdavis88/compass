@@ -1,20 +1,22 @@
 import React from "react";
-import { GlobalStyle } from "./common-styles/base";
-import Navbar from "./containers/navbar/navbar";
-import Notification from "./containers/notification/notification";
-import Sidebar from "./containers/sidebar/sidebar";
-import Main from "./containers/main/main";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import store, { history } from "./store/store";
 import { Switch, Route } from "react-router-dom";
 import allRoutes from "./routes";
+import CssBaseline from '@material-ui/core/CssBaseline';
+import {ThemeProvider} from '@material-ui/core/styles';
+import theme from "./theme";
 
 const CompassApp = () => {
   return (
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <GlobalStyle />
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          Hey.
+        </ThemeProvider>
+        {/* <GlobalStyle />
         <Navbar />
         <Sidebar />
         <Notification />
@@ -24,7 +26,7 @@ const CompassApp = () => {
               <Route key={index} {...routeProps} />
             ))}
           </Switch>
-        </Main>
+        </Main> */}
       </ConnectedRouter>
     </Provider>
   );
