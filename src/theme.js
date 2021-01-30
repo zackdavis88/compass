@@ -1,4 +1,4 @@
-import {createMuiTheme} from '@material-ui/core/styles';
+import {createMuiTheme} from "@material-ui/core/styles";
 
 const theme = createMuiTheme({
   breakpoints: {
@@ -9,6 +9,12 @@ const theme = createMuiTheme({
       lg: 1280,
       xl: 1920
     }
+  },
+  palette: {
+    white: "#ffffff",
+    black: "#212121",
+    brandBlue: "#104b7d"
+
   }
 });
 

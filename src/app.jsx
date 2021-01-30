@@ -4,9 +4,10 @@ import { ConnectedRouter } from "connected-react-router";
 import store, { history } from "./store/store";
 import { Switch, Route } from "react-router-dom";
 import allRoutes from "./routes";
-import CssBaseline from '@material-ui/core/CssBaseline';
-import {ThemeProvider} from '@material-ui/core/styles';
+import CssBaseline from "@material-ui/core/CssBaseline";
+import {ThemeProvider} from "@material-ui/core/styles";
 import theme from "./theme";
+import Navbar from "./components/_materia/Navbar/Navbar";
 
 const CompassApp = () => {
   return (
@@ -14,7 +15,7 @@ const CompassApp = () => {
       <ConnectedRouter history={history}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          Hey.
+          <Navbar />
         </ThemeProvider>
         {/* <GlobalStyle />
         <Navbar />
@@ -27,6 +28,17 @@ const CompassApp = () => {
             ))}
           </Switch>
         </Main> */}
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
       </ConnectedRouter>
     </Provider>
   );
