@@ -7,7 +7,6 @@ import {
   useScrollTrigger,
   Slide,
   Hidden,
-  Button,
   Link,
   Grid
 } from "@material-ui/core/";
@@ -17,6 +16,8 @@ import {connect} from "react-redux";
 import {push} from "connected-react-router";
 import ExploreTwoToneIcon from '@material-ui/icons/ExploreTwoTone';
 import {useWidth} from "../../../utils";
+import UserMenu from "../Menu/Menu";
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 const Navbar = (props) => {
   const classes = useStyles(props);
@@ -61,22 +62,30 @@ const Navbar = (props) => {
     </Grid>
   );
 
+  const _renderUserMenu = () => (
+    <Hidden smDown implementation="css">
+      <UserMenu menuName={"booya"} endIcon={<ArrowDropDownIcon/>}/>
+    </Hidden>
+  );
+
   return (
     <Slide appear={false} direction="down" in={!trigger}>
       <AppBar>
         <Toolbar className={classes.toolbar}>
           <Grid {...contentGridProps}>
-            <Grid item xs={2} sm={3}>
+            <Grid item xs={2} sm={3} md={4} id="navigation-section">
               <Hidden mdUp implementation="css">
                 <IconButton color="inherit">
                   <MenuIcon />
                 </IconButton>
               </Hidden>
             </Grid>
-            <Grid item xs={10} sm={6}>
+            <Grid item xs={10} sm={6} md={4}id="brand-section">
               {_renderBranding()}
             </Grid>
-            <Grid item sm={3}></Grid>
+            <Grid item sm={3} md={4} id="user-menu-section">
+              {_renderUserMenu()}
+            </Grid>
           </Grid>
         </Toolbar>
       </AppBar>

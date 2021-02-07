@@ -7,7 +7,10 @@ export const useStyles = makeStyles((theme) => ({
     color: theme.palette.white
   },
   contentGrid: {
-    height: "100%"
+    height: "100%",
+    "& #user-menu-section": {
+      textAlign: "right"
+    }
   },
   brandGrid: {
     height: "100%",
