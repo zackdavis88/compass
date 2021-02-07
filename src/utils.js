@@ -1,3 +1,5 @@
+import {useTheme, useMediaQuery} from "@material-ui/core";
+
 const monthAbbreviations = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -117,4 +119,21 @@ export const onHeaderClick = (headerIndex) => {
     return updateQueryString("activeTab", null);
   
   updateQueryString("activeTab", headerIndex);
+};
+
+/**
+ * Be careful using this hook. It only works because the number of
+ * breakpoints in theme is static. It will break once you change the number of
+ * breakpoints. See https://reactjs.org/docs/hooks-rules.html#only-call-hooks-at-the-top-level
+ */
+export const useWidth = () => {
+  const theme = useTheme();
+  const keys = [...theme.breakpoints.keys].reverse();
+  return (
+    keys.reduce((output, key) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const matches = useMediaQuery(theme.breakpoints.up(key));
+      return !output && matches ? key : output;
+    }, null) || 'xs'
+  );
 };

@@ -5,8 +5,8 @@ const theme = createMuiTheme({
     values: {
       xs: 0,
       sm: 600,
-      md: 960,
-      lg: 1280,
+      md: 1440,
+      lg: 1600,
       xl: 1920
     }
   },
@@ -14,7 +14,6 @@ const theme = createMuiTheme({
     white: "#ffffff",
     black: "#212121",
     brandBlue: "#104b7d"
-
   }
 });
 

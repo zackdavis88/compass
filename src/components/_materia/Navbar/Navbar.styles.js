@@ -1,24 +1,48 @@
 import {makeStyles} from "@material-ui/core";
 
 export const useStyles = makeStyles((theme) => ({
-  navbarContainer: {
+  toolbar: {
     height: "75px",
     backgroundColor: theme.palette.brandBlue,
     color: theme.palette.white
   },
-  brandName: {
-    lineHeight: "75px",
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "25px",
-      textAlign: "left"
+  contentGrid: {
+    height: "100%"
+  },
+  brandGrid: {
+    height: "100%",
+    "& > .MuiGrid-item": {
+      [theme.breakpoints.up(theme.breakpoints.values.md)]: {
+        height: "45px"
+      },
+      [theme.breakpoints.between(theme.breakpoints.values.sm, theme.breakpoints.values.md)]: {
+        height: "35px"
+      }
     },
-    [theme.breakpoints.between("sm", "md")]: {
-      fontSize: "35px",
-      textAlign: "center"
+    "& > .MuiGrid-item ~ .MuiGrid-item": {
+      height: "auto"
+    }
+  },
+  brandIcon: {
+    [theme.breakpoints.up(theme.breakpoints.values.md)]: {
+      width: "45px",
+      height: "45px"
     },
-    [theme.breakpoints.up("md")]: {
-      fontSize: "45px",
-      textAlign: "center"
+    [theme.breakpoints.between(theme.breakpoints.values.sm, theme.breakpoints.values.md)]: {
+      width: "35px",
+      height: "35px"
+    }
+  },
+  brandText: {
+    fontWeight: "bold",
+    [theme.breakpoints.up(theme.breakpoints.values.md)]: {
+      fontSize: "50px"
     },
+    [theme.breakpoints.between(theme.breakpoints.values.sm, theme.breakpoints.values.md)]: {
+      fontSize: "38px"
+    },
+    [theme.breakpoints.down(theme.breakpoints.values.sm)]: {
+      fontSize: "30px"
+    }
   }
 }));
