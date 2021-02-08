@@ -73,5 +73,8 @@ export const useStyles = makeStyles((theme) => ({
     "&.MuiButton-root.activeNav": {
       borderColor: theme.palette.white
     }
+  },
+  drawerPaper: {
+    width: theme.measurements.sidebarWidth
   }
 }));

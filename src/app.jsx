@@ -7,7 +7,7 @@ import allRoutes from "./routes";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import {ThemeProvider} from "@material-ui/core/styles";
 import theme from "./theme";
-import Navbar from "./components/_materia/Navbar/Navbar";
+import GlobalNavigation from "./components/_materia/GlobalNavigation/GlobalNavigation";
 
 const CompassApp = () => {
   return (
@@ -15,7 +15,7 @@ const CompassApp = () => {
       <ConnectedRouter history={history}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Navbar />
+          <GlobalNavigation />
         </ThemeProvider>
         {/* <GlobalStyle />
         <Navbar />

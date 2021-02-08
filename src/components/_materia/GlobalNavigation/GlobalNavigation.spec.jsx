@@ -1,4 +1,4 @@
-describe("<Navbar />", () => {
+describe("<GlobalNavigation />", () => {
   it("should work, thanks", () => {
     
   });

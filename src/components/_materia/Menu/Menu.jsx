@@ -49,7 +49,7 @@ const Menu = (props) => {
     <div className={classes.root}>
       <Button
         ref={anchorRef}
-        aria-controls={open ? 'menu-list-grow' : undefined}
+        aria-controls={open ? props.id : undefined}
         aria-haspopup="true"
         color="inherit"
         endIcon={props.endIcon ? props.endIcon : null}
@@ -67,7 +67,7 @@ const Menu = (props) => {
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                <MenuList autoFocusItem={open} id={props.id} onKeyDown={handleListKeyDown}>
                   {props.menuItems.map((menuItem, index) => (
                     <MenuItem key={index} onClick={(e) => {handleClose(e); menuItem.onClick()}}>
                       {menuItem.startIcon ? (<span className={classes.itemStartIcon}>{menuItem.startIcon}</span>) : null}
@@ -86,6 +86,7 @@ const Menu = (props) => {
 };
 
 Menu.propTypes = {
+  id: PropTypes.string.isRequired,
   menuName: PropTypes.string.isRequired,
   menuItems: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,

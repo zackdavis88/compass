@@ -17,7 +17,8 @@ const theme = createMuiTheme({
   },
   // is this officially allowed? Its working and no console warnings/errors...
   measurements: {
-    navbarHeight: "75px"
+    navbarHeight: "75px",
+    sidebarWidth: "240px"
   }
 });
 

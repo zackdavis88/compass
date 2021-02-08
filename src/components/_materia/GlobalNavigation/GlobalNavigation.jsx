@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 import {
   AppBar,
@@ -10,13 +10,15 @@ import {
   Hidden,
   Link,
   Grid,
-  Button
+  Button,
+  Drawer
 } from "@material-ui/core/";
-import {useStyles} from "./Navbar.styles";
+import {useStyles} from "./GlobalNavigation.styles";
 import {connect} from "react-redux";
 import {push} from "connected-react-router";
 import {useWidth} from "../../../utils";
 import UserMenu from "../Menu/Menu";
+import Sidebar from "./Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCompass } from "@fortawesome/free-regular-svg-icons";
 import { faCaretDown, faKey, faSignOutAlt, faBars } from "@fortawesome/free-solid-svg-icons";
@@ -25,26 +27,26 @@ const Navbar = (props) => {
   const classes = useStyles(props);
   const trigger = useScrollTrigger();
   const currentBreakpoint = useWidth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const _goHome = (event) => {
+  const _goToUrl = (event, url) => {
     event.preventDefault();
-    return props.historyPush("/");
+    return props.historyPush(url);
+  };
+
+  const _toggleSidebar = (newOpenState) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    return setSidebarOpen(newOpenState);
   };
 
   const navigationItems = [{
     name: "Dashboard",
-    url: "/dashboard",
-    onClick: (event, url) => {
-      event.preventDefault();
-      return props.historyPush(url);
-    }
+    url: "/dashboard"
   }, {
     name: "Projects",
-    url: "/projects",
-    onClick: (event, url) => {
-      event.preventDefault();
-      return props.historyPush(url);
-    }
+    url: "/projects"
   }];
   
   const contentGridProps = {
@@ -64,6 +66,7 @@ const Navbar = (props) => {
   };
 
   const userMenuProps = {
+    id: "navbar-user-menu",
     menuName: props.userInfo ? props.userInfo.displayName : "booya",
     menuItems: [{
       name: "Change Password",
@@ -90,7 +93,7 @@ const Navbar = (props) => {
       </Grid>
       <Grid item>
         <Typography color="inherit" variant="h3" component="h3" className={classes.brandText}>
-          <Link href="/" color="inherit" underline="none" onClick={_goHome}>
+          <Link href="/" color="inherit" underline="none" onClick={(event) => _goToUrl(event, "/")}>
             Compass
           </Link>
         </Typography>
@@ -105,19 +108,25 @@ const Navbar = (props) => {
     </Hidden>
   );
 
+  const sidebarProps = {
+    isOpen: sidebarOpen,
+    onClose: _toggleSidebar(false)
+  };
+
   const _renderNavigation = () => (
     <>
       <Hidden mdUp>
-        <IconButton color="inherit">
+        <IconButton color="inherit" onClick={_toggleSidebar(true)}>
           <FontAwesomeIcon icon={faBars} className={classes.sidebarToggleIcon}/>
         </IconButton>
+        <Sidebar {...sidebarProps} />
       </Hidden>
       <Hidden smDown>
         {navigationItems.map((navItem, index) => {
           const navItemProps = {
             key: index,
             href: navItem.url,
-            onClick: (event) => navItem.onClick(event, navItem.url),
+            onClick: (event) => _goToUrl(event, navItem.url),
             className: `${classes.navigationButton} ${navItem.url === location.pathname ? "activeNav" : ""}`
           }
           return (
