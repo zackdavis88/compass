@@ -1,4 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
+import PropTypes from "prop-types";
 import {
   Button,
   ClickAwayListener,
@@ -52,7 +53,9 @@ const Menu = (props) => {
         aria-haspopup="true"
         color="inherit"
         endIcon={props.endIcon ? props.endIcon : null}
+        startIcon={props.startIcon ? props.startIcon : null}
         onClick={handleToggle}
+        disableRipple={typeof props.disableRipple === "boolean" ? props.disableRipple : false}
       >
         {props.menuName}
       </Button>
@@ -65,9 +68,13 @@ const Menu = (props) => {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                  <MenuItem onClick={() => {}}>Profile</MenuItem>
-                  <MenuItem onClick={handleClose}>My account</MenuItem>
-                  <MenuItem onClick={handleClose}>Logout</MenuItem>
+                  {props.menuItems.map((menuItem, index) => (
+                    <MenuItem key={index} onClick={(e) => {handleClose(e); menuItem.onClick()}}>
+                      {menuItem.startIcon ? (<span className={classes.itemStartIcon}>{menuItem.startIcon}</span>) : null}
+                      {menuItem.name}
+                      {menuItem.endIcon ? (<span className={classes.itemEndIcon}>{menuItem.endIcon}</span>) : null}
+                    </MenuItem>
+                  ))}
                 </MenuList>
               </ClickAwayListener>
             </Paper>
@@ -76,6 +83,19 @@ const Menu = (props) => {
       </Popper>
     </div>
   );
+};
+
+Menu.propTypes = {
+  menuName: PropTypes.string.isRequired,
+  menuItems: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+    startIcon: PropTypes.element,
+    endIcon: PropTypes.element
+  })),
+  endIcon: PropTypes.element,
+  startIcon: PropTypes.element,
+  disableRipple: PropTypes.bool
 };
 
 export default Menu;

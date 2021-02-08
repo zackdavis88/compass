@@ -2,7 +2,7 @@ import {makeStyles} from "@material-ui/core";
 
 export const useStyles = makeStyles((theme) => ({
   toolbar: {
-    height: "75px",
+    height: theme.measurements.navbarHeight,
     backgroundColor: theme.palette.brandBlue,
     color: theme.palette.white
   },
@@ -27,13 +27,17 @@ export const useStyles = makeStyles((theme) => ({
     }
   },
   brandIcon: {
-    [theme.breakpoints.up(theme.breakpoints.values.md)]: {
-      width: "45px",
-      height: "45px"
-    },
-    [theme.breakpoints.between(theme.breakpoints.values.sm, theme.breakpoints.values.md)]: {
-      width: "35px",
-      height: "35px"
+    // CSS selector to make font awesome SVGs specific height/width
+    "&.svg-inline--fa.fa-w-16": {
+      marginRight: "5px",
+      [theme.breakpoints.up(theme.breakpoints.values.md)]: {
+        width: "45px",
+        height: "45px"
+      },
+      [theme.breakpoints.between(theme.breakpoints.values.sm, theme.breakpoints.values.md)]: {
+        width: "35px",
+        height: "35px"
+      }
     }
   },
   brandText: {
@@ -45,7 +49,29 @@ export const useStyles = makeStyles((theme) => ({
       fontSize: "38px"
     },
     [theme.breakpoints.down(theme.breakpoints.values.sm)]: {
-      fontSize: "30px"
+      fontSize: "30px",
+      lineHeight: "44px"
+    }
+  },
+  sidebarToggleIcon: {
+    "&.svg-inline--fa.fa-w-14": {
+      width: "20px",
+      height: "20px"
+    }
+  },
+  navigationButton: {
+    "&.MuiButton-root": {
+      height: theme.measurements.navbarHeight,
+      color: "inherit",
+      fontWeight: "bold",
+      padding: "8px 12px",
+      borderRadius: "0",
+      marginRight: "8px",
+      borderBottom: `4px solid ${theme.palette.brandBlue}`,
+      transition: "border-color 200ms ease-in"
+    },
+    "&.MuiButton-root.activeNav": {
+      borderColor: theme.palette.white
     }
   }
 }));

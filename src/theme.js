@@ -14,6 +14,10 @@ const theme = createMuiTheme({
     white: "#ffffff",
     black: "#212121",
     brandBlue: "#104b7d"
+  },
+  // is this officially allowed? Its working and no console warnings/errors...
+  measurements: {
+    navbarHeight: "75px"
   }
 });
 
