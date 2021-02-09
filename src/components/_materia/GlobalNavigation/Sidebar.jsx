@@ -6,94 +6,89 @@ import {
   ListItem,
   ListItemText,
   Collapse,
-  Divider,
-
-
-
-
-  ListItemIcon,
-
+  Divider
 } from "@material-ui/core";
 import IconExpandLess from '@material-ui/icons/ExpandLess'
 import IconExpandMore from '@material-ui/icons/ExpandMore'
-import IconDashboard from '@material-ui/icons/Dashboard'
-import IconShoppingCart from '@material-ui/icons/ShoppingCart'
-import IconPeople from '@material-ui/icons/People'
-import IconBarChart from '@material-ui/icons/BarChart'
-import IconLibraryBooks from '@material-ui/icons/LibraryBooks'
 import { useStyles } from "./Sidebar.styles.js";
-
+// TODO: This is where you left off.
+// Make the Divider proper width length based on the menuItem its associated with.
+// Only show when expanded.
 const Sidebar = (props) => {
   const classes = useStyles(props);
-  const [accountOpen, setAccountOpen] = useState(false);
-  const handleAccountClick = () => setAccountOpen(!accountOpen);
-  // TODO: VERY basic sidebar is implemented w/ submenu navigation too.
-  // needs styling and major refactoring.
-  return (
-    <Drawer open={props.isOpen} onClose={props.onClose} classes={{paper: classes.drawerPaper}}>
-      <List component="nav" className={classes.sidebarMenu} disablePadding>
+  const [openSubMenu, setOpenSubMenu] = useState(null);
+  const _handleSubMenuClick = (index) => {
+    if(index === openSubMenu)
+      return setOpenSubMenu(null);
 
+    return setOpenSubMenu(index)
+  };
 
+  const _renderMenuItem = (navItem, inset=false) => {
+    const listItemProps = {
+      button: true,
+      className: classes.menuItem,
+      onClick: navItem.onClick ? (e) => {navItem.onClick(); props.closeSidebar()} : (e) => {props.goToUrl(e, navItem.url); props.closeSidebar()}
+    };
 
-
-        <ListItem button className={classes.menuItem}>
-          <ListItemIcon className={classes.menuItemIcon}>
-            <IconDashboard />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
-
-        <ListItem button className={classes.menuItem}>
-          <ListItemIcon className={classes.menuItemIcon}>
-            <IconShoppingCart />
-          </ListItemIcon>
-          <ListItemText primary="Orders" />
-        </ListItem>
-
-        <ListItem button className={classes.menuItem}>
-          <ListItemIcon className={classes.menuItemIcon}>
-            <IconPeople />
-          </ListItemIcon>
-          <ListItemText primary="Customers" />
-        </ListItem>
-
-        <ListItem button className={classes.menuItem}>
-          <ListItemIcon className={classes.menuItemIcon}>
-            <IconBarChart />
-          </ListItemIcon>
-          <ListItemText primary="Reports" />
-        </ListItem>
-
-        <ListItem button onClick={handleAccountClick} className={classes.menuItem}>
-        <ListItemIcon className={classes.menuItemIcon}>
-          <IconLibraryBooks />
-        </ListItemIcon>
-        <ListItemText primary="Nested Pages" />
-        {accountOpen ? <IconExpandLess /> : <IconExpandMore />}
+    return (
+      <ListItem {...listItemProps}>
+        <ListItemText primary={navItem.name.toUpperCase()} inset={inset} />
       </ListItem>
-      <Collapse in={accountOpen} timeout="auto" unmountOnExit>
+    );
+  };
+
+  const _renderCollapsibleMenuItem = (navItem, index) => (
+    <>
+      <ListItem button onClick={() => _handleSubMenuClick(index)} className={classes.menuItem}>
+        <ListItemText primary={navItem.name.toUpperCase()} />
+        {openSubMenu === index ? <IconExpandLess /> : <IconExpandMore />}
+      </ListItem>
+      <Collapse in={openSubMenu === index} timeout="auto" unmountOnExit>
         <Divider />
         <List component="div" disablePadding>
-          <ListItem button className={classes.menuItem}>
-            <ListItemText inset primary="Nested Page 1" />
-          </ListItem>
-          <ListItem button className={classes.menuItem}>
-            <ListItemText inset primary="Nested Page 2" />
-          </ListItem>
+          {navItem.navigationItems.map((subItem, index) => (
+            <React.Fragment key={index}>
+              {_renderMenuItem(subItem, true)}
+            </React.Fragment>
+          ))}
         </List>
       </Collapse>
+    </>
+  );
 
-
-
-
+  return (
+    <Drawer open={props.isOpen} onClose={props.onClose} classes={{root: classes.drawerRoot, paper: classes.drawerPaper}}>
+      <List component="nav" className={classes.sidebarMenu} disablePadding>
+        {props.navigationItems.map((navItem, index) => {
+          return (
+            <React.Fragment key={index}>
+              {navItem.navigationItems && navItem.navigationItems.length ? (
+                _renderCollapsibleMenuItem(navItem, index)
+              ) : (
+                _renderMenuItem(navItem)
+              )}
+            </React.Fragment>
+          );
+        })}
       </List>
     </Drawer>
   );
 };
 
 Sidebar.propTypes = {
+  navigationItems: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    url: PropTypes.string,
+    navigationItems: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      onClick: PropTypes.func
+    }))
+  })),
+  goToUrl: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  closeSidebar: PropTypes.func.isRequired,
   classes: PropTypes.object
 }
 

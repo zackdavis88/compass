@@ -10,8 +10,7 @@ import {
   Hidden,
   Link,
   Grid,
-  Button,
-  Drawer
+  Button
 } from "@material-ui/core/";
 import {useStyles} from "./GlobalNavigation.styles";
 import {connect} from "react-redux";
@@ -84,6 +83,17 @@ const Navbar = (props) => {
     endIcon: <FontAwesomeIcon icon={faCaretDown} />
   };
 
+  const sidebarProps = {
+    isOpen: sidebarOpen,
+    onClose: _toggleSidebar(false),
+    goToUrl: _goToUrl,
+    navigationItems: [...navigationItems, {
+      name: "My Account",
+      navigationItems: [...userMenuProps.menuItems]
+    }],
+    closeSidebar: () => setSidebarOpen(false)
+  };
+
   const _renderBranding = () => (
     <Grid {...brandGridProps}>
       <Grid item>
@@ -108,15 +118,10 @@ const Navbar = (props) => {
     </Hidden>
   );
 
-  const sidebarProps = {
-    isOpen: sidebarOpen,
-    onClose: _toggleSidebar(false)
-  };
-
   const _renderNavigation = () => (
     <>
       <Hidden mdUp>
-        <IconButton color="inherit" onClick={_toggleSidebar(true)}>
+        <IconButton color="inherit" onClick={_toggleSidebar(!sidebarOpen)}>
           <FontAwesomeIcon icon={faBars} className={classes.sidebarToggleIcon}/>
         </IconButton>
         <Sidebar {...sidebarProps} />
