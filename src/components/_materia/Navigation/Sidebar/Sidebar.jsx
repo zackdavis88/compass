@@ -11,9 +11,7 @@ import {
 import IconExpandLess from '@material-ui/icons/ExpandLess'
 import IconExpandMore from '@material-ui/icons/ExpandMore'
 import { useStyles } from "./Sidebar.styles.js";
-// TODO: This is where you left off.
-// Make the Divider proper width length based on the menuItem its associated with.
-// Only show when expanded.
+
 const Sidebar = (props) => {
   const classes = useStyles(props);
   const [openSubMenu, setOpenSubMenu] = useState(null);

@@ -33,8 +33,6 @@ export const useStyles = makeStyles((theme) => ({
       fontWeight: "bold"
     },
     "& .MuiDivider-root": {
-      // marginLeft: "16px",
-      // marginRight: "16px",
       backgroundColor: theme.palette.white
     },
     "& .MuiListItemText-inset": {
