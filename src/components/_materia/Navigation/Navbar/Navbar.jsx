@@ -12,12 +12,12 @@ import {
   Grid,
   Button
 } from "@material-ui/core/";
-import {useStyles} from "./GlobalNavigation.styles";
+import {useStyles} from "./Navbar.styles";
 import {connect} from "react-redux";
 import {push} from "connected-react-router";
-import {useWidth} from "../../../utils";
-import UserMenu from "../Menu/Menu";
-import Sidebar from "./Sidebar";
+import {useWidth} from "../../../../utils";
+import UserMenu from "../../Menu/Menu";
+import Sidebar from "../Sidebar/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCompass } from "@fortawesome/free-regular-svg-icons";
 import { faCaretDown, faKey, faSignOutAlt, faBars } from "@fortawesome/free-solid-svg-icons";
@@ -146,7 +146,7 @@ const Navbar = (props) => {
 
   return (
     <Slide appear={false} direction="down" in={!trigger}>
-      <AppBar>
+      <AppBar className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           <Grid {...contentGridProps}>
             <Grid item xs={2} sm={3} md={4} id="navigation-section">

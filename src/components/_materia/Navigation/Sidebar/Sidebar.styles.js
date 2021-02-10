@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     width: "100%"
   },
   menuItem: {
-    width: `calc(${theme.measurements.sidebarWidth} - 50px)`
+    width: "100%"
   },
   menuItemIcon: {
     color: '#97c05c',
@@ -33,12 +33,12 @@ export const useStyles = makeStyles((theme) => ({
       fontWeight: "bold"
     },
     "& .MuiDivider-root": {
-      marginLeft: "15px",
-      marginRight: "20px",
+      // marginLeft: "16px",
+      // marginRight: "16px",
       backgroundColor: theme.palette.white
     },
     "& .MuiListItemText-inset": {
-      paddingLeft: "8px"
+      paddingLeft: "15px"
     }
   }
 }));

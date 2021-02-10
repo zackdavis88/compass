@@ -1,6 +1,10 @@
 import {makeStyles} from "@material-ui/core";
 
 export const useStyles = makeStyles((theme) => ({
+  appBar: {
+    color: theme.palette.white,
+    backgroundColor: theme.palette.brandBlue
+  },
   toolbar: {
     height: theme.measurements.navbarHeight,
     backgroundColor: theme.palette.brandBlue,
